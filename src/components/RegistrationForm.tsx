@@ -25,6 +25,8 @@ export const CATECHISM_CLASSES = [
   'Thêm Sức',
   'Sống Đạo',
   'Vào Đời',
+  'Giáo Lý Viên',
+  'Dự Trưởng',
 ];
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, onViewList }) => {

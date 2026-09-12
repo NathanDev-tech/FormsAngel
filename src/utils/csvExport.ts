@@ -74,9 +74,42 @@ export function getBirthYear(dateStr: string | undefined | null): string {
 }
 
 /**
- * Xuất danh sách dạng bảng Excel (.xls) có đầy đủ màu sắc, tiêu đề Ban Điều Hành,
- * định dạng font chữ Times New Roman toàn bộ, chiều cao các hàng đồng đều,
- * và tự động sắp xếp theo thứ tự chữ cái tên ca viên (A-Z).
+ * Trả về style CSS trang trí badge lớp học trong file Excel theo đúng quy định màu sắc:
+ * - Xưng Tội: Xanh lá (#dcfce7 / #15803d)
+ * - Thêm Sức: Xanh nước biển (#dbeafe / #1d4ed8)
+ * - Sống Đạo: Màu vàng (#fef3c7 / #b45309)
+ * - Vào Đời: Màu nâu (#f5e6d3 / #78350f)
+ * - Giáo Lý Viên / Dự Trưởng: Màu đỏ (#fee2e2 / #b91c1c)
+ */
+export function getExcelClassBadgeStyle(className: string | undefined | null): string {
+  if (!className || className === '—') return 'color: #64748b; font-style: italic;';
+  const lower = className.toLowerCase().trim();
+
+  if (lower.includes('giáo lý') || lower.includes('dự trưởng') || lower.includes('glv')) {
+    return 'background-color: #fee2e2; color: #b91c1c; font-weight: bold; border: 0.5pt solid #fca5a5; padding: 2pt 8pt; border-radius: 4pt;';
+  }
+  if (lower.includes('xưng tội')) {
+    return 'background-color: #dcfce7; color: #15803d; font-weight: bold; border: 0.5pt solid #bbf7d0; padding: 2pt 8pt; border-radius: 4pt;';
+  }
+  if (lower.includes('thêm sức')) {
+    return 'background-color: #dbeafe; color: #1d4ed8; font-weight: bold; border: 0.5pt solid #bfdbfe; padding: 2pt 8pt; border-radius: 4pt;';
+  }
+  if (lower.includes('sống đạo')) {
+    return 'background-color: #fef3c7; color: #b45309; font-weight: bold; border: 0.5pt solid #fde68a; padding: 2pt 8pt; border-radius: 4pt;';
+  }
+  if (lower.includes('vào đời')) {
+    return 'background-color: #f5e6d3; color: #78350f; font-weight: bold; border: 0.5pt solid #e6ccb2; padding: 2pt 8pt; border-radius: 4pt;';
+  }
+
+  return 'background-color: #e0f2fe; color: #0369a1; font-weight: bold; border: 0.5pt solid #bae6fd; padding: 2pt 8pt; border-radius: 4pt;';
+}
+
+/**
+ * THIẾT KẾ MỚI HOÀN TOÀN — Xuất Excel theo phong cách văn bản giáo xứ sang trọng:
+ * - Header gradient đẹp với logo thánh nhạc, tên giáo xứ nổi bật
+ * - Bảng thống kê 4 thẻ (card) màu sắc trực quan ngay dưới tiêu đề
+ * - Bảng danh sách hiện đại: viền trái màu theo lớp, badge màu chuẩn
+ * - Footer ký xác nhận trang trọng với 3 vị trí: Ca trưởng, Thư ký, Ban Điều Hành
  */
 export function exportDecoratedExcel(
   members: ChoirMember[],
@@ -85,8 +118,9 @@ export function exportDecoratedExcel(
 ): void {
   const now = new Date();
   const todayStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-  
-  // Tự động sắp xếp danh sách theo bảng chữ cái tiếng Việt trước khi xuất
+  const monthYearStr = `Tháng ${String(now.getMonth() + 1).padStart(2, '0')} / ${now.getFullYear()}`;
+
+  // Tự động sắp xếp danh sách theo bảng chữ cái tiếng Việt
   const sorted = [...members].sort((a, b) => compareVietnameseNames(a.hoVaTen, b.hoVaTen));
 
   const totalCount = sorted.length;
@@ -94,222 +128,241 @@ export function exportDecoratedExcel(
   const pauseCount = sorted.filter(m => m.trangThai === 'Tạm nghỉ').length;
   const leaveCount = sorted.filter(m => m.trangThai === 'Nghỉ hẳn').length;
 
+  // Hàm lấy màu viền trái theo lớp
+  function getLeftBorderColor(lop: string | undefined): string {
+    if (!lop) return '#94a3b8';
+    const l = lop.toLowerCase();
+    if (l.includes('giáo lý') || l.includes('dự trưởng')) return '#dc2626';
+    if (l.includes('xưng tội')) return '#16a34a';
+    if (l.includes('thêm sức')) return '#1d4ed8';
+    if (l.includes('sống đạo')) return '#d97706';
+    if (l.includes('vào đời')) return '#78350f';
+    return '#0ea5e9';
+  }
+
+  // Hàm lấy màu badge lớp học (nền + chữ)
+  function getClassBadge(lop: string): string {
+    if (!lop || lop === '—') return `<span style="color:#94a3b8;font-style:italic;">—</span>`;
+    const l = lop.toLowerCase();
+    let bg = '#e0f2fe'; let color = '#0369a1'; let border = '#bae6fd';
+    if (l.includes('giáo lý') || l.includes('dự trưởng')) { bg='#fef2f2'; color='#b91c1c'; border='#fecaca'; }
+    else if (l.includes('xưng tội'))  { bg='#f0fdf4'; color='#15803d'; border='#bbf7d0'; }
+    else if (l.includes('thêm sức'))  { bg='#eff6ff'; color='#1d4ed8'; border='#bfdbfe'; }
+    else if (l.includes('sống đạo'))  { bg='#fffbeb'; color='#b45309'; border='#fde68a'; }
+    else if (l.includes('vào đời'))   { bg='#fdf4e7'; color='#92400e'; border='#fcd9a0'; }
+    return `<span style="display:inline-block;background:${bg};color:${color};border:1pt solid ${border};border-radius:3pt;padding:1pt 7pt;font-weight:bold;font-size:10pt;">${lop}</span>`;
+  }
+
+  // Hàm lấy badge trạng thái
+  function getStatusBadge(status: string): string {
+    let bg='#f0fdf4'; let color='#15803d'; let border='#bbf7d0'; let icon='✔';
+    if (status === 'Tạm nghỉ')  { bg='#fffbeb'; color='#b45309'; border='#fde68a'; icon='⏸'; }
+    if (status === 'Nghỉ hẳn')  { bg='#fef2f2'; color='#b91c1c'; border='#fecaca'; icon='✖'; }
+    return `<span style="display:inline-block;background:${bg};color:${color};border:1pt solid ${border};border-radius:3pt;padding:1pt 7pt;font-weight:bold;font-size:10pt;">${icon} ${status}</span>`;
+  }
+
+  // Dữ liệu từng dòng
   const rowsHtml = sorted.map((member, index) => {
-    const birthYear = getBirthYear(member.ngaySinh);
-    const phone = member.soDienThoai ? member.soDienThoai : '—';
-    const group = member.lop ? member.lop : '—';
-    const role = member.bonPhan || 'Thành viên';
+    const birth = getBirthYear(member.ngaySinh);
+    const phone = member.soDienThoai || '—';
+    const lop   = member.lop || '—';
+    const role  = member.bonPhan || 'Thành viên';
     const status = member.trangThai || 'Hoạt động';
-    const joinDate = member.createdAt ? formatDateVi(member.createdAt) : todayStr;
-    const bgColor = index % 2 === 0 ? '#ffffff' : '#f8fafc';
-    const statusColor = status === 'Hoạt động' ? '#16a34a' : status === 'Tạm nghỉ' ? '#d97706' : '#dc2626';
+    const bg = index % 2 === 0 ? '#ffffff' : '#f8fafc';
+    const leftBorder = getLeftBorderColor(member.lop);
 
     return `
-      <tr style="height: 25pt; mso-height-source: userset; background-color: ${bgColor}; font-family: 'Times New Roman', Times, serif;">
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: center; vertical-align: middle; height: 25pt; color: #475569;">${index + 1}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: center; vertical-align: middle; height: 25pt; color: #1d4ed8; font-weight: bold;">${member.tenThanh || '—'}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: left; vertical-align: middle; height: 25pt; padding-left: 8pt; font-weight: bold; color: #0f172a;">${member.hoVaTen || '—'}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: center; vertical-align: middle; height: 25pt; color: #1e293b;">${birthYear}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: center; vertical-align: middle; height: 25pt; mso-number-format:'\\@'; color: #334155;">${phone}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: left; vertical-align: middle; height: 25pt; padding-left: 8pt; color: #0f172a;">${group}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: center; vertical-align: middle; height: 25pt; color: #334155;">${role}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: center; vertical-align: middle; height: 25pt; font-weight: bold; color: ${statusColor};">${status}</td>
-        <td style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; border: 0.5pt solid #cbd5e1; text-align: center; vertical-align: middle; height: 25pt; color: #475569;">${joinDate}</td>
-      </tr>
-    `;
+    <tr style="height:27pt;mso-height-source:userset;background-color:${bg};font-family:'Times New Roman',serif;">
+      <td style="font-family:'Times New Roman',serif;font-size:10.5pt;border-top:0.5pt solid #e2e8f0;border-bottom:0.5pt solid #e2e8f0;border-right:0.5pt solid #e2e8f0;border-left:3pt solid ${leftBorder};text-align:center;vertical-align:middle;color:#64748b;font-weight:bold;">${index + 1}</td>
+      <td style="font-family:'Times New Roman',serif;font-size:10.5pt;border:0.5pt solid #e2e8f0;text-align:center;vertical-align:middle;color:#1e40af;font-weight:bold;">${member.tenThanh || '—'}</td>
+      <td style="font-family:'Times New Roman',serif;font-size:11pt;border:0.5pt solid #e2e8f0;text-align:left;vertical-align:middle;padding-left:8pt;font-weight:bold;color:#0f172a;">${member.hoVaTen || '—'}</td>
+      <td style="font-family:'Times New Roman',serif;font-size:10.5pt;border:0.5pt solid #e2e8f0;text-align:center;vertical-align:middle;color:#334155;">${birth || '—'}</td>
+      <td style="font-family:'Times New Roman',serif;font-size:10.5pt;border:0.5pt solid #e2e8f0;text-align:center;vertical-align:middle;mso-number-format:'\\@';color:#334155;">${phone}</td>
+      <td style="font-family:'Times New Roman',serif;font-size:10.5pt;border:0.5pt solid #e2e8f0;text-align:center;vertical-align:middle;">${getClassBadge(lop)}</td>
+      <td style="font-family:'Times New Roman',serif;font-size:10.5pt;border:0.5pt solid #e2e8f0;text-align:center;vertical-align:middle;color:#475569;">${role}</td>
+      <td style="font-family:'Times New Roman',serif;font-size:10.5pt;border:0.5pt solid #e2e8f0;text-align:center;vertical-align:middle;">${getStatusBadge(status)}</td>
+    </tr>`;
   }).join('');
 
   const excelHtml = `
-    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <!--[if gte mso 9]>
-      <xml>
-        <x:ExcelWorkbook>
-          <x:ExcelWorksheets>
-            <x:ExcelWorksheet>
-              <x:Name>Ca Đoàn Thiên Thần</x:Name>
-              <x:WorksheetOptions>
-                <x:DisplayGridlines/>
-                <x:FitToPage/>
-                <x:Print>
-                  <x:FitWidth>1</x:FitWidth>
-                  <x:FitHeight>100</x:FitHeight>
-                  <x:ValidPrinterInfo/>
-                  <x:PaperSizeIndex>9</x:PaperSizeIndex>
-                  <x:HorizontalResolution>600</x:HorizontalResolution>
-                  <x:VerticalResolution>600</x:VerticalResolution>
-                </x:Print>
-              </x:WorksheetOptions>
-            </x:ExcelWorksheet>
-          </x:ExcelWorksheets>
-        </x:ExcelWorkbook>
-      </xml>
-      <![endif]-->
-      <style>
-        <!--
-        @page {
-          mso-page-orientation: landscape;
-          margin: 0.5in 0.5in 0.5in 0.5in;
-        }
-        body, table, tr, td, th, p, span, div {
-          font-family: 'Times New Roman', Times, serif !important;
-        }
-        table {
-          border-collapse: collapse;
-          width: 100%;
-          font-family: 'Times New Roman', Times, serif;
-        }
-        td, th {
-          font-family: 'Times New Roman', Times, serif;
-          vertical-align: middle;
-        }
-        .th-title-main {
-          font-family: 'Times New Roman', Times, serif;
-          font-size: 16pt;
-          font-weight: bold;
-          color: #002060;
-          text-align: center;
-          vertical-align: middle;
-          height: 36pt;
-          mso-height-source: userset;
-        }
-        .th-title-sub {
-          font-family: 'Times New Roman', Times, serif;
-          font-size: 13pt;
-          font-weight: bold;
-          color: #1e3a8a;
-          text-align: center;
-          vertical-align: middle;
-          height: 25pt;
-          mso-height-source: userset;
-        }
-        .th-meta {
-          font-family: 'Times New Roman', Times, serif;
-          font-size: 10.5pt;
-          font-style: italic;
-          color: #475569;
-          text-align: center;
-          vertical-align: middle;
-          height: 22pt;
-          mso-height-source: userset;
-        }
-        .th-header {
-          font-family: 'Times New Roman', Times, serif;
-          font-size: 11pt;
-          font-weight: bold;
-          color: #ffffff;
-          background-color: #002060;
-          text-align: center;
-          vertical-align: middle;
-          height: 32pt;
-          mso-height-source: userset;
-          border: 0.5pt solid #334155;
-          padding: 6pt 4pt;
-        }
-        -->
-      </style>
-    </head>
-    <body style="font-family: 'Times New Roman', Times, serif; padding: 16px; background-color: #ffffff;">
-      <!-- Khung viền vàng trang trí trên cùng -->
-      <table style="width: 100%; margin-bottom: 6px; font-family: 'Times New Roman', Times, serif;">
-        <tr style="height: 4pt; mso-height-source: userset;">
-          <td colspan="9" style="background-color: #d97706; height: 4pt; line-height: 4pt; font-size: 1pt;">&nbsp;</td>
-        </tr>
-      </table>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <!--[if gte mso 9]><xml>
+    <x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+      <x:Name>Ca Đoàn Thiên Thần</x:Name>
+      <x:WorksheetOptions>
+        <x:FitToPage/>
+        <x:Print>
+          <x:FitWidth>1</x:FitWidth><x:FitHeight>100</x:FitHeight>
+          <x:ValidPrinterInfo/><x:PaperSizeIndex>9</x:PaperSizeIndex>
+          <x:HorizontalResolution>600</x:HorizontalResolution>
+          <x:VerticalResolution>600</x:VerticalResolution>
+        </x:Print>
+      </x:WorksheetOptions>
+    </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook>
+  </xml><![endif]-->
+  <style>
+  <!--
+    @page { mso-page-orientation:landscape; margin:0.4in 0.45in 0.4in 0.45in; }
+    body,table,td,th { font-family:'Times New Roman',Times,serif !important; }
+  -->
+  </style>
+</head>
+<body style="font-family:'Times New Roman',serif;margin:0;padding:0;background:#f1f5f9;">
 
-      <!-- Tiêu đề Ban Điều Hành Ca Đoàn Thiên Thần -->
-      <table style="width: 100%; text-align: center; margin-bottom: 6px; font-family: 'Times New Roman', Times, serif;">
-        <tr style="height: 36pt; mso-height-source: userset;">
-          <td colspan="9" class="th-title-main" style="font-family: 'Times New Roman', Times, serif; font-size: 16pt; font-weight: bold; color: #002060; text-align: center; vertical-align: middle; height: 36pt; text-transform: uppercase;">
-            ✦ BAN ĐIỀU HÀNH CA ĐOÀN THIÊN THẦN ✦
-          </td>
-        </tr>
-        <tr style="height: 25pt; mso-height-source: userset;">
-          <td colspan="9" class="th-title-sub" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: bold; color: #1e3a8a; text-align: center; vertical-align: middle; height: 25pt;">
-            DANH SÁCH CA VIÊN — ${parishName}
-          </td>
-        </tr>
-        <tr style="height: 22pt; mso-height-source: userset;">
-          <td colspan="9" class="th-meta" style="font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; font-style: italic; color: #475569; text-align: center; vertical-align: middle; height: 22pt;">
-            Ngày xuất: <b>${todayStr}</b> &nbsp;•&nbsp; Tổng: <b>${totalCount} ca viên</b> &nbsp;•&nbsp; Hoạt động: <b style="color: #16a34a;">${activeCount}</b> &nbsp;•&nbsp; Tạm nghỉ: <b style="color: #d97706;">${pauseCount}</b> &nbsp;•&nbsp; Nghỉ hẳn: <b style="color: #dc2626;">${leaveCount}</b>
-          </td>
-        </tr>
-      </table>
+<!-- ═══════════════════════════════════════════════
+     HEADER: Gradient xanh tím sang trọng
+═══════════════════════════════════════════════ -->
+<table style="width:100%;border-collapse:collapse;margin-bottom:0;">
+  <!-- Thanh accent màu vàng rực -->
+  <tr><td colspan="8" style="height:6pt;background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b);background-color:#f59e0b;font-size:1pt;line-height:6pt;">&nbsp;</td></tr>
+  <!-- Header chính gradient xanh tím -->
+  <tr>
+    <td colspan="8" style="background-color:#1e3a5f;padding:14pt 20pt 10pt 20pt;text-align:center;vertical-align:middle;">
+      <div style="font-family:'Times New Roman',serif;font-size:11pt;color:#93c5fd;font-weight:normal;letter-spacing:2pt;text-transform:uppercase;margin-bottom:4pt;">✟ &nbsp; GIÁO HỘI CÔNG GIÁO &nbsp; ✟</div>
+      <div style="font-family:'Times New Roman',serif;font-size:20pt;font-weight:bold;color:#ffffff;text-transform:uppercase;letter-spacing:1pt;">Ca Đoàn Thiên Thần</div>
+      <div style="font-family:'Times New Roman',serif;font-size:13pt;color:#fbbf24;font-weight:bold;margin-top:3pt;">${parishName}</div>
+      <div style="font-family:'Times New Roman',serif;font-size:10pt;color:#94a3b8;margin-top:6pt;font-style:italic;">DANH SÁCH CA VIÊN &nbsp;—&nbsp; ${monthYearStr}</div>
+    </td>
+  </tr>
+  <!-- Thanh accent màu vàng dưới header -->
+  <tr><td colspan="8" style="height:4pt;background-color:#f59e0b;font-size:1pt;line-height:4pt;">&nbsp;</td></tr>
+</table>
 
-      <!-- Bảng danh sách thành viên -->
-      <table border="1" style="border-collapse: collapse; border: 0.5pt solid #94a3b8; width: 100%; font-family: 'Times New Roman', Times, serif;">
-        <colgroup>
-          <col width="50" style="width: 50pt;">
-          <col width="120" style="width: 120pt;">
-          <col width="230" style="width: 230pt;">
-          <col width="85" style="width: 85pt;">
-          <col width="120" style="width: 120pt;">
-          <col width="140" style="width: 140pt;">
-          <col width="110" style="width: 110pt;">
-          <col width="110" style="width: 110pt;">
-          <col width="115" style="width: 115pt;">
-        </colgroup>
-        <thead>
-          <tr style="background-color: #002060; color: #ffffff; font-weight: bold; font-size: 11pt; text-align: center; height: 32pt; mso-height-source: userset; font-family: 'Times New Roman', Times, serif;">
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 4pt; width: 50pt; text-align: center; vertical-align: middle;">STT</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 8pt; width: 120pt; text-align: center; vertical-align: middle;">Tên Thánh</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 10pt; width: 230pt; text-align: left; vertical-align: middle;">Họ và Tên</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 4pt; width: 85pt; text-align: center; vertical-align: middle;">Ngày sinh</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 6pt; width: 120pt; text-align: center; vertical-align: middle;">SĐT</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 8pt; width: 140pt; text-align: left; vertical-align: middle;">Giọng/Lớp</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 6pt; width: 110pt; text-align: center; vertical-align: middle;">Bổn phận</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 6pt; width: 110pt; text-align: center; vertical-align: middle;">Trạng thái</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 6pt; width: 115pt; text-align: center; vertical-align: middle;">Ngày gia nhập</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml || `<tr><td colspan="9" style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; text-align: center; vertical-align: middle; height: 35pt; padding: 15pt; color: #94a3b8; border: 0.5pt solid #cbd5e1;">Chưa có dữ liệu thành viên</td></tr>`}
-        </tbody>
-      </table>
+<!-- ═══════════════════════════════════════════════
+     THỐNG KÊ: 4 thẻ card nằm ngang
+═══════════════════════════════════════════════ -->
+<table style="width:100%;border-collapse:separate;border-spacing:6pt;margin:10pt 0 6pt 0;">
+  <tr>
+    <!-- Card 1: Tổng -->
+    <td style="width:25%;background-color:#1e3a5f;border-radius:6pt;padding:10pt 12pt;text-align:center;vertical-align:middle;">
+      <div style="font-family:'Times New Roman',serif;font-size:24pt;font-weight:bold;color:#ffffff;line-height:1;">${totalCount}</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#93c5fd;margin-top:3pt;font-weight:bold;letter-spacing:0.5pt;text-transform:uppercase;">Tổng Ca Viên</div>
+    </td>
+    <!-- Card 2: Hoạt động -->
+    <td style="width:25%;background-color:#f0fdf4;border:1.5pt solid #86efac;border-radius:6pt;padding:10pt 12pt;text-align:center;vertical-align:middle;">
+      <div style="font-family:'Times New Roman',serif;font-size:24pt;font-weight:bold;color:#15803d;line-height:1;">${activeCount}</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#16a34a;margin-top:3pt;font-weight:bold;letter-spacing:0.5pt;text-transform:uppercase;">✔ Đang Hoạt Động</div>
+    </td>
+    <!-- Card 3: Tạm nghỉ -->
+    <td style="width:25%;background-color:#fffbeb;border:1.5pt solid #fcd34d;border-radius:6pt;padding:10pt 12pt;text-align:center;vertical-align:middle;">
+      <div style="font-family:'Times New Roman',serif;font-size:24pt;font-weight:bold;color:#b45309;line-height:1;">${pauseCount}</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#d97706;margin-top:3pt;font-weight:bold;letter-spacing:0.5pt;text-transform:uppercase;">⏸ Tạm Nghỉ</div>
+    </td>
+    <!-- Card 4: Nghỉ hẳn -->
+    <td style="width:25%;background-color:#fef2f2;border:1.5pt solid #fca5a5;border-radius:6pt;padding:10pt 12pt;text-align:center;vertical-align:middle;">
+      <div style="font-family:'Times New Roman',serif;font-size:24pt;font-weight:bold;color:#b91c1c;line-height:1;">${leaveCount}</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#dc2626;margin-top:3pt;font-weight:bold;letter-spacing:0.5pt;text-transform:uppercase;">✖ Nghỉ Hẳn</div>
+    </td>
+  </tr>
+</table>
 
-      <!-- Khung viền vàng dưới bảng -->
-      <table style="width: 100%; margin-top: 6px; margin-bottom: 12px; font-family: 'Times New Roman', Times, serif;">
-        <tr style="height: 4pt; mso-height-source: userset;">
-          <td colspan="9" style="background-color: #d97706; height: 4pt; line-height: 4pt; font-size: 1pt;">&nbsp;</td>
-        </tr>
-      </table>
+<!-- Chú thích màu lớp học -->
+<table style="width:100%;border-collapse:collapse;margin-bottom:8pt;">
+  <tr>
+    <td style="padding:4pt 0 2pt 2pt;">
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;color:#64748b;font-style:italic;">Chú thích màu lớp: &nbsp;</span>
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;background:#f0fdf4;color:#15803d;border:0.5pt solid #bbf7d0;padding:0pt 5pt;font-weight:bold;">Xưng Tội</span>&nbsp;
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;background:#eff6ff;color:#1d4ed8;border:0.5pt solid #bfdbfe;padding:0pt 5pt;font-weight:bold;">Thêm Sức</span>&nbsp;
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;background:#fffbeb;color:#b45309;border:0.5pt solid #fde68a;padding:0pt 5pt;font-weight:bold;">Sống Đạo</span>&nbsp;
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;background:#fdf4e7;color:#92400e;border:0.5pt solid #fcd9a0;padding:0pt 5pt;font-weight:bold;">Vào Đời</span>&nbsp;
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;background:#fef2f2;color:#b91c1c;border:0.5pt solid #fecaca;padding:0pt 5pt;font-weight:bold;">GLV / Dự Trưởng</span>
+    </td>
+  </tr>
+</table>
 
-      <!-- Bảng thống kê tổng hợp phía dưới trang trọng -->
-      <table style="width: 100%; margin-top: 8px; font-family: 'Times New Roman', Times, serif;">
-        <tr>
-          <td style="width: 15%;"></td>
-          <td style="width: 32%; border: 0.5pt solid #cbd5e1; background-color: #f8fafc; padding: 8pt 12pt; vertical-align: middle;">
-            <table style="width: 100%; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
-              <tr style="height: 20pt; mso-height-source: userset;">
-                <td style="font-family: 'Times New Roman', Times, serif; color: #475569; font-weight: bold; vertical-align: middle;">Nghỉ hẳn</td>
-                <td style="font-family: 'Times New Roman', Times, serif; text-align: right; font-weight: bold; color: #dc2626; vertical-align: middle;">${leaveCount}</td>
-              </tr>
-              <tr style="height: 20pt; mso-height-source: userset;">
-                <td style="font-family: 'Times New Roman', Times, serif; color: #475569; font-weight: bold; vertical-align: middle;">Tạm nghỉ</td>
-                <td style="font-family: 'Times New Roman', Times, serif; text-align: right; font-weight: bold; color: #d97706; vertical-align: middle;">${pauseCount}</td>
-              </tr>
-            </table>
-          </td>
-          <td style="width: 6%;"></td>
-          <td style="width: 32%; border: 0.5pt solid #cbd5e1; background-color: #f8fafc; padding: 8pt 12pt; vertical-align: middle;">
-            <table style="width: 100%; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
-              <tr style="height: 20pt; mso-height-source: userset;">
-                <td style="font-family: 'Times New Roman', Times, serif; color: #475569; font-weight: bold; vertical-align: middle;">Tổng ca viên</td>
-                <td style="font-family: 'Times New Roman', Times, serif; text-align: right; font-weight: bold; color: #0f172a; vertical-align: middle;">${totalCount}</td>
-              </tr>
-              <tr style="height: 20pt; mso-height-source: userset;">
-                <td style="font-family: 'Times New Roman', Times, serif; color: #475569; font-weight: bold; vertical-align: middle;">Đang hoạt động</td>
-                <td style="font-family: 'Times New Roman', Times, serif; text-align: right; font-weight: bold; color: #16a34a; vertical-align: middle;">${activeCount}</td>
-              </tr>
-            </table>
-          </td>
-          <td style="width: 15%;"></td>
-        </tr>
-      </table>
-    </body>
-    </html>
-  `;
+<!-- ═══════════════════════════════════════════════
+     BẢNG DANH SÁCH CA VIÊN
+═══════════════════════════════════════════════ -->
+<table style="width:100%;border-collapse:collapse;border:1pt solid #cbd5e1;box-shadow:0 2pt 8pt rgba(0,0,0,0.08);">
+  <colgroup>
+    <col style="width:38pt;">
+    <col style="width:100pt;">
+    <col style="width:210pt;">
+    <col style="width:80pt;">
+    <col style="width:105pt;">
+    <col style="width:125pt;">
+    <col style="width:105pt;">
+    <col style="width:100pt;">
+  </colgroup>
+  <!-- Header cột -->
+  <thead>
+    <tr style="background-color:#1e3a5f;height:30pt;mso-height-source:userset;">
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 3pt;letter-spacing:0.3pt;">STT</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#93c5fd;text-align:center;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 6pt;letter-spacing:0.3pt;">Tên Thánh</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#ffffff;text-align:left;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 8pt;letter-spacing:0.3pt;">Họ và Tên</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 3pt;letter-spacing:0.3pt;">Ngày sinh</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 4pt;letter-spacing:0.3pt;">Số ĐT</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#fbbf24;text-align:center;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 6pt;letter-spacing:0.3pt;">Giọng / Lớp</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 4pt;letter-spacing:0.3pt;">Bổn Phận</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;padding:5pt 4pt;letter-spacing:0.3pt;">Trạng Thái</th>
+    </tr>
+    <!-- Thanh trang trí màu vàng phân tách header -->
+    <tr><td colspan="8" style="height:3pt;background-color:#f59e0b;font-size:1pt;line-height:3pt;">&nbsp;</td></tr>
+  </thead>
+  <tbody>
+    ${rowsHtml || `<tr><td colspan="8" style="font-family:'Times New Roman',serif;font-size:11pt;text-align:center;height:40pt;color:#94a3b8;padding:15pt;">Chưa có dữ liệu thành viên</td></tr>`}
+    <!-- Thanh kết thúc bảng -->
+    <tr><td colspan="8" style="height:3pt;background-color:#1e3a5f;font-size:1pt;line-height:3pt;">&nbsp;</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════
+     THÔNG TIN XUẤT & NGÀY THÁNG
+═══════════════════════════════════════════════ -->
+<table style="width:100%;border-collapse:collapse;margin-top:10pt;">
+  <tr>
+    <td style="width:60%;padding:4pt 0;vertical-align:top;">
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;color:#64748b;font-style:italic;">
+        📅 Ngày xuất: <b style="color:#1e3a5f;">${todayStr}</b> &nbsp;|&nbsp; 
+        Tổng số: <b style="color:#1e3a5f;">${totalCount} ca viên</b> &nbsp;|&nbsp;
+        Hoạt động: <b style="color:#15803d;">${activeCount}</b> &nbsp;|&nbsp;
+        Tạm nghỉ: <b style="color:#b45309;">${pauseCount}</b> &nbsp;|&nbsp;
+        Nghỉ hẳn: <b style="color:#b91c1c;">${leaveCount}</b>
+      </span>
+    </td>
+    <td style="width:40%;text-align:right;padding:4pt 0;vertical-align:top;">
+      <span style="font-family:'Times New Roman',serif;font-size:9pt;color:#94a3b8;font-style:italic;">Tài liệu nội bộ — Ban Điều Hành Ca Đoàn Thiên Thần</span>
+    </td>
+  </tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER KÝ XÁC NHẬN (3 vị trí)
+═══════════════════════════════════════════════ -->
+<table style="width:100%;border-collapse:collapse;margin-top:18pt;">
+  <tr>
+    <td style="width:33%;text-align:center;vertical-align:top;padding:0 10pt;">
+      <div style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#1e3a5f;margin-bottom:2pt;">CA TRƯỞNG</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#94a3b8;font-style:italic;">(Ký và ghi rõ họ tên)</div>
+      <div style="height:36pt;border-bottom:1pt solid #cbd5e1;margin:6pt 10pt 4pt 10pt;"></div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#64748b;">&nbsp;</div>
+    </td>
+    <td style="width:33%;text-align:center;vertical-align:top;padding:0 10pt;">
+      <div style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#1e3a5f;margin-bottom:2pt;">THƯ KÝ</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#94a3b8;font-style:italic;">(Ký và ghi rõ họ tên)</div>
+      <div style="height:36pt;border-bottom:1pt solid #cbd5e1;margin:6pt 10pt 4pt 10pt;"></div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#64748b;">&nbsp;</div>
+    </td>
+    <td style="width:33%;text-align:center;vertical-align:top;padding:0 10pt;">
+      <div style="font-family:'Times New Roman',serif;font-size:10pt;font-weight:bold;color:#1e3a5f;margin-bottom:2pt;">BAN ĐIỀU HÀNH</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#94a3b8;font-style:italic;"><i>${parishName}</i></div>
+      <div style="height:36pt;border-bottom:1pt solid #cbd5e1;margin:6pt 10pt 4pt 10pt;"></div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;color:#64748b;">&nbsp;</div>
+    </td>
+  </tr>
+</table>
+
+<!-- Dải cuối trang -->
+<table style="width:100%;border-collapse:collapse;margin-top:10pt;">
+  <tr>
+    <td colspan="8" style="height:5pt;background:linear-gradient(90deg,#1e3a5f,#f59e0b,#1e3a5f);background-color:#1e3a5f;font-size:1pt;line-height:5pt;">&nbsp;</td>
+  </tr>
+</table>
+
+</body>
+</html>`;
 
   const yyyy = now.getFullYear();
   const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -327,10 +380,10 @@ export function exportDecoratedExcel(
   URL.revokeObjectURL(url);
 }
 
+
+
 /**
- * Xuất danh sách ca viên ra file CSV chuẩn có đầy đủ tiêu đề và định dạng:
- * - Header tiếng Việt có dấu, UTF-8 kèm BOM (\uFEFF) mở bằng Excel không lỗi font
- * - Tự động sắp xếp A-Z theo tên ca viên
+ * Xuất danh sách ca viên ra file CSV chuẩn có đầy đủ tiêu đề và định dạng (Đã bỏ cột Ngày gia nhập)
  */
 export function exportMembersToCsv(
   members: ChoirMember[],
@@ -352,8 +405,8 @@ export function exportMembersToCsv(
   const titleLine = escapeCsvCell(`BAN ĐIỀU HÀNH CA ĐOÀN THIÊN THẦN — DANH SÁCH CA VIÊN (${parishName})`);
   const metaLine = `Ngày xuất: ${todayStr},Tổng: ${totalCount} ca viên,Hoạt động: ${activeCount},Tạm nghỉ: ${pauseCount},Nghỉ hẳn: ${leaveCount}`;
 
-  // Dòng tiêu đề cột chuẩn theo danh sách thực tế
-  const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Năm sinh', 'SĐT', 'Giọng/Lớp', 'Bổn phận', 'Trạng thái', 'Ngày gia nhập'];
+  // Dòng tiêu đề cột chuẩn (8 cột - không có Ngày gia nhập)
+  const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Ngày sinh', 'SĐT', 'Giọng/Lớp', 'Bổn phận', 'Trạng thái'];
   const headerRow = headers.map(escapeCsvCell).join(',');
 
   // Dữ liệu từng ca viên
@@ -367,7 +420,6 @@ export function exportMembersToCsv(
       escapeCsvCell(member.lop || '—'),
       escapeCsvCell(member.bonPhan || 'Thành viên'),
       escapeCsvCell(member.trangThai || 'Hoạt động'),
-      escapeCsvCell(member.createdAt ? formatDateVi(member.createdAt) : todayStr)
     ].join(',');
   });
 

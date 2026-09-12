@@ -79,7 +79,7 @@ Form đăng ký ca viên mới với các trường thông tin linh hoạt:
 | **Tên Thánh** | Tên Thánh bổn mạng (Giuse, Maria, Têrêsa...) | ❌ Không bắt buộc |
 | **Họ và Tên** | Họ tên đầy đủ của ca viên | ❌ Không bắt buộc |
 | **Ngày Sinh** | Chỉ cần **Ngày & Tháng sinh** (VD: `15/08`) | 🛡️ **Bảo mật tuyệt đối** |
-| **Giọng / Lớp** | Lớp giáo lý (Xưng Tội, Thêm Sức, Sống Đạo, Vào Đời) | ❌ Chọn nhanh 1-click |
+| **Giọng / Lớp** | Lớp giáo lý: **Xưng Tội** (Xanh lá), **Thêm Sức** (Xanh nước biển), **Sống Đạo** (Màu vàng), **Vào Đời** (Màu nâu), **Giáo Lý Viên / Dự Trưởng** (Màu đỏ) | 🎨 **Phân màu chuẩn 100%** |
 | **Số Điện Thoại** | Liên lạc trực tiếp | ❌ Không bắt buộc |
 | **Bổn Phận** | Vai trò trong ca đoàn | Thành viên / Nhạc công / Thư ký / Ca trưởng... |
 | **Trạng Thái** | Hoạt động / Tạm nghỉ / Nghỉ hẳn | Mặc định: Hoạt động |
@@ -87,8 +87,14 @@ Form đăng ký ca viên mới với các trường thông tin linh hoạt:
 ---
 
 ### 📊 4. Danh Sách Thành Viên & Thống Kê
-- **Import CSV Hàng Loạt (Mới)**: Nút **Import CSV** cho phép tải file `.csv` chứa danh sách ca viên, xem trước bảng dữ liệu, tự động phân tích chuẩn UTF-8, hỗ trợ tải file CSV mẫu (`mau-nhap-danh-sach-ca-vien.csv`) và đẩy đồng bộ lên Supabase Cloud.
-- **Xuất Danh Sách Excel**: Tự động trang trí bảng màu xanh navy `#002060`, viền vàng, font *Times New Roman*, tự sắp xếp A-Z theo tên ca viên Việt Nam.
+- **Màu Sắc Lớp Học Chuẩn**: 
+  - 🟢 **Xưng Tội**: Màu xanh lá (Emerald/Green)
+  - 🔵 **Thêm Sức**: Màu xanh nước biển (Blue)
+  - 🟡 **Sống Đạo**: Màu vàng (Amber/Yellow)
+  - 🟤 **Vào Đời**: Màu nâu (Brown)
+  - 🔴 **Giáo Lý Viên / Dự Trưởng**: Màu đỏ (Red/Rose)
+- **Import CSV Hàng Loạt**: Nút **Import CSV** cho phép tải file `.csv` chứa danh sách ca viên, xem trước bảng dữ liệu, tự động phân tích chuẩn UTF-8, hỗ trợ tải file CSV mẫu (`mau-nhap-danh-sach-ca-vien.csv`) và đẩy đồng bộ lên Supabase Cloud.
+- **Xuất Danh Sách Excel Đẹp Nhất**: Thiết kế sang trọng với màu sắc badge từng lớp học, màu trạng thái, tiêu đề Ban Điều Hành màu xanh navy `#002060`, viền vàng `#d97706`, font *Times New Roman*, tự sắp xếp A-Z theo tên ca viên Việt Nam và **ĐÃ BỎ CỘT NGÀY GIA NHẬP** theo đúng yêu cầu.
 - **Tìm kiếm tức thời**: Theo Tên Thánh, Họ Tên, Lớp, Số điện thoại.
 - **Lọc theo Lớp giáo lý**: Dropdown lọc nhanh từng nhóm khối lớp.
 - **Sắp xếp tiếng Việt A-Z**: Thuật toán chuẩn ưu tiên sắp xếp Tên ca viên trước, Họ đệm sau.

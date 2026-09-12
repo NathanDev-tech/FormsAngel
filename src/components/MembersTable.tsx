@@ -61,23 +61,38 @@ export function isBirthdayThisMonth(dateStr: string): boolean {
   return false;
 }
 
-// Helper màu cho Lớp giáo lý
-function getClassBadgeColor(className: string): string {
-  if (!className) return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
+// Helper màu cho Lớp giáo lý chuẩn theo quy định:
+// - Xưng Tội: Xanh lá (Emerald/Green)
+// - Thêm Sức: Xanh nước biển (Blue)
+// - Sống Đạo: Màu vàng (Amber/Yellow)
+// - Vào Đời: Màu nâu (Brown)
+// - Giáo lý viên / Dự trưởng: Màu đỏ (Red/Rose)
+export function getClassBadgeColor(className: string): string {
+  if (!className) return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700';
   const lower = className.toLowerCase();
+
+  // 1. Giáo lý viên / Dự trưởng -> Màu đỏ (Red)
+  if (lower.includes('giáo lý') || lower.includes('dự trưởng') || lower.includes('glv')) {
+    return 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border-rose-300 dark:border-rose-800 font-bold';
+  }
+  // 2. Xưng Tội -> Màu xanh lá (Green)
   if (lower.includes('xưng tội')) {
-    return 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+    return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 font-bold';
   }
+  // 3. Thêm Sức -> Màu xanh nước biển (Blue)
   if (lower.includes('thêm sức')) {
-    return 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+    return 'bg-blue-100 text-blue-800 dark:bg-blue-950/80 dark:text-blue-300 border-blue-300 dark:border-blue-800 font-bold';
   }
+  // 4. Sống Đạo -> Màu vàng (Amber/Yellow)
   if (lower.includes('sống đạo')) {
-    return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+    return 'bg-amber-100 text-amber-900 dark:bg-amber-950/80 dark:text-amber-300 border-amber-300 dark:border-amber-700 font-bold';
   }
+  // 5. Vào Đời -> Màu nâu (Brown)
   if (lower.includes('vào đời')) {
-    return 'bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-300 border-sky-200 dark:border-sky-800';
+    return 'bg-amber-950/15 text-amber-950 dark:bg-amber-950/60 dark:text-amber-200 border-amber-900/30 dark:border-amber-800 font-bold';
   }
-  return 'bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+
+  return 'bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200 dark:border-sky-800 font-bold';
 }
 
 export const MembersTable: React.FC<MembersTableProps> = ({

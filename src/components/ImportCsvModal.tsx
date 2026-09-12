@@ -17,6 +17,7 @@ import {
   downloadSampleCsvTemplate,
   ParsedCsvMemberRow,
 } from '../utils/csvExport.ts';
+import { getClassBadgeColor } from './MembersTable.tsx';
 
 interface ImportCsvModalProps {
   isOpen: boolean;
@@ -377,7 +378,15 @@ export const ImportCsvModal: React.FC<ImportCsvModalProps> = ({
                           </td>
                           <td className="p-3 font-mono">{row.data.ngaySinh || '—'}</td>
                           <td className="p-3 font-mono">{row.data.soDienThoai || '—'}</td>
-                          <td className="p-3">{row.data.lop || '—'}</td>
+                          <td className="p-3">
+                            {row.data.lop ? (
+                              <span className={`inline-block px-2 py-0.5 rounded text-[10px] ${getClassBadgeColor(row.data.lop)}`}>
+                                {row.data.lop}
+                              </span>
+                            ) : (
+                              '—'
+                            )}
+                          </td>
                           <td className="p-3">{row.data.bonPhan || 'Thành viên'}</td>
                           <td className="p-3">
                             {row.isValid ? (
