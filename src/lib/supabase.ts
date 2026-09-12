@@ -3,7 +3,10 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const STORAGE_URL_KEY = 'ca_doan_supabase_url';
 const STORAGE_KEY_KEY = 'ca_doan_supabase_anon_key';
 
-// Đọc cấu hình từ biến môi trường hoặc LocalStorage
+// Cấu hình Supabase mặc định của dự án (Giúp ứng dụng luôn kết nối tự động trên GitHub Pages)
+const DEFAULT_SUPABASE_URL = 'https://efuulrauqwrsoswvdadj.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmdXVscmF1cXdyc29zd3ZkYWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxNzMyMjcsImV4cCI6MjEwNDc0OTIyN30.Yi8_qRkbUSufGZISlK9chxfbIetfE18ekxQ15qoVWtk';
+
 export function getSupabaseConfig() {
   const envUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SUPABASE_URL) || '';
   const envKey = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SUPABASE_ANON_KEY) || '';
@@ -12,8 +15,8 @@ export function getSupabaseConfig() {
   const storedKey = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY_KEY) || '' : '';
 
   return {
-    url: envUrl || storedUrl,
-    anonKey: envKey || storedKey,
+    url: envUrl || storedUrl || DEFAULT_SUPABASE_URL,
+    anonKey: envKey || storedKey || DEFAULT_SUPABASE_ANON_KEY,
   };
 }
 
