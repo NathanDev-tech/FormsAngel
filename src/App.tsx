@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Header } from './components/Header.tsx';
 import { RegistrationForm } from './components/RegistrationForm.tsx';
-import { MembersTable, isBirthdayThisMonth } from './components/MembersTable.tsx';
+import { MembersTable } from './components/MembersTable.tsx';
 import { StatsAndBirthdays } from './components/StatsAndBirthdays.tsx';
 import { EditMemberModal } from './components/EditMemberModal.tsx';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal.tsx';
@@ -164,19 +164,13 @@ export default function App() {
     }
   };
 
-  const birthdaysCount = useMemo(() => {
-    return members.filter(m => isBirthdayThisMonth(m.ngaySinh)).length;
-  }, [members]);
-
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
-      
+    <div className="min-h-screen bg-slate-50/70 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
       {/* Header */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         totalMembers={members.length}
-        birthdaysCount={birthdaysCount}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
       />
@@ -203,7 +197,6 @@ export default function App() {
                 onEdit={m => setEditingMember(m)}
                 onDelete={m => setDeletingMember(m)}
                 onAddNew={() => setActiveTab('form')}
-                onPrint={() => setIsPrintOpen(true)}
                 onOpenImportModal={() => setIsImportOpen(true)}
               />
             )}

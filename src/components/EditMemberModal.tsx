@@ -79,7 +79,7 @@ export const EditMemberModal: React.FC<EditMemberModalProps> = ({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-800 dark:text-white font-serif">Cập Nhật Thông Tin Ca Viên</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Chỉnh sửa chi tiết thành viên đã đăng ký</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Chỉnh sửa chi tiết ca viên đã đăng ký</p>
             </div>
           </div>
           <button

@@ -4,13 +4,23 @@ import { getSupabase } from './supabase.ts';
 
 const LOCAL_STORAGE_KEY = 'ca_doan_thien_than_members_v2';
 
+// Hàm chuẩn hoá bổn phận: Tự động đổi "Thành viên" thành "Ca Viên"
+export function sanitizeBonPhan(bonPhan?: string): string {
+  if (!bonPhan || !bonPhan.trim() || bonPhan.trim().toLowerCase() === 'thành viên') {
+    return 'Ca Viên';
+  }
+  return bonPhan.trim();
+}
+
 // 1. Quản lý LocalStorage dự phòng offline
 export function getLocalFallback(): ChoirMember[] {
   try {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        return parsed.map(m => ({ ...m, bonPhan: sanitizeBonPhan(m.bonPhan) }));
+      }
     }
   } catch (e) {
     console.warn('LocalStorage read error:', e);
@@ -20,7 +30,8 @@ export function getLocalFallback(): ChoirMember[] {
 
 export function saveLocalFallback(members: ChoirMember[]): void {
   try {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(members));
+    const sanitized = members.map(m => ({ ...m, bonPhan: sanitizeBonPhan(m.bonPhan) }));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sanitized));
   } catch (e) {
     console.warn('LocalStorage save error:', e);
   }
@@ -35,7 +46,7 @@ export function toSupabaseRow(m: ChoirMember) {
     ngay_sinh: m.ngaySinh || '',
     lop: m.lop || '',
     so_dien_thoai: m.soDienThoai || '',
-    bon_phan: m.bonPhan || 'Ca Viên',
+    bon_phan: sanitizeBonPhan(m.bonPhan),
     trang_thai: m.trangThai || 'Hoạt động',
     ghi_chu: m.ghiChu || '',
     created_at: m.createdAt || new Date().toISOString(),
@@ -51,7 +62,7 @@ export function fromSupabaseRow(row: any): ChoirMember {
     ngaySinh: row.ngay_sinh || '',
     lop: row.lop || '',
     soDienThoai: row.so_dien_thoai || '',
-    bonPhan: row.bon_phan || 'Ca Viên',
+    bonPhan: sanitizeBonPhan(row.bon_phan),
     trangThai: row.trang_thai || 'Hoạt động',
     ghiChu: row.ghi_chu || '',
     createdAt: row.created_at || new Date().toISOString(),
@@ -147,7 +158,7 @@ export async function addMember(data: MemberFormData): Promise<ChoirMember> {
     lop: (data.lop || '').trim(),
     soDienThoai: (data.soDienThoai || '').trim(),
     ghiChu: (data.ghiChu || '').trim(),
-    bonPhan: (data.bonPhan || 'Ca Viên').trim(),
+    bonPhan: sanitizeBonPhan(data.bonPhan),
     trangThai: (data.trangThai || 'Hoạt động').trim(),
     createdAt: now,
     updatedAt: now,
@@ -180,7 +191,7 @@ export async function addMultipleMembers(dataList: MemberFormData[]): Promise<Ch
     lop: (data.lop || '').trim(),
     soDienThoai: (data.soDienThoai || '').trim(),
     ghiChu: (data.ghiChu || '').trim(),
-    bonPhan: (data.bonPhan || 'Ca Viên').trim(),
+    bonPhan: sanitizeBonPhan(data.bonPhan),
     trangThai: (data.trangThai || 'Hoạt động').trim(),
     createdAt: now,
     updatedAt: now,

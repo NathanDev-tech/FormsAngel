@@ -6,7 +6,6 @@ interface HeaderProps {
   activeTab: 'form' | 'list' | 'stats';
   setActiveTab: (tab: 'form' | 'list' | 'stats') => void;
   totalMembers: number;
-  birthdaysCount: number;
   darkMode: boolean;
   setDarkMode: (val: boolean | ((prev: boolean) => boolean)) => void;
 }
@@ -15,7 +14,6 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   totalMembers,
-  birthdaysCount,
   darkMode,
   setDarkMode,
 }) => {

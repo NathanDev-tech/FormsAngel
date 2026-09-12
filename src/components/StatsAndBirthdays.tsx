@@ -27,20 +27,25 @@ export const StatsAndBirthdays: React.FC<StatsProps> = ({
   const pausedPercent = members.length > 0 ? Math.round((pausedMembers.length / members.length) * 100) : 0;
   const leftPercent = members.length > 0 ? Math.round((leftMembers.length / members.length) * 100) : 0;
 
-  // 2. Thống kê theo Lớp Giáo Lý
+  // 2. Thống kê theo Lớp Giáo Lý (Gom nhóm theo 6 khối lớp chuẩn)
   const classCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    // Khởi tạo các lớp chuẩn
     CATECHISM_CLASSES.forEach(c => {
       counts[c] = 0;
     });
+    counts['Chưa phân lớp'] = 0;
 
     members.forEach(member => {
-      const rawClass = member.lop?.trim();
-      if (rawClass) {
-        counts[rawClass] = (counts[rawClass] || 0) + 1;
+      const raw = (member.lop || '').trim();
+      if (!raw) {
+        counts['Chưa phân lớp']++;
+        return;
+      }
+      const matched = CATECHISM_CLASSES.find(c => raw.toLowerCase().includes(c.toLowerCase()));
+      if (matched) {
+        counts[matched]++;
       } else {
-        counts['Chưa phân lớp'] = (counts['Chưa phân lớp'] || 0) + 1;
+        counts['Chưa phân lớp']++;
       }
     });
 
@@ -66,11 +71,16 @@ export const StatsAndBirthdays: React.FC<StatsProps> = ({
       .sort((a, b) => b.count - a.count);
   }, [members]);
 
-  // Lọc ca viên theo Lớp chọn ở phần danh sách nhanh bên dưới
+  // Lọc ca viên theo Lớp chọn (Khớp cả lớp mở rộng như "Sống Đạo 1A", "Sống Đạo 2"...)
   const filteredByClass = useMemo(() => {
     if (selectedClassTab === 'all') return members;
-    if (selectedClassTab === 'Chưa phân lớp') return members.filter(m => !m.lop || !m.lop.trim());
-    return members.filter(m => m.lop === selectedClassTab);
+    if (selectedClassTab === 'Chưa phân lớp') {
+      return members.filter(m => {
+        const raw = (m.lop || '').trim();
+        return !raw || !CATECHISM_CLASSES.some(c => raw.toLowerCase().includes(c.toLowerCase()));
+      });
+    }
+    return members.filter(m => (m.lop || '').toLowerCase().includes(selectedClassTab.toLowerCase()));
   }, [members, selectedClassTab]);
 
   return (
@@ -81,7 +91,7 @@ export const StatsAndBirthdays: React.FC<StatsProps> = ({
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-1">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Thống Kê Tổng Quan & Phân Bố Nhân Sự</span>
+            <span>Thống Kê Tổng Quan & Phân Bố Ca Viên</span>
           </div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white font-serif">
             Báo Cáo Chi Tiết Ca Đoàn Thiên Thần
@@ -97,7 +107,7 @@ export const StatsAndBirthdays: React.FC<StatsProps> = ({
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all shrink-0 cursor-pointer"
         >
           <Printer className="w-4 h-4" />
-          <span>In Báo Cáo A4</span>
+          <span>In Báo Cáo A4 / Xuất PDF</span>
         </button>
       </div>
 
@@ -189,7 +199,7 @@ export const StatsAndBirthdays: React.FC<StatsProps> = ({
                 Trạng Thái & Bổn Phận Ca Viên
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Tỷ lệ hoạt động và danh sách bổn phận phân công
+                Tỷ lệ hoạt động và danh sách bổn phận phụng sự
               </p>
             </div>
           </div>
@@ -197,7 +207,7 @@ export const StatsAndBirthdays: React.FC<StatsProps> = ({
           {/* Visual Status Progress Bar */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-              <span>Biểu đồ trạng thái nhân sự</span>
+              <span>Biểu đồ trạng thái ca viên</span>
               <span className="text-slate-500 font-mono">{members.length} ca viên</span>
             </div>
 
