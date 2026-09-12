@@ -282,11 +282,7 @@ export function exportDecoratedExcel(
 export function exportMembersToCsv(
   members: ChoirMember[],
   parishName = 'GIÁO XỨ BẮC HÒA',
-<<<<<<< HEAD
-  filenamePrefix = 'DachSachCaDoan'
-=======
   filenamePrefix = 'DanhSach-CaVien'
->>>>>>> 7dae3c8 (Update CSV)
 ): void {
   const now = new Date();
   const todayStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
