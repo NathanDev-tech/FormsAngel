@@ -1,10 +1,10 @@
 import { ChoirMember, MemberFormData } from '../types.ts';
 import { INITIAL_MEMBERS } from '../data/initialMembers.ts';
 import { syncService } from './syncService.ts';
+import { getSupabase } from './supabase.ts';
 
 const LOCAL_STORAGE_KEY = 'ca_doan_thien_than_members_v2';
 
-// Lấy danh sách thành viên từ LocalStorage nếu chưa có phản hồi từ server
 export function getLocalFallback(): ChoirMember[] {
   try {
     if (localStorage.getItem('ca_doan_thien_than_members_v1')) {
@@ -29,10 +29,84 @@ export function saveLocalFallback(members: ChoirMember[]): void {
   }
 }
 
+// Chuyển đổi giữa format Supabase Row và ChoirMember
+export function toSupabaseRow(m: ChoirMember) {
+  return {
+    id: m.id,
+    ten_thanh: m.tenThanh || '',
+    ho_va_ten: m.hoVaTen || '',
+    ngay_sinh: m.ngaySinh || '',
+    lop: m.lop || '',
+    so_dien_thoai: m.soDienThoai || '',
+    bon_phan: m.bonPhan || 'Thành viên',
+    trang_thai: m.trangThai || 'Hoạt động',
+    ghi_chu: m.ghiChu || '',
+    created_at: m.createdAt || new Date().toISOString(),
+    updated_at: m.updatedAt || new Date().toISOString(),
+  };
+}
+
+export function fromSupabaseRow(row: any): ChoirMember {
+  return {
+    id: row.id,
+    tenThanh: row.ten_thanh || '',
+    hoVaTen: row.ho_va_ten || '',
+    ngaySinh: row.ngay_sinh || '',
+    lop: row.lop || '',
+    soDienThoai: row.so_dien_thoai || '',
+    bonPhan: row.bon_phan || 'Thành viên',
+    trangThai: row.trang_thai || 'Hoạt động',
+    ghiChu: row.ghi_chu || '',
+    createdAt: row.created_at || new Date().toISOString(),
+    updatedAt: row.updated_at || new Date().toISOString(),
+  };
+}
+
+// Đăng ký Supabase Realtime WebSocket (Kênh dữ liệu trực tiếp)
+export function subscribeSupabaseRealtime(onUpdate: (members: ChoirMember[]) => void) {
+  const supabase = getSupabase();
+  if (!supabase) return () => {};
+
+  const channel = supabase
+    .channel('public:members')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, async () => {
+      try {
+        const { data } = await supabase.from('members').select('*').order('created_at', { ascending: false });
+        if (data) {
+          const members = data.map(fromSupabaseRow);
+          saveLocalFallback(members);
+          onUpdate(members);
+        }
+      } catch (err) {
+        console.warn('Lỗi nhận Supabase realtime event:', err);
+      }
+    })
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+
 // API functions
 export async function getMembers(): Promise<ChoirMember[]> {
-  // Kích hoạt auto polling từ xa cho ứng dụng web đa người dùng
-  syncService.startAutoPolling(8000);
+  // 1. Thử tải từ Supabase trước nếu đã cấu hình
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('members').select('*').order('created_at', { ascending: false });
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const members = data.map(fromSupabaseRow);
+        saveLocalFallback(members);
+        return members;
+      }
+    } catch (e) {
+      console.warn('Không thể truy vấn Supabase:', e);
+    }
+  }
+
+  // 2. Kích hoạt auto polling dự phòng
+  syncService.startAutoPolling(4000);
 
   try {
     const res = await fetch('/api/members');
@@ -44,10 +118,9 @@ export async function getMembers(): Promise<ChoirMember[]> {
       }
     }
   } catch (error) {
-    // API backend local không có sẵn (ví dụ như khi host trên GitHub Pages)
+    // API local offline
   }
 
-  // Thử tải từ GitHub Cloud trước nếu khả thi
   const remote = await syncService.fetchRemoteData(false);
   if (remote && Array.isArray(remote) && remote.length > 0) {
     saveLocalFallback(remote);
@@ -58,88 +131,68 @@ export async function getMembers(): Promise<ChoirMember[]> {
 }
 
 export async function addMember(data: MemberFormData): Promise<ChoirMember> {
-  let newMember: ChoirMember | null = null;
+  const now = new Date().toISOString();
+  const newMember: ChoirMember = {
+    id: 'ctt-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6),
+    tenThanh: (data.tenThanh || '').trim(),
+    hoVaTen: (data.hoVaTen || '').trim(),
+    ngaySinh: (data.ngaySinh || '').trim(),
+    lop: (data.lop || '').trim(),
+    soDienThoai: (data.soDienThoai || '').trim(),
+    ghiChu: (data.ghiChu || '').trim(),
+    bonPhan: (data.bonPhan || 'Thành viên').trim(),
+    trangThai: (data.trangThai || 'Hoạt động').trim(),
+    createdAt: now,
+    updatedAt: now,
+  };
 
-  try {
-    const res = await fetch('/api/members', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) {
-      const result = await res.json();
-      if (result.success && result.data) {
-        newMember = result.data;
-      }
+  // Thêm vào Supabase nếu có
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      await supabase.from('members').insert([toSupabaseRow(newMember)]);
+    } catch (e) {
+      console.warn('Lỗi chèn Supabase:', e);
     }
-  } catch (error) {
-    // Fallback offline / GitHub Pages
-  }
-
-  if (!newMember) {
-    const now = new Date().toISOString();
-    newMember = {
-      id: 'ctt-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6),
-      tenThanh: (data.tenThanh || '').trim(),
-      hoVaTen: (data.hoVaTen || '').trim(),
-      ngaySinh: (data.ngaySinh || '').trim(),
-      lop: (data.lop || '').trim(),
-      soDienThoai: (data.soDienThoai || '').trim(),
-      ghiChu: (data.ghiChu || '').trim(),
-      bonPhan: (data.bonPhan || 'Thành viên').trim(),
-      trangThai: (data.trangThai || 'Hoạt động').trim(),
-      createdAt: now,
-      updatedAt: now,
-    };
   }
 
   const current = getLocalFallback();
   const updated = [newMember, ...current];
   saveLocalFallback(updated);
 
-  // Đẩy thay đổi lên các tab khác và đám mây GitHub
+  // Đẩy Real-time sync dự phòng
   syncService.pushRemoteData(updated);
 
   return newMember;
 }
 
 export async function updateMember(id: string, data: Partial<MemberFormData>): Promise<ChoirMember> {
+  const current = getLocalFallback();
   let updatedMember: ChoirMember | null = null;
 
-  try {
-    const res = await fetch(`/api/members/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) {
-      const result = await res.json();
-      if (result.success && result.data) {
-        updatedMember = result.data;
-      }
-    }
-  } catch (error) {
-    // Fallback offline
-  }
-
-  const current = getLocalFallback();
   const updated = current.map(m => {
     if (m.id === id) {
-      const merged = {
+      updatedMember = {
         ...m,
         ...data,
         updatedAt: new Date().toISOString(),
       };
-      if (!updatedMember) updatedMember = merged;
-      return merged;
+      return updatedMember;
     }
     return m;
   });
 
-  saveLocalFallback(updated);
-
   if (updatedMember) {
-    // Đẩy thay đổi Real-time
+    const supabase = getSupabase();
+    if (supabase) {
+      try {
+        await supabase.from('members').update(toSupabaseRow(updatedMember)).eq('id', id);
+      } catch (e) {
+        console.warn('Lỗi cập nhật Supabase:', e);
+      }
+    }
+
+    saveLocalFallback(updated);
     syncService.pushRemoteData(updated);
     return updatedMember;
   }
@@ -147,28 +200,36 @@ export async function updateMember(id: string, data: Partial<MemberFormData>): P
 }
 
 export async function deleteMember(id: string): Promise<void> {
-  try {
-    await fetch(`/api/members/${id}`, { method: 'DELETE' });
-  } catch (error) {
-    // Fallback offline
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      await supabase.from('members').delete().eq('id', id);
+    } catch (e) {
+      console.warn('Lỗi xóa Supabase:', e);
+    }
   }
 
   const current = getLocalFallback();
   const updated = current.filter(m => m.id !== id);
   saveLocalFallback(updated);
-
-  // Đẩy thay đổi Real-time
   syncService.pushRemoteData(updated);
 }
 
 export async function resetToSeedData(): Promise<ChoirMember[]> {
-  try {
-    await fetch('/api/members/reset', { method: 'POST' });
-  } catch (error) {
-    // Fallback
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      await supabase.from('members').delete().neq('id', '0');
+      const rows = INITIAL_MEMBERS.map(toSupabaseRow);
+      await supabase.from('members').insert(rows);
+    } catch (e) {
+      console.warn('Lỗi reset Supabase:', e);
+    }
   }
+
   saveLocalFallback(INITIAL_MEMBERS);
   syncService.pushRemoteData(INITIAL_MEMBERS);
   return INITIAL_MEMBERS;
 }
+
 

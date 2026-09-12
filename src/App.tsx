@@ -8,7 +8,7 @@ import { DeleteConfirmModal } from './components/DeleteConfirmModal.tsx';
 import { PrintView } from './components/PrintView.tsx';
 import { ToastContainer } from './components/Toast.tsx';
 import { ChoirMember, MemberFormData, ToastMessage } from './types.ts';
-import { getMembers, addMember, updateMember, deleteMember, resetToSeedData } from './lib/api.ts';
+import { getMembers, addMember, updateMember, deleteMember, resetToSeedData, subscribeSupabaseRealtime } from './lib/api.ts';
 import { syncService } from './lib/syncService.ts';
 import { Heart, Sparkles } from 'lucide-react';
 
@@ -70,14 +70,19 @@ export default function App() {
     setToasts(prev => prev.filter(t => t.id !== id));
   };
 
-  // Đăng ký lắng nghe sự kiện đồng bộ tự động ngầm (Silent Real-time Sync)
+  // Đăng ký lắng nghe sự kiện đồng bộ tự động ngầm (Supabase Realtime + BroadcastChannel)
   useEffect(() => {
-    const unsubscribe = syncService.subscribe((updatedMembers) => {
+    const unsubscribeBroadcast = syncService.subscribe((updatedMembers) => {
+      setMembers(updatedMembers);
+    });
+
+    const unsubscribeSupabase = subscribeSupabaseRealtime((updatedMembers) => {
       setMembers(updatedMembers);
     });
 
     return () => {
-      unsubscribe();
+      unsubscribeBroadcast();
+      unsubscribeSupabase();
     };
   }, []);
 
