@@ -206,7 +206,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
             </div>
             <div className="flex flex-wrap items-baseline gap-3">
               <h2 className="text-2xl font-bold text-slate-800 dark:text-white font-serif">
-                Danh Sách Toàn Bộ Thành Viên
+                Danh Sách Toàn Bộ Ca Viên
               </h2>
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
                 Tổng số: {members.length} ca viên
@@ -348,7 +348,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                   <Users className="w-6 h-6" />
                 </div>
                 <h4 className="text-base font-bold text-slate-800 dark:text-slate-200 font-serif">
-                  {members.length === 0 ? 'Danh sách ca đoàn chưa có thành viên' : 'Không tìm thấy kết quả phù hợp'}
+                  {members.length === 0 ? 'Danh sách ca đoàn chưa có ca viên' : 'Không tìm thấy kết quả phù hợp'}
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {members.length === 0
@@ -456,7 +456,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                     <div>
                       <span className="text-slate-400 text-[11px] block">Bổn phận:</span>
                       <span className="text-slate-700 dark:text-slate-300 font-medium">
-                        {member.bonPhan || 'Thành viên'}
+                        {member.bonPhan || 'Ca Viên'}
                       </span>
                     </div>
 
@@ -595,7 +595,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                         <Users className="w-7 h-7" />
                       </div>
                       <h4 className="text-base font-bold text-slate-800 dark:text-slate-200 font-serif">
-                        {members.length === 0 ? 'Danh sách ca đoàn chưa có thành viên' : 'Không tìm thấy kết quả phù hợp'}
+                        {members.length === 0 ? 'Danh sách ca đoàn chưa có ca viên' : 'Không tìm thấy kết quả phù hợp'}
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         {members.length === 0
@@ -707,7 +707,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
 
                       {/* 6. Bổn phận */}
                       <td className="py-3.5 px-3 text-center text-xs text-slate-700 dark:text-slate-300">
-                        {member.bonPhan || 'Thành viên'}
+                        {member.bonPhan || 'Ca Viên'}
                       </td>
 
                       {/* 7. Trạng thái (Huy hiệu xanh lá như mẫu) */}
@@ -740,7 +740,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                             type="button"
                             onClick={() => onDelete(member)}
                             className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
-                            title="Xoá thành viên"
+                            title="Xoá ca viên"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -757,7 +757,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
         {/* Footer info in table */}
         <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2">
           <span>
-            Hiển thị <strong>{sortedMembers.length}</strong> / <strong>{members.length}</strong> thành viên
+            Hiển thị <strong>{sortedMembers.length}</strong> / <strong>{members.length}</strong> ca viên
           </span>
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1 text-[11px]">

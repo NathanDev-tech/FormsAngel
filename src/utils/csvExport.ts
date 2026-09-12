@@ -153,7 +153,7 @@ export function exportDecoratedExcel(
     const birth = getBirthYear(member.ngaySinh);
     const phone = member.soDienThoai || '—';
     const lop = member.lop || '—';
-    const role = member.bonPhan || 'Thành viên';
+    const role = member.bonPhan || 'Ca Viên';
     const status = member.trangThai || 'Hoạt động';
     const bg = index % 2 === 0 ? '#ffffff' : '#f8fafc';
 
@@ -234,7 +234,7 @@ export function exportDecoratedExcel(
     </tr>
   </thead>
   <tbody>
-    ${rowsHtml || `<tr><td colspan="8" style="font-family:'Times New Roman',serif;font-size:11pt;text-align:center;height:40pt;color:#94a3b8;">Chưa có dữ liệu thành viên</td></tr>`}
+    ${rowsHtml || `<tr><td colspan="8" style="font-family:'Times New Roman',serif;font-size:11pt;text-align:center;height:40pt;color:#94a3b8;">Chưa có dữ liệu ca viên</td></tr>`}
   </tbody>
 </table>
 
@@ -312,7 +312,7 @@ export function exportMembersToCsv(
       escapeCsvCell(getBirthYear(member.ngaySinh)),
       escapeCsvCell(member.soDienThoai ? `\t${member.soDienThoai}` : '—'), // \t để Excel giữ nguyên số 0 đầu
       escapeCsvCell(member.lop || '—'),
-      escapeCsvCell(member.bonPhan || 'Thành viên'),
+      escapeCsvCell(member.bonPhan || 'Ca Viên'),
       escapeCsvCell(member.trangThai || 'Hoạt động'),
     ].join(',');
   });
@@ -491,7 +491,7 @@ export function parseCsvContent(csvText: string): ParsedCsvMemberRow[] {
     let ngaySinh = getVal('ngaySinh', 3);
     const soDienThoai = getVal('soDienThoai', 4);
     const lop = getVal('lop', 5);
-    const bonPhan = getVal('bonPhan', 6) || 'Thành viên';
+    const bonPhan = getVal('bonPhan', 6) || 'Ca Viên';
     let trangThai = getVal('trangThai', 7) || 'Hoạt động';
     const ghiChu = getVal('ghiChu', 8);
 
@@ -535,9 +535,9 @@ export function parseCsvContent(csvText: string): ParsedCsvMemberRow[] {
 export function downloadSampleCsvTemplate(): void {
   const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Ngày sinh', 'SĐT', 'Giọng/Lớp', 'Bổn phận', 'Trạng thái', 'Ghi chú'];
   const sampleRows = [
-    ['1', 'Maria', 'Nguyễn Thị Thu Hà', '15/08/2005', '0912345678', 'Thêm Sức 1', 'Thành viên', 'Hoạt động', 'Ca viên soprano'],
+    ['1', 'Maria', 'Nguyễn Thị Thu Hà', '15/08/2005', '0912345678', 'Thêm Sức 1', 'Ca Viên', 'Hoạt động', 'Ca viên soprano'],
     ['2', 'Giuse', 'Trần Văn Minh', '20/11/2003', '0987654321', 'Sống Đạo 2', 'Nhạc công', 'Hoạt động', 'Chơi organ'],
-    ['3', 'Têrêsa', 'Phạm Ngọc Anh', '01/05', '0905123456', 'Xưng Tội 3', 'Thành viên', 'Hoạt động', '']
+    ['3', 'Têrêsa', 'Phạm Ngọc Anh', '01/05', '0905123456', 'Xưng Tội 3', 'Ca Viên', 'Hoạt động', '']
   ];
 
   const csvRows = [

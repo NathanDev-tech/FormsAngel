@@ -36,7 +36,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
     ngaySinh: '',
     lop: '',
     soDienThoai: '',
-    bonPhan: 'Thành viên',
+    bonPhan: 'Ca Viên',
     trangThai: 'Hoạt động',
   });
 
@@ -71,7 +71,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
     e.preventDefault();
     setIsSubmitting(true);
 
-    const displayName = [formData.tenThanh, formData.hoVaTen].filter(Boolean).join(' ') || 'Thành viên mới';
+    const displayName = [formData.tenThanh, formData.hoVaTen].filter(Boolean).join(' ') || 'Ca viên mới';
 
     const success = await onSubmit(formData);
 
@@ -84,7 +84,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
         ngaySinh: '',
         lop: '',
         soDienThoai: '',
-        bonPhan: 'Thành viên',
+        bonPhan: 'Ca Viên',
         trangThai: 'Hoạt động',
       });
     }
@@ -99,7 +99,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
       ngaySinh: '',
       lop: '',
       soDienThoai: '',
-      bonPhan: 'Thành viên',
+      bonPhan: 'Ca Viên',
       trangThai: 'Hoạt động',
     });
     setRecentlySubmittedName(null);
@@ -114,7 +114,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
           <span>Phiếu Ghi Danh Ca Viên</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white tracking-tight font-serif">
-          Đăng Ký Thành Viên Ca Đoàn Thiên Thần
+          Đăng Ký Ca Viên Ca Đoàn Thiên Thần
         </h2>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-md mx-auto">
           Hoan nghênh các anh chị em cùng tham gia phụng sự Thánh Lễ qua lời ca tiếng hát tại Giáo Xứ Bắc Hòa.
@@ -255,7 +255,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 hover:from-sky-600 hover:to-sky-800 text-white font-semibold text-base shadow-lg shadow-sky-500/20 active:scale-[0.99] transition-all disabled:opacity-50 cursor-pointer"
             >
               <UserPlus className="w-5 h-5" />
-              <span>{isSubmitting ? 'Đang lưu...' : 'Gửi Đăng Ký Thành Viên'}</span>
+              <span>{isSubmitting ? 'Đang lưu...' : 'Gửi Đăng Ký Ca Viên'}</span>
             </button>
 
             <button

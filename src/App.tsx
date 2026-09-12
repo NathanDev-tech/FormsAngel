@@ -88,7 +88,7 @@ export default function App() {
       const created = await addMember(formData);
       setMembers(prev => [created, ...prev.filter(m => m.id !== created.id)]);
 
-      const nameDisplay = [created.tenThanh, created.hoVaTen].filter(Boolean).join(' ') || 'Thành viên mới';
+      const nameDisplay = [created.tenThanh, created.hoVaTen].filter(Boolean).join(' ') || 'Ca viên mới';
 
       addToast(
         'Đã ghi danh thành công! ✨',
@@ -143,7 +143,7 @@ export default function App() {
     try {
       await deleteMember(deletingMember.id);
       setMembers(prev => prev.filter(m => m.id !== deletingMember.id));
-      addToast('Đã xoá thành công', 'Đã gỡ bỏ thành viên khỏi danh sách ca đoàn.', 'info');
+      addToast('Đã xoá thành công', 'Đã gỡ bỏ ca viên khỏi danh sách ca đoàn.', 'info');
       setDeletingMember(null);
     } catch (err) {
       console.error('Lỗi xoá thành viên:', err);

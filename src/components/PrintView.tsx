@@ -163,13 +163,13 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
                 {sortedMembers.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="py-8 text-center text-slate-400 italic">
-                      Chưa có dữ liệu thành viên trong danh sách
+                      Chưa có dữ liệu ca viên trong danh sách
                     </td>
                   </tr>
                 ) : (
                   sortedMembers.map((member, index) => {
                     const status = member.trangThai || 'Hoạt động';
-                    const role = member.bonPhan || 'Thành viên';
+                    const role = member.bonPhan || 'Ca Viên';
                     const birthYear = getBirthYear(member.ngaySinh);
                     const joinDate = member.createdAt ? formatDateVi(member.createdAt) : todayStr;
 

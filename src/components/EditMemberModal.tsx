@@ -11,7 +11,7 @@ interface EditMemberModalProps {
 }
 
 export const MEMBER_ROLES = [
-  'Thành viên',
+  'Ca Viên',
   'Nhạc công',
   'Thủ quỹ',
   'Thư ký',
@@ -37,7 +37,7 @@ export const EditMemberModal: React.FC<EditMemberModalProps> = ({
     ngaySinh: '',
     lop: '',
     soDienThoai: '',
-    bonPhan: 'Thành viên',
+    bonPhan: 'Ca Viên',
     trangThai: 'Hoạt động',
   });
   const [isSaving, setIsSaving] = useState(false);
@@ -50,7 +50,7 @@ export const EditMemberModal: React.FC<EditMemberModalProps> = ({
         ngaySinh: member.ngaySinh || '',
         lop: member.lop || '',
         soDienThoai: member.soDienThoai || '',
-        bonPhan: member.bonPhan || 'Thành viên',
+        bonPhan: member.bonPhan || 'Ca Viên',
         trangThai: member.trangThai || 'Hoạt động',
       });
     }

@@ -19,7 +19,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 }) => {
   if (!isOpen || !member) return null;
 
-  const displayName = [member.tenThanh, member.hoVaTen].filter(Boolean).join(' ') || 'Thành viên này';
+  const displayName = [member.tenThanh, member.hoVaTen].filter(Boolean).join(' ') || 'Ca viên này';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
@@ -29,7 +29,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
         </div>
 
         <h3 className="text-lg font-bold text-slate-800 dark:text-white">
-          Xác Nhận Xoá Thành Viên
+          Xác Nhận Xoá Ca Viên
         </h3>
 
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">

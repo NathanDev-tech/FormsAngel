@@ -35,7 +35,7 @@ export function toSupabaseRow(m: ChoirMember) {
     ngay_sinh: m.ngaySinh || '',
     lop: m.lop || '',
     so_dien_thoai: m.soDienThoai || '',
-    bon_phan: m.bonPhan || 'Thành viên',
+    bon_phan: m.bonPhan || 'Ca Viên',
     trang_thai: m.trangThai || 'Hoạt động',
     ghi_chu: m.ghiChu || '',
     created_at: m.createdAt || new Date().toISOString(),
@@ -51,7 +51,7 @@ export function fromSupabaseRow(row: any): ChoirMember {
     ngaySinh: row.ngay_sinh || '',
     lop: row.lop || '',
     soDienThoai: row.so_dien_thoai || '',
-    bonPhan: row.bon_phan || 'Thành viên',
+    bonPhan: row.bon_phan || 'Ca Viên',
     trangThai: row.trang_thai || 'Hoạt động',
     ghiChu: row.ghi_chu || '',
     createdAt: row.created_at || new Date().toISOString(),
@@ -147,7 +147,7 @@ export async function addMember(data: MemberFormData): Promise<ChoirMember> {
     lop: (data.lop || '').trim(),
     soDienThoai: (data.soDienThoai || '').trim(),
     ghiChu: (data.ghiChu || '').trim(),
-    bonPhan: (data.bonPhan || 'Thành viên').trim(),
+    bonPhan: (data.bonPhan || 'Ca Viên').trim(),
     trangThai: (data.trangThai || 'Hoạt động').trim(),
     createdAt: now,
     updatedAt: now,
@@ -180,7 +180,7 @@ export async function addMultipleMembers(dataList: MemberFormData[]): Promise<Ch
     lop: (data.lop || '').trim(),
     soDienThoai: (data.soDienThoai || '').trim(),
     ghiChu: (data.ghiChu || '').trim(),
-    bonPhan: (data.bonPhan || 'Thành viên').trim(),
+    bonPhan: (data.bonPhan || 'Ca Viên').trim(),
     trangThai: (data.trangThai || 'Hoạt động').trim(),
     createdAt: now,
     updatedAt: now,
@@ -234,7 +234,7 @@ export async function updateMember(id: string, data: Partial<MemberFormData>): P
     saveLocalFallback(updated);
     return updatedMember;
   }
-  throw new Error('Không tìm thấy thành viên để cập nhật');
+  throw new Error('Không tìm thấy ca viên để cập nhật');
 }
 
 // Xóa ca viên khỏi Supabase

@@ -88,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <UserPlus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Đăng Ký</span>
-                <span className="hidden sm:inline whitespace-nowrap">Thành Viên</span>
+                <span className="hidden sm:inline whitespace-nowrap">Ca Viên</span>
               </button>
 
               <button
@@ -120,11 +120,6 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <BarChart3 className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Thống Kê</span>
-                {birthdaysCount > 0 && (
-                  <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] sm:text-xs bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 font-bold" title={`${birthdaysCount} sinh nhật trong tháng`}>
-                    🎂 {birthdaysCount}
-                  </span>
-                )}
               </button>
             </nav>
 

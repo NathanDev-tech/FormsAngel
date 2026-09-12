@@ -387,7 +387,7 @@ export const ImportCsvModal: React.FC<ImportCsvModalProps> = ({
                               '—'
                             )}
                           </td>
-                          <td className="p-3">{row.data.bonPhan || 'Thành viên'}</td>
+                          <td className="p-3">{row.data.bonPhan || 'Ca Viên'}</td>
                           <td className="p-3">
                             {row.isValid ? (
                               <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
