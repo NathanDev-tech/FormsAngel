@@ -33,11 +33,19 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
   const leaveCount = sortedMembers.filter(m => m.trangThai === 'Nghỉ hẳn').length;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto print:p-0 print:bg-white print:static">
-      <div className="bg-white text-slate-900 rounded-3xl shadow-2xl max-w-5xl w-full my-auto overflow-hidden flex flex-col max-h-[96vh] print:max-h-none print:shadow-none print:rounded-none print:w-full">
-        
-        {/* Modal Controls (Ẩn hoàn toàn khi in/xuất PDF) */}
-        <div className="p-4 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3 print:hidden">
+    // Wrapper: được CSS print nhận ra qua class `print-modal-portal`
+    <div className="print-modal-portal fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+      {/* Backdrop — ẩn khi in */}
+      <div
+        className="print-backdrop fixed inset-0 bg-slate-900/70 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Khung tài liệu — được CSS print nhận ra qua class `print-document` */}
+      <div className="print-document relative bg-white text-slate-900 rounded-3xl shadow-2xl max-w-5xl w-full my-auto overflow-hidden flex flex-col max-h-[96vh]">
+
+        {/* Modal Controls — Ẩn hoàn toàn khi in/xuất PDF */}
+        <div className="print-controls p-4 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
               <Printer className="w-4 h-4" />
@@ -47,13 +55,13 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
                 Danh Sách Chính Thức — Ca Đoàn Thiên Thần
               </h3>
               <p className="text-[11px] text-slate-500">
-                Được định dạng trang trí chuẩn phụng vụ theo mẫu Giáo Xứ Bắc Hòa
+                Chuẩn mực phụng vụ — Giáo Hội Công Giáo Việt Nam, Giáo Phận Xuân Lộc, Giáo Hạt Phú Thịnh
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {/* Nút Xuất Danh Sách Excel duy nhất */}
+            {/* Nút Xuất Danh Sách Excel */}
             <button
               type="button"
               onClick={() => exportDecoratedExcel(sortedMembers, parishName)}
@@ -64,11 +72,12 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
               <span>Xuất Danh Sách Excel</span>
             </button>
 
-            {/* Nút In Ngay / Lưu PDF */}
+            {/* Nút In Ngay / Lưu PDF — chỉ in danh sách */}
             <button
               type="button"
               onClick={handlePrint}
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
+              title="In danh sách ca viên hoặc lưu ra file PDF (chỉ in danh sách, không in giao diện trang web)"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>In / Lưu PDF</span>
@@ -85,18 +94,31 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
           </div>
         </div>
 
-        {/* Printable Document Area — Format chuẩn mẫu thực tế */}
-        <div className="p-4 sm:p-8 overflow-y-auto print:overflow-visible print:p-0 bg-white font-serif">
-          
+        {/* Printable Document Area */}
+        <div className="p-4 sm:p-8 overflow-y-auto bg-white font-serif">
+
           {/* Top Gold Accent Bar */}
           <div className="w-full h-1 bg-amber-500 mb-4" />
 
-          {/* Header Section */}
+          {/* Header Section — Đầy đủ 5 cấp Giáo Hội chuẩn mực */}
           <div className="text-center space-y-1 mb-3">
-            <h1 className="text-lg sm:text-2xl font-bold tracking-wider text-[#002060] uppercase">
+
+            {/* Cấp 1: Giáo Hội Công Giáo Việt Nam */}
+            <p className="text-[11px] sm:text-xs font-semibold text-[#7c3aed] uppercase tracking-widest">
+              † GIÁO HỘI CÔNG GIÁO VIỆT NAM †
+            </p>
+
+            {/* Cấp 2+3: Giáo Phận Xuân Lộc — Giáo Hạt Phú Thịnh */}
+            <p className="text-[11px] sm:text-xs font-semibold text-[#1e3a8a] uppercase tracking-wide">
+              GIÁO PHẬN XUÂN LỘC — GIÁO HẠT PHÚ THỊNH
+            </p>
+
+            {/* Cấp 4+5: Ca Đoàn Thiên Thần */}
+            <h1 className="text-base sm:text-xl font-bold tracking-wider text-[#002060] uppercase pt-0.5">
               ✦ BAN ĐIỀU HÀNH CA ĐOÀN THIÊN THẦN ✦
             </h1>
-            
+
+            {/* Cấp 4 Giáo Xứ + Tên danh sách */}
             <div className="flex items-center justify-center gap-1.5">
               <h2 className="text-sm sm:text-base font-bold text-[#1e3a8a] tracking-wide uppercase">
                 DANH SÁCH CA VIÊN — {parishName}
@@ -129,7 +151,7 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
               )}
             </div>
 
-            {/* Sub-bar with metadata */}
+            {/* Sub-bar thống kê */}
             <p className="text-[11px] sm:text-xs text-slate-500 italic pt-1">
               Ngày xuất: <span className="font-semibold text-slate-700">{todayStr}</span>
               {' • '}
@@ -143,8 +165,8 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
             </p>
           </div>
 
-          {/* Roster Table matching the image */}
-          <div className="overflow-x-auto print:overflow-visible">
+          {/* Roster Table */}
+          <div className="overflow-x-auto">
             <table className="w-full text-left border border-slate-400 text-xs border-collapse font-serif">
               <thead>
                 <tr className="bg-[#0f172a] text-white font-bold text-[11px] sm:text-xs">
@@ -185,12 +207,12 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
                           {index + 1}
                         </td>
 
-                        {/* Tên Thánh — Chữ xanh đặc trưng như mẫu */}
+                        {/* Tên Thánh */}
                         <td className="py-2 px-2.5 border-r border-slate-300 text-center font-bold text-blue-700">
                           {member.tenThanh || '—'}
                         </td>
 
-                        {/* Họ và Tên — In đậm */}
+                        {/* Họ và Tên */}
                         <td className="py-2 px-3 border-r border-slate-300 font-bold text-slate-900">
                           {member.hoVaTen || '—'}
                         </td>
@@ -215,7 +237,7 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
                           {role}
                         </td>
 
-                        {/* Trạng thái — Huy hiệu xanh lá */}
+                        {/* Trạng thái */}
                         <td className="py-2 px-2.5 border-r border-slate-300 text-center">
                           <span
                             className={`inline-block px-2 py-0.5 rounded text-[11px] font-bold ${
@@ -245,7 +267,7 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
           {/* Bottom Gold Accent Bar */}
           <div className="w-full h-1 bg-amber-500 mt-2 mb-4" />
 
-          {/* Summary Boxes at bottom matching sample */}
+          {/* Summary Boxes */}
           <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 mt-4 text-xs font-sans">
             {/* Box 1: Nghỉ hẳn & Tạm nghỉ */}
             <div className="border border-slate-300 bg-slate-50/80 rounded-lg p-2.5 min-w-[140px] space-y-1.5 shadow-sm">
@@ -269,6 +291,18 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
                 <span>Hoạt động</span>
                 <span className="font-bold text-emerald-600 text-sm">{activeCount}</span>
               </div>
+            </div>
+          </div>
+
+          {/* Chữ ký phụng sự cuối trang */}
+          <div className="mt-8 pt-4 border-t border-slate-200 flex justify-between items-start text-[10px] sm:text-xs font-sans text-slate-500 italic">
+            <div className="text-center space-y-1 min-w-[120px]">
+              <p className="font-bold text-slate-700 not-italic uppercase text-[11px]">CA TRƯỞNG</p>
+              <p>(Ký và ghi rõ họ tên)</p>
+            </div>
+            <div className="text-center space-y-1 min-w-[120px]">
+              <p className="font-bold text-slate-700 not-italic uppercase text-[11px]">BAN ĐIỀU HÀNH CA ĐOÀN</p>
+              <p>(Ký và ghi rõ họ tên)</p>
             </div>
           </div>
 

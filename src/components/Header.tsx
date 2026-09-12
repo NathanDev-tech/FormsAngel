@@ -47,9 +47,14 @@ export const Header: React.FC<HeaderProps> = ({
                   <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800 dark:text-white flex items-center gap-1.5 font-serif">
                     Ca Đoàn Thiên Thần
                   </h1>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60">
-                    Giáo Xứ Bắc Hòa
-                  </span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60">
+                      Giáo Xứ Bắc Hòa
+                    </span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 pl-0.5">
+                      Giáo Phận Xuân Lộc · Giáo Hạt Phú Thịnh
+                    </span>
+                  </div>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                   Hát là cầu nguyện hai lần • Cổng Thông Tin Ca Đoàn Thiên Thần

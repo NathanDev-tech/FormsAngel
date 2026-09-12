@@ -147,7 +147,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-1">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span>Ca Đoàn Thiên Thần — Giáo Xứ Bắc Hòa</span>
+              <span>Giáo Hạt Phú Thịnh · Giáo Xứ Bắc Hòa — Ca Đoàn Thiên Thần</span>
             </div>
             <div className="flex flex-wrap items-baseline gap-3">
               <h2 className="text-2xl font-bold text-slate-800 dark:text-white font-serif">

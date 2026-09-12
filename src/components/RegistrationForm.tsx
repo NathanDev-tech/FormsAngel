@@ -117,7 +117,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
           Đăng Ký Ca Viên Ca Đoàn Thiên Thần
         </h2>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-md mx-auto">
-          Hoan nghênh các anh chị em cùng tham gia phụng sự Thánh Lễ qua lời ca tiếng hát tại Giáo Xứ Bắc Hòa.
+          Hoan nghênh các anh chị em cùng tham gia phụng sự Thánh Lễ qua lời ca tiếng hát tại Giáo Xứ Bắc Hòa — Giáo Hạt Phú Thịnh — Giáo Phận Xuân Lộc.
         </p>
       </div>
 

@@ -35,9 +35,83 @@
 }
 
 @media print {
+  /* Ẩn tuyệt đối tất cả ngoại trừ vùng in bản danh sách */
+  body > *:not(.print-modal-portal) {
+    display: none !important;
+  }
+
+  /* Reset toàn bộ body */
   body {
     font-family: 'Times New Roman', Times, serif !important;
     background: #ffffff !important;
     color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Vùng overlay modal: hiển thị tĩnh, tràn đầy trang */
+  .print-modal-portal {
+    display: block !important;
+    position: static !important;
+    background: #ffffff !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Ẩn backdrop tối phía sau modal */
+  .print-backdrop {
+    display: none !important;
+  }
+
+  /* Vùng in tài liệu: chiều rộng đầy đủ, không bóng, không border-radius */
+  .print-document {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12pt 16pt !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  /* Ẩn tất cả phần tử UI không liên quan đến bản in */
+  .print-controls,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Bảng danh sách: đảm bảo border & màu sắc in rõ */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th, td {
+    border: 0.5pt solid #94a3b8 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  thead {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Tránh cắt hàng giữa trang khi in */
+  tr {
+    page-break-inside: avoid !important;
+  }
+
+  thead {
+    display: table-header-group !important;
   }
 }

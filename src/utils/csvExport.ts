@@ -199,8 +199,9 @@ export function exportDecoratedExcel(
 <table style="width:100%;border-collapse:collapse;margin-bottom:10pt;">
   <tr>
     <td colspan="8" style="text-align:center;padding:4pt 0;">
-      <div style="font-size:11pt;color:#1e3a5f;font-weight:bold;">† GIÁO HỘI CÔNG GIÁO †</div>
-      <div style="font-size:16pt;font-weight:bold;color:#1e3a5f;text-transform:uppercase;margin-top:2pt;">CA ĐOÀN THIÊN THẦN — ${parishName}</div>
+      <div style="font-size:10pt;color:#5b21b6;font-weight:bold;">† GIÁO HỘI CÔNG GIÁO VIỆT NAM †</div>
+      <div style="font-size:10pt;color:#1e3a5f;font-weight:bold;margin-top:2pt;">GIÁO PHẬN XUÂN LỘC — GIÁO HẠT PHÚ THỊNH</div>
+      <div style="font-size:16pt;font-weight:bold;color:#1e3a5f;text-transform:uppercase;margin-top:4pt;">CA ĐOÀN THIÊN THẦN — ${parishName}</div>
       <div style="font-size:13pt;font-weight:bold;color:#0f172a;margin-top:3pt;letter-spacing:1pt;">DANH SÁCH CA VIÊN</div>
       <div style="font-size:10pt;color:#475569;margin-top:4pt;font-style:italic;">
         ${monthYearStr} &nbsp;|&nbsp; Tổng số: <b>${totalCount}</b> ca viên (Hoạt động: <b>${activeCount}</b>, Tạm nghỉ: <b>${pauseCount}</b>, Nghỉ hẳn: <b>${leaveCount}</b>)
@@ -296,7 +297,8 @@ export function exportMembersToCsv(
   const leaveCount = sorted.filter(m => m.trangThai === 'Nghỉ hẳn').length;
 
   // Dòng tiêu đề trang trí đầu file CSV
-  const titleLine = escapeCsvCell(`BAN ĐIỀU HÀNH CA ĐOÀN THIÊN THẦN — DANH SÁCH CA VIÊN (${parishName})`);
+  const titleLine = escapeCsvCell(`GIÁO HỘI CÔNG GIÁO VIỆT NAM | GIÁO PHẬN XUÂN LỘC | GIÁO HẠT PHÚ THỊNH | ${parishName} — CA ĐOÀN THIÊN THẦN`);
+  const titleLine2 = escapeCsvCell(`BAN ĐIỀU HÀNH CA ĐOÀN THIÊN THẦN — DANH SÁCH CA VIÊN`);
   const metaLine = `Ngày xuất: ${todayStr},Tổng: ${totalCount} ca viên,Hoạt động: ${activeCount},Tạm nghỉ: ${pauseCount},Nghỉ hẳn: ${leaveCount}`;
 
   // Dòng tiêu đề cột chuẩn (8 cột - không có Ngày gia nhập)
@@ -327,7 +329,7 @@ export function exportMembersToCsv(
   ];
 
   // BOM UTF-8
-  const csvContent = '\uFEFF' + [titleLine, metaLine, '', headerRow, ...rows, ...footerRows].join('\r\n');
+  const csvContent = '\uFEFF' + [titleLine, titleLine2, metaLine, '', headerRow, ...rows, ...footerRows].join('\r\n');
 
   const fileName = `${filenamePrefix}.csv`;
 

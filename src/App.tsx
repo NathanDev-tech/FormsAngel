@@ -226,9 +226,13 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <span>Giáo Xứ Bắc Hòa — Ca Đoàn Thiên Thần</span>
+            <span>Giáo Hội Công Giáo Việt Nam</span>
             <span>•</span>
-            <span>Xuất file Excel chuẩn trang trí</span>
+            <span>Giáo Phận Xuân Lộc</span>
+            <span>•</span>
+            <span>Giáo Hạt Phú Thịnh</span>
+            <span>•</span>
+            <span>Giáo Xứ Bắc Hòa — Ca Đoàn Thiên Thần</span>
           </div>
         </div>
       </footer>
