@@ -1,15 +1,12 @@
 import { ChoirMember, MemberFormData } from '../types.ts';
 import { INITIAL_MEMBERS } from '../data/initialMembers.ts';
-import { syncService } from './syncService.ts';
 import { getSupabase } from './supabase.ts';
 
 const LOCAL_STORAGE_KEY = 'ca_doan_thien_than_members_v2';
 
+// 1. Quản lý LocalStorage dự phòng offline
 export function getLocalFallback(): ChoirMember[] {
   try {
-    if (localStorage.getItem('ca_doan_thien_than_members_v1')) {
-      localStorage.removeItem('ca_doan_thien_than_members_v1');
-    }
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
@@ -29,7 +26,7 @@ export function saveLocalFallback(members: ChoirMember[]): void {
   }
 }
 
-// Chuyển đổi giữa format Supabase Row và ChoirMember
+// 2. Chuyển đổi định dạng dữ liệu Supabase <-> ChoirMember
 export function toSupabaseRow(m: ChoirMember) {
   return {
     id: m.id,
@@ -62,14 +59,18 @@ export function fromSupabaseRow(row: any): ChoirMember {
   };
 }
 
-// Đăng ký Supabase Realtime WebSocket + Supabase Polling Fallback (Cập nhật trực tiếp 100%)
+// 3. Đăng ký nhận sự kiện Supabase Realtime WebSocket + Polling 2 giây/lần
 export function subscribeSupabaseRealtime(onUpdate: (members: ChoirMember[]) => void) {
   const supabase = getSupabase();
   if (!supabase) return () => {};
 
-  const fetchLatestFromSupabase = async () => {
+  const fetchLatest = async () => {
     try {
-      const { data, error } = await supabase.from('members').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from('members')
+        .select('*')
+        .order('created_at', { ascending: false });
+
       if (!error && Array.isArray(data)) {
         const members = data.map(fromSupabaseRow);
         saveLocalFallback(members);
@@ -80,22 +81,20 @@ export function subscribeSupabaseRealtime(onUpdate: (members: ChoirMember[]) => 
     }
   };
 
-  // 1. Lắng nghe WebSocket postgres_changes Realtime
+  // Kênh WebSocket Realtime trực tiếp từ Supabase
   const channel = supabase
     .channel('public:members_realtime')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, () => {
-      fetchLatestFromSupabase();
+      fetchLatest();
     })
     .subscribe((status) => {
       if (status === 'SUBSCRIBED') {
-        console.log('✅ Đã kết nối Supabase Realtime WebSocket thành công!');
+        console.log('⚡ Supabase Realtime WebSocket đã sẵn sàng!');
       }
     });
 
-  // 2. Tự động quét bổ sung mỗi 3 giây làm phương án dự phòng cho WebSocket
-  const intervalId = setInterval(() => {
-    fetchLatestFromSupabase();
-  }, 3000);
+  // Quét ngầm 2 giây/lần để đảm bảo các thiết bị/trình duyệt luôn nhận dữ liệu mới nhất
+  const intervalId = setInterval(fetchLatest, 2000);
 
   return () => {
     supabase.removeChannel(channel);
@@ -103,58 +102,41 @@ export function subscribeSupabaseRealtime(onUpdate: (members: ChoirMember[]) => 
   };
 }
 
-// API functions
+// 4. Các thao tác dữ liệu chính (CRUD) thuần Supabase
+
+// Lấy danh sách ca viên từ Supabase
 export async function getMembers(): Promise<ChoirMember[]> {
-  // 1. Thử tải từ Supabase trước nếu đã cấu hình
   const supabase = getSupabase();
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('members').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from('members')
+        .select('*')
+        .order('created_at', { ascending: false });
+
       if (!error && Array.isArray(data)) {
         if (data.length > 0) {
           const members = data.map(fromSupabaseRow);
           saveLocalFallback(members);
           return members;
         } else {
-          // Nếu bảng Supabase đang trống, nạp dữ liệu mẫu ban đầu vào Supabase
+          // Nếu bảng Supabase vừa tạo chưa có dòng nào, nạp dữ liệu mẫu ban đầu
           const seedRows = INITIAL_MEMBERS.map(toSupabaseRow);
           await supabase.from('members').insert(seedRows);
           saveLocalFallback(INITIAL_MEMBERS);
           return INITIAL_MEMBERS;
         }
       } else if (error) {
-        console.warn('Lỗi Supabase Query:', error.message);
+        console.warn('⚠️ Lỗi Supabase Query:', error.message);
       }
     } catch (e) {
       console.warn('Không thể truy vấn Supabase:', e);
     }
   }
-
-  // 2. Kích hoạt auto polling dự phòng từ xa
-  syncService.startAutoPolling(3000);
-
-  try {
-    const res = await fetch('/api/members');
-    if (res.ok) {
-      const result = await res.json();
-      if (result.success && Array.isArray(result.data)) {
-        saveLocalFallback(result.data);
-        return result.data;
-      }
-    }
-  } catch (error) {
-    // API local offline
-  }
-
-  const remote = await syncService.fetchRemoteData(false);
-  if (remote && Array.isArray(remote) && remote.length > 0) {
-    saveLocalFallback(remote);
-    return remote;
-  }
-
   return getLocalFallback();
 }
 
+// Thêm ca viên mới vào Supabase
 export async function addMember(data: MemberFormData): Promise<ChoirMember> {
   const now = new Date().toISOString();
   const newMember: ChoirMember = {
@@ -171,25 +153,23 @@ export async function addMember(data: MemberFormData): Promise<ChoirMember> {
     updatedAt: now,
   };
 
-  // Thêm vào Supabase
   const supabase = getSupabase();
   if (supabase) {
     const { error } = await supabase.from('members').insert([toSupabaseRow(newMember)]);
     if (error) {
-      console.error('❌ Lỗi chèn dữ liệu Supabase (RLS Blocked):', error.message);
+      console.error('❌ Lỗi chèn dữ liệu Supabase (RLS):', error.message);
     } else {
-      console.log('✨ Đã thêm ca viên vào Supabase Cloud!');
+      console.log('✅ Đã lưu ca viên mới lên Supabase!');
     }
   }
 
   const current = getLocalFallback();
   const updated = [newMember, ...current];
   saveLocalFallback(updated);
-  syncService.pushRemoteData(updated);
-
   return newMember;
 }
 
+// Chỉnh sửa thông tin ca viên trên Supabase
 export async function updateMember(id: string, data: Partial<MemberFormData>): Promise<ChoirMember> {
   const current = getLocalFallback();
   let updatedMember: ChoirMember | null = null;
@@ -209,17 +189,21 @@ export async function updateMember(id: string, data: Partial<MemberFormData>): P
   if (updatedMember) {
     const supabase = getSupabase();
     if (supabase) {
-      const { error } = await supabase.from('members').update(toSupabaseRow(updatedMember)).eq('id', id);
+      const { error } = await supabase
+        .from('members')
+        .update(toSupabaseRow(updatedMember))
+        .eq('id', id);
+
       if (error) console.error('❌ Lỗi cập nhật Supabase:', error.message);
     }
 
     saveLocalFallback(updated);
-    syncService.pushRemoteData(updated);
     return updatedMember;
   }
   throw new Error('Không tìm thấy thành viên để cập nhật');
 }
 
+// Xóa ca viên khỏi Supabase
 export async function deleteMember(id: string): Promise<void> {
   const supabase = getSupabase();
   if (supabase) {
@@ -230,9 +214,9 @@ export async function deleteMember(id: string): Promise<void> {
   const current = getLocalFallback();
   const updated = current.filter(m => m.id !== id);
   saveLocalFallback(updated);
-  syncService.pushRemoteData(updated);
 }
 
+// Khôi phục dữ liệu mẫu trên Supabase
 export async function resetToSeedData(): Promise<ChoirMember[]> {
   const supabase = getSupabase();
   if (supabase) {
@@ -246,9 +230,5 @@ export async function resetToSeedData(): Promise<ChoirMember[]> {
   }
 
   saveLocalFallback(INITIAL_MEMBERS);
-  syncService.pushRemoteData(INITIAL_MEMBERS);
   return INITIAL_MEMBERS;
 }
-
-
-
