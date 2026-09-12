@@ -388,7 +388,7 @@ export function exportDecoratedExcel(
 export function exportMembersToCsv(
   members: ChoirMember[],
   parishName = 'GIÁO XỨ BẮC HÒA',
-  filenamePrefix = 'danh-sach-ca-doan-thien-than-bac-hoa'
+  filenamePrefix = 'DachSachCaDoan'
 ): void {
   const now = new Date();
   const todayStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
