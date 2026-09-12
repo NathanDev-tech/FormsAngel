@@ -1,5 +1,6 @@
 import React from 'react';
-import { Sparkles, Users, UserPlus, BarChart3, Moon, Sun } from 'lucide-react';
+import { Sparkles, Users, UserPlus, BarChart3, Moon, Sun, Music } from 'lucide-react';
+import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
   activeTab: 'form' | 'list' | 'stats';
@@ -31,9 +32,9 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-3">
               {/* Angelic Embellished Icon */}
               <div className="relative group flex-shrink-0">
-                <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-md shadow-sky-200 dark:shadow-sky-900/40 ring-2 ring-white/70 dark:ring-slate-700 transition-transform group-hover:scale-105">
+                <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-md shadow-sky-200 dark:shadow-sky-900/40 ring-2 ring-white/70 dark:ring-slate-700 transition-transform group-hover:scale-105 bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center">
                   <img
-                    src={`${import.meta.env.BASE_URL}logo.png`}
+                    src={logoImg}
                     alt="Logo Ca Đoàn Thiên Thần"
                     className="w-full h-full object-cover"
                   />
