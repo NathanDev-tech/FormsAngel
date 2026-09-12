@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="relative group flex-shrink-0">
                 <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-md shadow-sky-200 dark:shadow-sky-900/40 ring-2 ring-white/70 dark:ring-slate-700 transition-transform group-hover:scale-105">
                   <img
-                    src="/logo.png"
+                    src={`${import.meta.env.BASE_URL}logo.png`}
                     alt="Logo Ca Đoàn Thiên Thần"
                     className="w-full h-full object-cover"
                   />
