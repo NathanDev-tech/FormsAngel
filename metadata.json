@@ -1,0 +1,6 @@
+{
+  "name": "Ca Đoàn Thiên Thần",
+  "description": "Cổng Thông Tin Ca Đoàn Thiên Thần - Giáo Xứ Bắc Hòa: Quản lý danh sách ca viên, ghi danh và xuất danh sách thành viên.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
