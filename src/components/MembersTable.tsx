@@ -15,6 +15,7 @@ import {
   RefreshCw,
   Plus,
   FileSpreadsheet,
+  Upload,
 } from 'lucide-react';
 import { ChoirMember, SortField, SortOrder } from '../types.ts';
 import { exportDecoratedExcel, formatDateVi, getBirthYear, compareVietnameseNames } from '../utils/csvExport.ts';
@@ -26,21 +27,41 @@ interface MembersTableProps {
   onDelete: (member: ChoirMember) => void;
   onAddNew: () => void;
   onPrint: () => void;
+  onOpenImportModal?: () => void;
 }
 
 // Helper kiểm tra ca viên có sinh nhật trong tháng hiện tại không
 export function isBirthdayThisMonth(dateStr: string): boolean {
   if (!dateStr) return false;
-  const parts = dateStr.split('-');
-  if (parts.length >= 2) {
-    const month = parseInt(parts[1], 10);
-    const currentMonth = new Date().getMonth() + 1;
-    return month === currentMonth;
+  const clean = dateStr.trim();
+  const currentMonth = new Date().getMonth() + 1;
+
+  // Định dạng DD/MM hoặc DD/MM/YYYY
+  if (clean.includes('/')) {
+    const parts = clean.split('/');
+    if (parts.length >= 2) {
+      const month = parseInt(parts[1], 10);
+      return month === currentMonth;
+    }
   }
+
+  // Định dạng YYYY-MM-DD hoặc MM-DD
+  if (clean.includes('-')) {
+    const parts = clean.split('-');
+    if (parts.length === 3) {
+      const month = parseInt(parts[1], 10);
+      return month === currentMonth;
+    }
+    if (parts.length === 2) {
+      const month = parseInt(parts[1], 10);
+      return month === currentMonth;
+    }
+  }
+
   return false;
 }
 
-// Helper lấy màu badge cho từng nhóm Lớp giáo lý: Xưng Tội, Thêm Sức, Sống Đạo, Vào Đời
+// Helper màu cho Lớp giáo lý
 function getClassBadgeColor(className: string): string {
   if (!className) return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
   const lower = className.toLowerCase();
@@ -65,6 +86,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
   onDelete,
   onAddNew,
   onPrint,
+  onOpenImportModal,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassFilter, setSelectedClassFilter] = useState('all');
@@ -182,7 +204,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
             </div>
           </div>
 
-          {/* Action Buttons: Add, Export List, Print */}
+          {/* Action Buttons: Add, Import CSV, Export List, Print */}
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               type="button"
@@ -192,6 +214,18 @@ export const MembersTable: React.FC<MembersTableProps> = ({
             >
               <Plus className="w-4 h-4" />
               <span>Thêm Ca Viên</span>
+            </button>
+
+            {/* Nút Import CSV mới */}
+            <button
+              type="button"
+              id="import-csv-btn"
+              onClick={onOpenImportModal}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-sm shadow-indigo-600/15 transition-all cursor-pointer"
+              title="Import danh sách ca viên hàng loạt từ file CSV (.csv)"
+            >
+              <Upload className="w-4 h-4" />
+              <span>Import CSV</span>
             </button>
 
             {/* Nút Xuất Danh Sách duy nhất trang trí chuẩn mẫu */}
@@ -319,13 +353,13 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                   </div>
                 </th>
 
-                {/* 3. Năm Sinh */}
+                {/* 3. Ngày Sinh */}
                 <th
                   onClick={() => handleSort('ngaySinh')}
-                  className="py-3.5 px-3 cursor-pointer select-none group hover:text-slate-900 dark:hover:text-white transition-colors text-center w-24"
+                  className="py-3.5 px-3 cursor-pointer select-none group hover:text-slate-900 dark:hover:text-white transition-colors text-center w-28"
                 >
                   <div className="flex items-center justify-center gap-1.5">
-                    <span>Năm sinh</span>
+                    <span>Ngày sinh</span>
                     {renderSortIcon('ngaySinh')}
                   </div>
                 </th>
@@ -446,12 +480,10 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                         </div>
                       </td>
 
-                      {/* 3. Năm Sinh */}
+                      {/* 3. Ngày Sinh */}
                       <td className="py-3.5 px-3 text-center text-slate-700 dark:text-slate-300 font-mono text-xs">
                         {member.ngaySinh ? (
-                          <span title={formatDateVi(member.ngaySinh)}>
-                            {getBirthYear(member.ngaySinh)}
-                          </span>
+                          <span>{formatDateVi(member.ngaySinh)}</span>
                         ) : (
                           <span className="text-slate-300 dark:text-slate-600 italic">—</span>
                         )}

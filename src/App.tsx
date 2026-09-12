@@ -6,9 +6,10 @@ import { StatsAndBirthdays } from './components/StatsAndBirthdays.tsx';
 import { EditMemberModal } from './components/EditMemberModal.tsx';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal.tsx';
 import { PrintView } from './components/PrintView.tsx';
+import { ImportCsvModal } from './components/ImportCsvModal.tsx';
 import { ToastContainer } from './components/Toast.tsx';
 import { ChoirMember, MemberFormData, ToastMessage } from './types.ts';
-import { getMembers, addMember, updateMember, deleteMember, resetToSeedData, subscribeSupabaseRealtime } from './lib/api.ts';
+import { getMembers, addMember, addMultipleMembers, updateMember, deleteMember, resetToSeedData, subscribeSupabaseRealtime } from './lib/api.ts';
 import { Heart, Sparkles } from 'lucide-react';
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
   const [deletingMember, setDeletingMember] = useState<ChoirMember | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPrintOpen, setIsPrintOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   // Sync dark mode class with root html
   useEffect(() => {
@@ -97,6 +99,25 @@ export default function App() {
     } catch (err) {
       console.error('Lỗi khi thêm ca viên:', err);
       addToast('Không thể lưu dữ liệu', 'Đã có lỗi xảy ra, vui lòng thử lại.', 'error');
+      return false;
+    }
+  };
+
+  // 1b. Import hàng loạt thành viên từ file CSV
+  const handleImportMembers = async (membersData: MemberFormData[]): Promise<boolean> => {
+    try {
+      const createdList = await addMultipleMembers(membersData);
+      setMembers(prev => [...createdList, ...prev]);
+
+      addToast(
+        'Import thành công! 🎉',
+        `Đã thêm thành công ${createdList.length} ca viên từ file CSV vào hệ thống.`,
+        'success'
+      );
+      return true;
+    } catch (err) {
+      console.error('Lỗi khi import danh sách ca viên:', err);
+      addToast('Không thể import dữ liệu', 'Đã có lỗi xảy ra khi nhập file CSV, vui lòng thử lại.', 'error');
       return false;
     }
   };
@@ -183,6 +204,7 @@ export default function App() {
                 onDelete={m => setDeletingMember(m)}
                 onAddNew={() => setActiveTab('form')}
                 onPrint={() => setIsPrintOpen(true)}
+                onOpenImportModal={() => setIsImportOpen(true)}
               />
             )}
 
@@ -240,6 +262,13 @@ export default function App() {
         members={members}
         isOpen={isPrintOpen}
         onClose={() => setIsPrintOpen(false)}
+      />
+
+      {/* Import CSV Modal */}
+      <ImportCsvModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        onImport={handleImportMembers}
       />
 
       {/* Toast Notifications */}

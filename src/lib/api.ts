@@ -169,6 +169,40 @@ export async function addMember(data: MemberFormData): Promise<ChoirMember> {
   return newMember;
 }
 
+// Thêm nhiều ca viên từ file CSV vào Supabase & LocalStorage
+export async function addMultipleMembers(dataList: MemberFormData[]): Promise<ChoirMember[]> {
+  const now = new Date().toISOString();
+  const createdMembers: ChoirMember[] = dataList.map((data, index) => ({
+    id: 'ctt-' + Date.now().toString(36) + '-' + index + '-' + Math.random().toString(36).substring(2, 6),
+    tenThanh: (data.tenThanh || '').trim(),
+    hoVaTen: (data.hoVaTen || '').trim(),
+    ngaySinh: (data.ngaySinh || '').trim(),
+    lop: (data.lop || '').trim(),
+    soDienThoai: (data.soDienThoai || '').trim(),
+    ghiChu: (data.ghiChu || '').trim(),
+    bonPhan: (data.bonPhan || 'Thành viên').trim(),
+    trangThai: (data.trangThai || 'Hoạt động').trim(),
+    createdAt: now,
+    updatedAt: now,
+  }));
+
+  const supabase = getSupabase();
+  if (supabase && createdMembers.length > 0) {
+    const rows = createdMembers.map(toSupabaseRow);
+    const { error } = await supabase.from('members').insert(rows);
+    if (error) {
+      console.error('❌ Lỗi chèn hàng loạt Supabase:', error.message);
+    } else {
+      console.log(`✅ Đã lưu ${createdMembers.length} ca viên mới từ CSV lên Supabase!`);
+    }
+  }
+
+  const current = getLocalFallback();
+  const updated = [...createdMembers, ...current];
+  saveLocalFallback(updated);
+  return createdMembers;
+}
+
 // Chỉnh sửa thông tin ca viên trên Supabase
 export async function updateMember(id: string, data: Partial<MemberFormData>): Promise<ChoirMember> {
   const current = getLocalFallback();

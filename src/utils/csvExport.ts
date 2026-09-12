@@ -41,31 +41,36 @@ export function escapeCsvCell(val: string | number | undefined | null): string {
 }
 
 /**
- * Định dạng ngày YYYY-MM-DD sang DD/MM/YYYY cho hiển thị thân thiện
+ * Định dạng ngày sinh hiển thị linh hoạt (Ví dụ: 15/08 hoặc 15/08/2005)
  */
 export function formatDateVi(dateStr: string | undefined | null): string {
   if (!dateStr) return '—';
-  const cleanDate = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr;
-  const parts = cleanDate.split('-');
+  const clean = dateStr.trim();
+  if (clean.includes('T')) return formatDateVi(clean.split('T')[0]);
+
+  // Nếu đã ở dạng DD/MM hoặc DD/MM/YYYY
+  if (clean.includes('/')) return clean;
+
+  // Nếu ở dạng YYYY-MM-DD
+  const parts = clean.split('-');
   if (parts.length === 3) {
     const [year, month, day] = parts;
     return `${day}/${month}/${year}`;
   }
-  return dateStr;
+  if (parts.length === 2) {
+    const [p1, p2] = parts;
+    if (p1.length === 4) return `${p2}/${p1}`;
+    return `${p1}/${p2}`;
+  }
+
+  return clean;
 }
 
 /**
- * Lấy năm sinh từ chuỗi ngày sinh (nếu có dạng YYYY-MM-DD trả về YYYY)
+ * Lấy Ngày sinh / Năm sinh cho báo cáo và xuất Excel
  */
 export function getBirthYear(dateStr: string | undefined | null): string {
-  if (!dateStr) return '—';
-  const clean = dateStr.trim();
-  if (clean.includes('-')) {
-    const year = clean.split('-')[0];
-    if (year && year.length === 4) return year;
-  }
-  if (clean.length === 4 && !isNaN(Number(clean))) return clean;
-  return clean || '—';
+  return formatDateVi(dateStr);
 }
 
 /**
@@ -250,7 +255,7 @@ export function exportDecoratedExcel(
             <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 4pt; width: 50pt; text-align: center; vertical-align: middle;">STT</th>
             <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 8pt; width: 120pt; text-align: center; vertical-align: middle;">Tên Thánh</th>
             <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 10pt; width: 230pt; text-align: left; vertical-align: middle;">Họ và Tên</th>
-            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 4pt; width: 85pt; text-align: center; vertical-align: middle;">Năm sinh</th>
+            <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 4pt; width: 85pt; text-align: center; vertical-align: middle;">Ngày sinh</th>
             <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 6pt; width: 120pt; text-align: center; vertical-align: middle;">SĐT</th>
             <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 8pt; width: 140pt; text-align: left; vertical-align: middle;">Giọng/Lớp</th>
             <th class="th-header" style="font-family: 'Times New Roman', Times, serif; border: 0.5pt solid #334155; padding: 6pt 6pt; width: 110pt; text-align: center; vertical-align: middle;">Bổn phận</th>
@@ -393,3 +398,219 @@ export function exportMembersToCsv(
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+/**
+ * Kiểu dữ liệu dòng ca viên sau khi parse CSV
+ */
+export interface ParsedCsvMemberRow {
+  rowNumber: number;
+  data: {
+    tenThanh: string;
+    hoVaTen: string;
+    ngaySinh: string;
+    lop: string;
+    soDienThoai: string;
+    bonPhan: string;
+    trangThai: string;
+    ghiChu: string;
+  };
+  isValid: boolean;
+  errorReason?: string;
+}
+
+/**
+ * Tách dòng CSV thành các cột, hỗ trợ dấu ngoặc kép và dấu phẩy
+ */
+export function parseCsvRow(line: string): string[] {
+  const fields: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      fields.push(current);
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  fields.push(current);
+  return fields.map(f => f.trim().replace(/^"|"$/g, ''));
+}
+
+/**
+ * Tách nội dung CSV thành các dòng (xử lý xuống dòng trong dấu ngoặc kép và BOM)
+ */
+export function parseRawCsvLines(text: string): string[] {
+  const clean = text.replace(/^\uFEFF/, '');
+  const lines: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < clean.length; i++) {
+    const char = clean[i];
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      current += char;
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && clean[i + 1] === '\n') {
+        i++;
+      }
+      if (current.trim()) {
+        lines.push(current);
+      }
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  if (current.trim()) {
+    lines.push(current);
+  }
+  return lines;
+}
+
+/**
+ * Đọc và phân tích toàn bộ nội dung file CSV thành danh sách ca viên có kiểm tra định dạng
+ */
+export function parseCsvContent(csvText: string): ParsedCsvMemberRow[] {
+  const rawLines = parseRawCsvLines(csvText);
+  const parsedRows: ParsedCsvMemberRow[] = [];
+
+  let headerMap: { [key: string]: number } | null = null;
+  let dataRowIndex = 0;
+
+  for (let i = 0; i < rawLines.length; i++) {
+    const line = rawLines[i].trim();
+    if (!line) continue;
+
+    // Bo qua cac dong tieu de trang tri hoac tom tat
+    const lowerLine = line.toLowerCase();
+    if (
+      lowerLine.includes('ban điều hành ca đoàn') ||
+      lowerLine.includes('ngày xuất:') ||
+      lowerLine.includes('tổng số ca viên:') ||
+      lowerLine.includes('đang hoạt động:')
+    ) {
+      continue;
+    }
+
+    const columns = parseCsvRow(line);
+    if (columns.length === 0) continue;
+
+    // Kiem tra xem co phai dong Header hay khong
+    const joinCols = columns.join(' ').toLowerCase();
+    if (!headerMap && (joinCols.includes('tên thánh') || joinCols.includes('họ và tên') || joinCols.includes('sđt') || joinCols.includes('giọng/lớp'))) {
+      headerMap = {};
+      columns.forEach((col, idx) => {
+        const cLower = col.toLowerCase().trim();
+        if (cLower.includes('thánh')) headerMap!['tenThanh'] = idx;
+        else if (cLower.includes('họ') || (cLower.includes('tên') && !cLower.includes('thánh'))) headerMap!['hoVaTen'] = idx;
+        else if (cLower.includes('sinh')) headerMap!['ngaySinh'] = idx;
+        else if (cLower.includes('sđt') || cLower.includes('điện thoại') || cLower.includes('sdt') || cLower.includes('phone')) headerMap!['soDienThoai'] = idx;
+        else if (cLower.includes('lớp') || cLower.includes('giọng')) headerMap!['lop'] = idx;
+        else if (cLower.includes('bổn phận') || cLower.includes('chức')) headerMap!['bonPhan'] = idx;
+        else if (cLower.includes('trạng thái')) headerMap!['trangThai'] = idx;
+        else if (cLower.includes('ghi chú') || cLower.includes('note')) headerMap!['ghiChu'] = idx;
+      });
+      continue;
+    }
+
+    // Neu chua co header, dung thu tu mac dinh cua file xuat
+    // [0: STT, 1: Ten Thanh, 2: Ho Va Ten, 3: Ngay Sinh, 4: SDT, 5: Lop, 6: Bon Phan, 7: Trang Thai, 8: Ghi Chu]
+    dataRowIndex++;
+
+    const getVal = (fieldName: string, defaultIdx: number): string => {
+      let idx = defaultIdx;
+      if (headerMap && headerMap[fieldName] !== undefined) {
+        idx = headerMap[fieldName];
+      }
+      if (idx < columns.length && columns[idx] !== undefined) {
+        let raw = columns[idx].trim();
+        // Loai bo ky tu \t prefix do Excel xuat ra
+        if (raw.startsWith('\t')) raw = raw.replace(/^\t/, '').trim();
+        if (raw === '—' || raw === '-') return '';
+        return raw;
+      }
+      return '';
+    };
+
+    const tenThanh = getVal('tenThanh', 1);
+    const hoVaTen = getVal('hoVaTen', 2);
+    let ngaySinh = getVal('ngaySinh', 3);
+    const soDienThoai = getVal('soDienThoai', 4);
+    const lop = getVal('lop', 5);
+    const bonPhan = getVal('bonPhan', 6) || 'Thành viên';
+    let trangThai = getVal('trangThai', 7) || 'Hoạt động';
+    const ghiChu = getVal('ghiChu', 8);
+
+    // Chuan hoa trang thai
+    if (trangThai.toLowerCase().includes('tạm nghỉ')) trangThai = 'Tạm nghỉ';
+    else if (trangThai.toLowerCase().includes('nghỉ hẳn')) trangThai = 'Nghỉ hẳn';
+    else trangThai = 'Hoạt động';
+
+    // Chuan hoa ngay sinh
+    if (ngaySinh) {
+      ngaySinh = formatDateVi(ngaySinh);
+    }
+
+    // Validation: Can it nhat Ho va Ten hoac Ten Thanh
+    const isValid = Boolean(hoVaTen || tenThanh);
+    const errorReason = !isValid ? 'Thiếu Tên Thánh và Họ & Tên' : undefined;
+
+    parsedRows.push({
+      rowNumber: dataRowIndex,
+      data: {
+        tenThanh,
+        hoVaTen,
+        ngaySinh,
+        lop,
+        soDienThoai,
+        bonPhan,
+        trangThai,
+        ghiChu,
+      },
+      isValid,
+      errorReason,
+    });
+  }
+
+  return parsedRows;
+}
+
+/**
+ * Tải file CSV mẫu chuẩn định dạng cho người dùng nhập liệu
+ */
+export function downloadSampleCsvTemplate(): void {
+  const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Ngày sinh', 'SĐT', 'Giọng/Lớp', 'Bổn phận', 'Trạng thái', 'Ghi chú'];
+  const sampleRows = [
+    ['1', 'Maria', 'Nguyễn Thị Thu Hà', '15/08/2005', '0912345678', 'Thêm Sức 1', 'Thành viên', 'Hoạt động', 'Ca viên soprano'],
+    ['2', 'Giuse', 'Trần Văn Minh', '20/11/2003', '0987654321', 'Sống Đạo 2', 'Nhạc công', 'Hoạt động', 'Chơi organ'],
+    ['3', 'Têrêsa', 'Phạm Ngọc Anh', '01/05', '0905123456', 'Xưng Tội 3', 'Thành viên', 'Hoạt động', '']
+  ];
+
+  const csvRows = [
+    headers.map(escapeCsvCell).join(','),
+    ...sampleRows.map(row => row.map(escapeCsvCell).join(','))
+  ];
+
+  const csvContent = '\uFEFF' + csvRows.join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'mau-nhap-danh-sach-ca-vien.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
