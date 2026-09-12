@@ -14,8 +14,11 @@ export interface GitHubConfig {
   autoSync: boolean;
 }
 
+// Token đọc/ghi ngầm từ môi trường nếu có
+const ENV_TOKEN = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) || '';
+
 const DEFAULT_CONFIG: GitHubConfig = {
-  token: '',
+  token: ENV_TOKEN,
   owner: 'NathanDev-tech',
   repo: 'FormsAngel',
   filePath: 'data/members.json',
@@ -40,7 +43,6 @@ class SyncService {
     this.initFocusListeners();
   }
 
-  // 1. Quản lý cấu hình
   public loadConfig(): GitHubConfig {
     try {
       const saved = localStorage.getItem(STORAGE_CONFIG_KEY);
@@ -60,7 +62,6 @@ class SyncService {
     } catch (e) {
       console.warn('Lỗi lưu cấu hình GitHub:', e);
     }
-    // Re-check after config change
     this.fetchRemoteData(true);
   }
 
@@ -68,7 +69,8 @@ class SyncService {
     return { ...this.config };
   }
 
-  // 2. BroadcastChannel đồng bộ tức thì giữa các Tab trên cùng máy
+  // 2. BroadcastChannel đồng bộ tức thì giữa các Tab trên cùng máy (<10ms)
+
   private initBroadcastChannel(): void {
     if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       try {
@@ -132,8 +134,8 @@ class SyncService {
     }
   }
 
-  // 4. Bắt đầu Vòng lặp Auto-Polling (Mặc định 8 giây một lần)
-  public startAutoPolling(intervalMs = 8000): void {
+  // 4. Bắt đầu Vòng lặp Auto-Polling (Mặc định 4 giây một lần)
+  public startAutoPolling(intervalMs = 4000): void {
     this.stopAutoPolling();
     // Chạy thử lần đầu ngay lập tức
     this.fetchRemoteData(false);

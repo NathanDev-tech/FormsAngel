@@ -7,7 +7,6 @@ import { EditMemberModal } from './components/EditMemberModal.tsx';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal.tsx';
 import { PrintView } from './components/PrintView.tsx';
 import { ToastContainer } from './components/Toast.tsx';
-import { GitHubSyncModal } from './components/GitHubSyncModal.tsx';
 import { ChoirMember, MemberFormData, ToastMessage } from './types.ts';
 import { getMembers, addMember, updateMember, deleteMember, resetToSeedData } from './lib/api.ts';
 import { syncService } from './lib/syncService.ts';
@@ -18,10 +17,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats'>('form');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
-
-  // GitHub Sync modal & status
-  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
-  const [isSyncingRemote, setIsSyncingRemote] = useState(false);
 
   // Dark mode state with localStorage persistence
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -75,19 +70,10 @@ export default function App() {
     setToasts(prev => prev.filter(t => t.id !== id));
   };
 
-  // Đăng ký lắng nghe sự kiện đồng bộ tự động (Real-time sync từ tab khác hoặc GitHub Cloud)
+  // Đăng ký lắng nghe sự kiện đồng bộ tự động ngầm (Silent Real-time Sync)
   useEffect(() => {
-    const unsubscribe = syncService.subscribe((updatedMembers, isRemote) => {
+    const unsubscribe = syncService.subscribe((updatedMembers) => {
       setMembers(updatedMembers);
-      if (isRemote) {
-        setIsSyncingRemote(true);
-        setTimeout(() => setIsSyncingRemote(false), 2000);
-        addToast(
-          'Đồng bộ GitHub Realtime 🔄',
-          'Dữ liệu vừa được cập nhật tự động từ thiết bị/người dùng khác.',
-          'info'
-        );
-      }
     });
 
     return () => {
@@ -105,7 +91,7 @@ export default function App() {
 
       addToast(
         'Đã ghi danh thành công! ✨',
-        `Thông tin ca viên "${nameDisplay}" đã được lưu và đồng bộ Real-time.`,
+        `Thông tin ca viên "${nameDisplay}" đã được lưu vào hệ thống.`,
         'success'
       );
       return true;
@@ -121,7 +107,7 @@ export default function App() {
     try {
       const updated = await updateMember(id, data);
       setMembers(prev => prev.map(m => (m.id === id ? updated : m)));
-      addToast('Cập nhật thành công', 'Thông tin ca viên đã được đồng bộ mới nhất.', 'info');
+      addToast('Cập nhật thành công', 'Thông tin ca viên đã được cập nhật.', 'info');
       return true;
     } catch (err) {
       console.error('Lỗi cập nhật ca viên:', err);
@@ -173,8 +159,6 @@ export default function App() {
         birthdaysCount={birthdaysCount}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
-        onOpenSyncModal={() => setIsSyncModalOpen(true)}
-        isSyncingRemote={isSyncingRemote}
       />
 
       {/* Main Content Area */}
@@ -230,7 +214,7 @@ export default function App() {
           <div className="flex items-center gap-4 text-[11px]">
             <span>Giáo Xứ Bắc Hòa — Ca Đoàn Thiên Thần</span>
             <span>•</span>
-            <span>Đồng bộ Real-time GitHub Active</span>
+            <span>Xuất file Excel chuẩn trang trí</span>
           </div>
         </div>
       </footer>
@@ -259,21 +243,11 @@ export default function App() {
         onClose={() => setIsPrintOpen(false)}
       />
 
-      {/* GitHub Realtime Sync Config Modal */}
-      <GitHubSyncModal
-        isOpen={isSyncModalOpen}
-        onClose={() => setIsSyncModalOpen(false)}
-        onConfigSaved={() => {
-          syncService.fetchRemoteData(true).then(remoteMembers => {
-            if (remoteMembers) setMembers(remoteMembers);
-          });
-        }}
-      />
-
       {/* Toast Notifications */}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
     </div>
   );
 }
+
 

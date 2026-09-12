@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Users, UserPlus, BarChart3, Moon, Sun, RefreshCw, Database } from 'lucide-react';
+import { Sparkles, Users, UserPlus, BarChart3, Moon, Sun } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
@@ -9,8 +9,6 @@ interface HeaderProps {
   birthdaysCount: number;
   darkMode: boolean;
   setDarkMode: (val: boolean | ((prev: boolean) => boolean)) => void;
-  onOpenSyncModal: () => void;
-  isSyncingRemote?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -20,8 +18,6 @@ export const Header: React.FC<HeaderProps> = ({
   birthdaysCount,
   darkMode,
   setDarkMode,
-  onOpenSyncModal,
-  isSyncingRemote = false,
 }) => {
   return (
     <header className="relative overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-sky-100 dark:border-slate-800 sticky top-0 z-30 transition-colors duration-300">
@@ -63,18 +59,8 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            {/* Mobile Actions (Sync + Dark Mode Toggle) */}
+            {/* Mobile Dark Mode Toggle */}
             <div className="flex md:hidden items-center gap-1">
-              <button
-                type="button"
-                onClick={onOpenSyncModal}
-                title="Cấu hình Đồng bộ GitHub Real-time"
-                className="p-2 rounded-xl text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-800 transition-colors relative"
-              >
-                <Database className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              </button>
-
               <button
                 type="button"
                 id="mobile-dark-mode-toggle"
@@ -141,21 +127,6 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </nav>
 
-            {/* GitHub Sync Realtime Button */}
-            <button
-              type="button"
-              onClick={onOpenSyncModal}
-              title="Đồng bộ Dữ liệu Real-time qua GitHub"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 dark:hover:bg-sky-900/80 transition-all shadow-sm group"
-            >
-              <span className="relative flex h-2 h-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <RefreshCw className={`w-3.5 h-3.5 ${isSyncingRemote ? 'animate-spin text-sky-500' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
-              <span>GitHub Realtime</span>
-            </button>
-
             {/* Desktop Dark Mode Toggle */}
             <button
               type="button"
@@ -174,4 +145,5 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+
 
