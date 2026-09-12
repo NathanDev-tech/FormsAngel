@@ -9,13 +9,14 @@ import { PrintView } from './components/PrintView.tsx';
 import { ImportCsvModal } from './components/ImportCsvModal.tsx';
 import { ToastContainer } from './components/Toast.tsx';
 import { ChoirMember, MemberFormData, ToastMessage } from './types.ts';
+import { FormsDashboard } from './components/admin/FormsDashboard.tsx';
 import { getMembers, addMember, addMultipleMembers, updateMember, deleteMember, resetToSeedData, subscribeSupabaseRealtime } from './lib/api.ts';
 import { Heart, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [members, setMembers] = useState<ChoirMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats'>('form');
+  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats' | 'forms'>('form');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // Dark mode state with localStorage persistence
@@ -210,6 +211,10 @@ export default function App() {
                 }}
                 onPrint={() => setIsPrintOpen(true)}
               />
+            )}
+
+            {activeTab === 'forms' && (
+              <FormsDashboard />
             )}
           </>
         )}
