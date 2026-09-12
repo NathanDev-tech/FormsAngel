@@ -220,14 +220,14 @@ export const MembersTable: React.FC<MembersTableProps> = ({
           </div>
 
           {/* Action Buttons: Add, Import CSV, Export List, Print */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full lg:w-auto">
             <button
               type="button"
               id="quick-add-member-btn"
               onClick={onAddNew}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all cursor-pointer w-full sm:w-auto"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 shrink-0" />
               <span>Thêm Ca Viên</span>
             </button>
 
@@ -236,10 +236,10 @@ export const MembersTable: React.FC<MembersTableProps> = ({
               type="button"
               id="import-csv-btn"
               onClick={onOpenImportModal}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-sm shadow-indigo-600/15 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-sm shadow-indigo-600/15 transition-all cursor-pointer w-full sm:w-auto"
               title="Import danh sách ca viên hàng loạt từ file CSV (.csv)"
             >
-              <Upload className="w-4 h-4" />
+              <Upload className="w-4 h-4 shrink-0" />
               <span>Import CSV</span>
             </button>
 
@@ -248,11 +248,11 @@ export const MembersTable: React.FC<MembersTableProps> = ({
               type="button"
               id="export-list-btn"
               onClick={() => exportDecoratedExcel(sortedMembers, 'GIÁO XỨ BẮC HÒA')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm shadow-emerald-600/15 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm shadow-emerald-600/15 transition-all cursor-pointer w-full sm:w-auto"
               title="Xuất file danh sách ca viên trang trí chuẩn mẫu Giáo Xứ Bắc Hòa mở bằng Excel/Sheets"
             >
-              <FileSpreadsheet className="w-4 h-4" />
-              <span>Xuất Danh Sách</span>
+              <FileSpreadsheet className="w-4 h-4 shrink-0" />
+              <span className="whitespace-nowrap">Xuất Danh Sách</span>
             </button>
 
             {/* Nút In ấn / Xuất PDF */}
@@ -260,11 +260,11 @@ export const MembersTable: React.FC<MembersTableProps> = ({
               type="button"
               id="print-list-btn"
               onClick={onPrint}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold transition-all cursor-pointer w-full sm:w-auto"
               title="Xem bản in danh sách chính thức chuẩn A4 như văn bản thực tế"
             >
-              <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Bản In / PDF</span>
+              <Printer className="w-4 h-4 shrink-0" />
+              <span>Bản In / PDF</span>
             </button>
           </div>
 
@@ -302,7 +302,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
               <select
                 value={selectedClassFilter}
                 onChange={e => setSelectedClassFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400/40"
+                className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400/40"
               >
                 <option value="all">Tất cả các lớp</option>
                 {uniqueClasses.map(cls => (
@@ -317,13 +317,13 @@ export const MembersTable: React.FC<MembersTableProps> = ({
             <button
               type="button"
               onClick={() => setOnlyBirthdayFilter(!onlyBirthdayFilter)}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
+              className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
                 onlyBirthdayFilter
                   ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300 dark:border-amber-700'
                   : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-750'
               }`}
             >
-              <Cake className="w-3.5 h-3.5 text-amber-500" />
+              <Cake className="w-3.5 h-3.5 text-amber-500 shrink-0" />
               <span>Sinh nhật T.{currentMonthNum}</span>
               {currentMonthBirthdaysCount > 0 && (
                 <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-200/80 dark:bg-amber-900 text-amber-900 dark:text-amber-200 font-bold">
@@ -339,8 +339,178 @@ export const MembersTable: React.FC<MembersTableProps> = ({
       {/* Main Table Card */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-sky-100/80 dark:border-slate-800 shadow-xl shadow-sky-900/5 overflow-hidden">
         
+        {/* Mobile Card List View (dành cho điện thoại di động màn hình nhỏ < 768px) */}
+        <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800/80">
+          {sortedMembers.length === 0 ? (
+            <div className="py-12 px-4 text-center">
+              <div className="max-w-xs mx-auto space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-slate-800 text-sky-500 mx-auto flex items-center justify-center shadow-sm">
+                  <Users className="w-6 h-6" />
+                </div>
+                <h4 className="text-base font-bold text-slate-800 dark:text-slate-200 font-serif">
+                  {members.length === 0 ? 'Danh sách ca đoàn chưa có thành viên' : 'Không tìm thấy kết quả phù hợp'}
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {members.length === 0
+                    ? 'Dữ liệu mẫu đã được dọn sạch. Bạn có thể bắt đầu ghi danh các ca viên đầu tiên.'
+                    : 'Hãy thử tìm kiếm với từ khoá khác hoặc xoá bộ lọc.'}
+                </p>
+                {members.length === 0 ? (
+                  <button
+                    type="button"
+                    onClick={onAddNew}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-semibold shadow-sm cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Ghi danh ca viên mới</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedClassFilter('all');
+                      setOnlyBirthdayFilter(false);
+                    }}
+                    className="mt-2 text-xs font-semibold text-sky-600 hover:underline cursor-pointer"
+                  >
+                    Xoá bộ lọc tìm kiếm
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            sortedMembers.map((member, index) => {
+              const hasBirthday = isBirthdayThisMonth(member.ngaySinh);
+
+              return (
+                <div
+                  key={member.id}
+                  className={`p-4 space-y-3 transition-colors ${
+                    hasBirthday
+                      ? 'bg-amber-50/50 dark:bg-amber-950/20'
+                      : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40'
+                  }`}
+                >
+                  {/* Card Header: STT, Tên Thánh, Họ Tên, Birthday tag, Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-mono font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {member.tenThanh && (
+                            <span className="font-bold text-blue-700 dark:text-blue-400 text-sm">
+                              {member.tenThanh}
+                            </span>
+                          )}
+                          <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                            {member.hoVaTen || 'Chưa cập nhật tên'}
+                          </h3>
+                        </div>
+                        {hasBirthday && (
+                          <div className="mt-1">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300">
+                              🎂 Sinh nhật tháng này!
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Status Badge */}
+                    <span
+                      className={`shrink-0 px-2 py-0.5 rounded text-[11px] font-bold ${
+                        (member.trangThai || 'Hoạt động') === 'Hoạt động'
+                          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                          : member.trangThai === 'Tạm nghỉ'
+                          ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                          : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                      }`}
+                    >
+                      {member.trangThai || 'Hoạt động'}
+                    </span>
+                  </div>
+
+                  {/* Info details grid inside Card */}
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-100 dark:border-slate-800/60">
+                    <div>
+                      <span className="text-slate-400 text-[11px] block">Giọng/Lớp:</span>
+                      {member.lop ? (
+                        <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium border ${getClassBadgeColor(member.lop)}`}>
+                          {member.lop}
+                        </span>
+                      ) : (
+                        <span className="text-slate-300 dark:text-slate-600 italic">—</span>
+                      )}
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 text-[11px] block">Ngày sinh:</span>
+                      <span className="font-mono text-slate-700 dark:text-slate-300">
+                        {member.ngaySinh ? formatDateVi(member.ngaySinh) : '—'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 text-[11px] block">Bổn phận:</span>
+                      <span className="text-slate-700 dark:text-slate-300 font-medium">
+                        {member.bonPhan || 'Thành viên'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 text-[11px] block">Số điện thoại:</span>
+                      <span className="font-mono text-slate-700 dark:text-slate-300">
+                        {member.soDienThoai || '—'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Actions bar inside Mobile Card */}
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/80 text-xs">
+                    {member.soDienThoai ? (
+                      <a
+                        href={`tel:${member.soDienThoai}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 font-semibold border border-sky-200/60 dark:border-sky-800/80 active:scale-95 transition-transform"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                        <span>Gọi điện</span>
+                      </a>
+                    ) : (
+                      <span />
+                    )}
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onEdit(member)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 transition-colors"
+                      >
+                        <Edit2 className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Sửa</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => onDelete(member)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-medium hover:bg-rose-100 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                        <span>Xoá</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })
+          )}
+        </div>
+
         {/* Desktop & Tablet Table View */}
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700/80 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">

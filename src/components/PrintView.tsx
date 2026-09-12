@@ -246,7 +246,7 @@ export const PrintView: React.FC<PrintViewProps> = ({ members, isOpen, onClose }
           <div className="w-full h-1 bg-amber-500 mt-2 mb-4" />
 
           {/* Summary Boxes at bottom matching sample */}
-          <div className="flex justify-center items-center gap-6 mt-4 text-xs font-sans">
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 mt-4 text-xs font-sans">
             {/* Box 1: Nghỉ hẳn & Tạm nghỉ */}
             <div className="border border-slate-300 bg-slate-50/80 rounded-lg p-2.5 min-w-[140px] space-y-1.5 shadow-sm">
               <div className="flex items-center justify-between gap-4 text-slate-600 font-medium">

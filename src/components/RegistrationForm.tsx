@@ -140,7 +140,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
               value={formData.tenThanh}
               onChange={handleChange}
               placeholder="Ví dụ: Maria, Giuse, Têrêsa, Phêrô, Anna..."
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-sm sm:text-base"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-base sm:text-sm"
             />
             {/* Gợi ý Tên Thánh nhanh */}
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
@@ -170,7 +170,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
               value={formData.hoVaTen}
               onChange={handleChange}
               placeholder="Ví dụ: Nguyễn Văn An, Trần Thị Mai..."
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-sm sm:text-base"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-base sm:text-sm"
             />
           </div>
 
@@ -186,7 +186,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
               value={formData.ngaySinh}
               onChange={handleChange}
               placeholder="Ví dụ: 15/08"
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-sm sm:text-base"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-base sm:text-sm"
             />
           </div>
 
@@ -202,7 +202,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
               value={formData.lop}
               onChange={handleChange}
               placeholder="Chọn hoặc nhập: Xưng Tội, Thêm Sức, Sống Đạo, Vào Đời"
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-sm sm:text-base"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-base sm:text-sm"
             />
             {/* Lựa chọn 4 lớp nhanh */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -242,7 +242,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
               value={formData.soDienThoai}
               onChange={handleChange}
               placeholder="Ví dụ: 0912345678"
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-sm sm:text-base"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-base sm:text-sm"
             />
           </div>
 

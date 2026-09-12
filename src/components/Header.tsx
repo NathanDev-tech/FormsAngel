@@ -74,35 +74,36 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Navigation Tabs & Actions */}
-          <div className="flex flex-wrap items-center justify-center gap-2 w-full md:w-auto">
-            <nav className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60" aria-label="Tabs">
+          <div className="flex items-center justify-center gap-2 w-full md:w-auto">
+            <nav className="flex items-center justify-between p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 w-full sm:w-auto" aria-label="Tabs">
               <button
                 type="button"
                 id="tab-btn-form"
                 onClick={() => setActiveTab('form')}
-                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'form'
-                    ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-sm'
+                    ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-sm font-semibold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <UserPlus className="w-4 h-4" />
-                <span>Đăng Ký Thành Viên</span>
+                <UserPlus className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Đăng Ký</span>
+                <span className="hidden sm:inline whitespace-nowrap">Thành Viên</span>
               </button>
 
               <button
                 type="button"
                 id="tab-btn-list"
                 onClick={() => setActiveTab('list')}
-                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'list'
-                    ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-sm'
+                    ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-sm font-semibold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <Users className="w-4 h-4" />
-                <span>Danh Sách</span>
-                <span className="ml-1 px-1.5 py-0.2 rounded-full text-xs bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 font-semibold">
+                <Users className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Danh Sách</span>
+                <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 font-bold">
                   {totalMembers}
                 </span>
               </button>
@@ -111,16 +112,16 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 id="tab-btn-stats"
                 onClick={() => setActiveTab('stats')}
-                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   activeTab === 'stats'
-                    ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-sm'
+                    ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-sm font-semibold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <BarChart3 className="w-4 h-4" />
-                <span>Thống Kê</span>
+                <BarChart3 className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Thống Kê</span>
                 {birthdaysCount > 0 && (
-                  <span className="hidden sm:inline-flex items-center px-1.5 py-0.2 rounded-full text-xs bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 font-semibold" title={`${birthdaysCount} sinh nhật trong tháng`}>
+                  <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] sm:text-xs bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 font-bold" title={`${birthdaysCount} sinh nhật trong tháng`}>
                     🎂 {birthdaysCount}
                   </span>
                 )}
