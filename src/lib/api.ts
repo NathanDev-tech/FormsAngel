@@ -62,29 +62,44 @@ export function fromSupabaseRow(row: any): ChoirMember {
   };
 }
 
-// Đăng ký Supabase Realtime WebSocket (Kênh dữ liệu trực tiếp)
+// Đăng ký Supabase Realtime WebSocket + Supabase Polling Fallback (Cập nhật trực tiếp 100%)
 export function subscribeSupabaseRealtime(onUpdate: (members: ChoirMember[]) => void) {
   const supabase = getSupabase();
   if (!supabase) return () => {};
 
-  const channel = supabase
-    .channel('public:members')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, async () => {
-      try {
-        const { data } = await supabase.from('members').select('*').order('created_at', { ascending: false });
-        if (data) {
-          const members = data.map(fromSupabaseRow);
-          saveLocalFallback(members);
-          onUpdate(members);
-        }
-      } catch (err) {
-        console.warn('Lỗi nhận Supabase realtime event:', err);
+  const fetchLatestFromSupabase = async () => {
+    try {
+      const { data, error } = await supabase.from('members').select('*').order('created_at', { ascending: false });
+      if (!error && Array.isArray(data)) {
+        const members = data.map(fromSupabaseRow);
+        saveLocalFallback(members);
+        onUpdate(members);
       }
+    } catch (err) {
+      console.warn('Lỗi đọc dữ liệu Supabase:', err);
+    }
+  };
+
+  // 1. Lắng nghe WebSocket postgres_changes Realtime
+  const channel = supabase
+    .channel('public:members_realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, () => {
+      fetchLatestFromSupabase();
     })
-    .subscribe();
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('✅ Đã kết nối Supabase Realtime WebSocket thành công!');
+      }
+    });
+
+  // 2. Tự động quét bổ sung mỗi 3 giây làm phương án dự phòng cho WebSocket
+  const intervalId = setInterval(() => {
+    fetchLatestFromSupabase();
+  }, 3000);
 
   return () => {
     supabase.removeChannel(channel);
+    clearInterval(intervalId);
   };
 }
 
@@ -95,18 +110,28 @@ export async function getMembers(): Promise<ChoirMember[]> {
   if (supabase) {
     try {
       const { data, error } = await supabase.from('members').select('*').order('created_at', { ascending: false });
-      if (!error && Array.isArray(data) && data.length > 0) {
-        const members = data.map(fromSupabaseRow);
-        saveLocalFallback(members);
-        return members;
+      if (!error && Array.isArray(data)) {
+        if (data.length > 0) {
+          const members = data.map(fromSupabaseRow);
+          saveLocalFallback(members);
+          return members;
+        } else {
+          // Nếu bảng Supabase đang trống, nạp dữ liệu mẫu ban đầu vào Supabase
+          const seedRows = INITIAL_MEMBERS.map(toSupabaseRow);
+          await supabase.from('members').insert(seedRows);
+          saveLocalFallback(INITIAL_MEMBERS);
+          return INITIAL_MEMBERS;
+        }
+      } else if (error) {
+        console.warn('Lỗi Supabase Query:', error.message);
       }
     } catch (e) {
       console.warn('Không thể truy vấn Supabase:', e);
     }
   }
 
-  // 2. Kích hoạt auto polling dự phòng
-  syncService.startAutoPolling(4000);
+  // 2. Kích hoạt auto polling dự phòng từ xa
+  syncService.startAutoPolling(3000);
 
   try {
     const res = await fetch('/api/members');
@@ -146,21 +171,20 @@ export async function addMember(data: MemberFormData): Promise<ChoirMember> {
     updatedAt: now,
   };
 
-  // Thêm vào Supabase nếu có
+  // Thêm vào Supabase
   const supabase = getSupabase();
   if (supabase) {
-    try {
-      await supabase.from('members').insert([toSupabaseRow(newMember)]);
-    } catch (e) {
-      console.warn('Lỗi chèn Supabase:', e);
+    const { error } = await supabase.from('members').insert([toSupabaseRow(newMember)]);
+    if (error) {
+      console.error('❌ Lỗi chèn dữ liệu Supabase (RLS Blocked):', error.message);
+    } else {
+      console.log('✨ Đã thêm ca viên vào Supabase Cloud!');
     }
   }
 
   const current = getLocalFallback();
   const updated = [newMember, ...current];
   saveLocalFallback(updated);
-
-  // Đẩy Real-time sync dự phòng
   syncService.pushRemoteData(updated);
 
   return newMember;
@@ -185,11 +209,8 @@ export async function updateMember(id: string, data: Partial<MemberFormData>): P
   if (updatedMember) {
     const supabase = getSupabase();
     if (supabase) {
-      try {
-        await supabase.from('members').update(toSupabaseRow(updatedMember)).eq('id', id);
-      } catch (e) {
-        console.warn('Lỗi cập nhật Supabase:', e);
-      }
+      const { error } = await supabase.from('members').update(toSupabaseRow(updatedMember)).eq('id', id);
+      if (error) console.error('❌ Lỗi cập nhật Supabase:', error.message);
     }
 
     saveLocalFallback(updated);
@@ -202,11 +223,8 @@ export async function updateMember(id: string, data: Partial<MemberFormData>): P
 export async function deleteMember(id: string): Promise<void> {
   const supabase = getSupabase();
   if (supabase) {
-    try {
-      await supabase.from('members').delete().eq('id', id);
-    } catch (e) {
-      console.warn('Lỗi xóa Supabase:', e);
-    }
+    const { error } = await supabase.from('members').delete().eq('id', id);
+    if (error) console.error('❌ Lỗi xóa Supabase:', error.message);
   }
 
   const current = getLocalFallback();
@@ -231,5 +249,6 @@ export async function resetToSeedData(): Promise<ChoirMember[]> {
   syncService.pushRemoteData(INITIAL_MEMBERS);
   return INITIAL_MEMBERS;
 }
+
 
 
