@@ -174,28 +174,20 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
             />
           </div>
 
-          {/* TRƯỜNG 3: Ngày Sinh (Chỉ cần Ngày & Tháng - Bảo mật tuyệt đối) */}
+          {/* TRƯỜNG 3: Ngày Sinh */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label htmlFor="field-ngaySinh" className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
-                3. Ngày Sinh
-              </label>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-                🛡️ Bảo mật tuyệt đối (Chỉ cần Ngày & Tháng)
-              </span>
-            </div>
+            <label htmlFor="field-ngaySinh" className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
+              3. Ngày Sinh
+            </label>
             <input
               type="text"
               id="field-ngaySinh"
               name="ngaySinh"
               value={formData.ngaySinh}
               onChange={handleChange}
-              placeholder="Ví dụ: 15/08 (Chỉ cần Ngày và Tháng sinh để mừng sinh nhật)"
+              placeholder="Ví dụ: 15/08"
               className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:border-sky-500 transition-all text-sm sm:text-base"
             />
-            <p className="text-[11px] text-slate-400 dark:text-slate-500">
-              * Hệ thống chỉ cần ngày và tháng sinh để chúc mừng sinh nhật ca viên trong tháng, không yêu cầu năm sinh.
-            </p>
           </div>
 
           {/* TRƯỜNG 4: Lớp (Xưng Tội, Thêm Sức, Sống Đạo, Vào Đời) */}

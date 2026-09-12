@@ -121,13 +121,13 @@ export const EditMemberModal: React.FC<EditMemberModalProps> = ({
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              3. Ngày Sinh (Ví dụ: 15/08 — Chỉ cần Ngày & Tháng)
+              3. Ngày Sinh
             </label>
             <input
               type="text"
               value={formData.ngaySinh}
               onChange={e => setFormData({ ...formData, ngaySinh: e.target.value })}
-              placeholder="VD: 15/08 (Chỉ cần Ngày & Tháng)"
+              placeholder="VD: 15/08"
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-400/40"
             />
           </div>
