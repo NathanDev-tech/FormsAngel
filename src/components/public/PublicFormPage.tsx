@@ -6,7 +6,7 @@ import { PublicFormField } from './PublicFormField.tsx';
 import { FormSuccess } from './FormSuccess.tsx';
 import { FormClosed } from './FormClosed.tsx';
 import { FormNotFound } from './FormNotFound.tsx';
-import { Send, Loader2, FileText } from 'lucide-react';
+import { Send, Loader2, FileText, AlertCircle } from 'lucide-react';
 
 interface PublicFormPageProps {
   slug: string;
@@ -41,7 +41,7 @@ export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug }) => {
   if (loading) {
     return (
       <PublicFormLayout>
-        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center space-y-3">
+        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-md flex flex-col items-center justify-center space-y-3">
           <Loader2 className="w-8 h-8 text-sky-500 animate-spin" />
           <p className="text-sm font-medium text-slate-500">Đang tải biểu mẫu...</p>
         </div>
@@ -134,13 +134,13 @@ export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug }) => {
 
   return (
     <PublicFormLayout>
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         
         {/* Form Title & Description Card */}
-        <div className="bg-white dark:bg-slate-900 p-6 sm:p-7 rounded-2xl border-t-8 border-t-sky-500 border-x border-b border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
-            <FileText className="w-4 h-4 text-amber-500" />
-            <span>Biểu mẫu thông tin</span>
+        <div className="bg-white dark:bg-slate-900 p-5 sm:p-7 rounded-2xl border-t-8 border-t-sky-500 border-x border-b border-slate-200/90 dark:border-slate-800 shadow-md space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+            <FileText className="w-4 h-4 text-amber-500 shrink-0" />
+            <span>Biểu mẫu ghi danh / thu thập thông tin</span>
           </div>
 
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight font-serif">
@@ -148,42 +148,45 @@ export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug }) => {
           </h1>
 
           {form.description && (
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line border-t border-slate-100 dark:border-slate-800/80 pt-3">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line border-t border-slate-100 dark:border-slate-800/80 pt-3 font-medium">
               {form.description}
             </p>
           )}
 
-          <div className="text-xs text-red-500 font-semibold pt-1">
-            * Bắt buộc
+          <div className="flex items-center gap-1.5 text-xs text-red-500 font-bold pt-2 border-t border-slate-100 dark:border-slate-800">
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span>Các câu hỏi có dấu (*) là bắt buộc nhập</span>
           </div>
         </div>
 
         {/* Dynamic Questions List */}
-        {form.fields.map(field => (
-          <PublicFormField
-            key={field.id}
-            field={field}
-            value={answers[field.id] || ''}
-            onChange={val => handleFieldChange(field.id, val)}
-            error={errors[field.id]}
-          />
-        ))}
+        <div className="space-y-4 sm:space-y-6">
+          {form.fields.map(field => (
+            <PublicFormField
+              key={field.id}
+              field={field}
+              value={answers[field.id] || ''}
+              onChange={val => handleFieldChange(field.id, val)}
+              error={errors[field.id]}
+            />
+          ))}
+        </div>
 
-        {/* Form Actions */}
-        <div className="pt-2 flex items-center justify-between">
+        {/* Form Submit Action */}
+        <div className="pt-3">
           <button
             type="submit"
             disabled={submitting}
-            className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold text-sm shadow-md shadow-sky-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-600 to-sky-600 hover:from-sky-600 hover:to-indigo-700 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-sky-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[48px]"
           >
             {submitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
                 <span>Đang gửi thông tin...</span>
               </>
             ) : (
               <>
-                <Send className="w-4 h-4" />
+                <Send className="w-5 h-5" />
                 <span>GỬI THÔNG TIN</span>
               </>
             )}

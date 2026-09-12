@@ -16,7 +16,7 @@ import { Heart, Sparkles } from 'lucide-react';
 export default function App() {
   const [members, setMembers] = useState<ChoirMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats' | 'forms'>('form');
+  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats' | 'forms'>('list');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // Dark mode state with localStorage persistence
