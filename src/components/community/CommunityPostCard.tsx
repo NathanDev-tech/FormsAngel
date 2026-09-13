@@ -9,12 +9,12 @@ import {
   Clock,
   User,
   Paperclip,
-  ChevronRight,
   ChevronDown,
   ChevronUp,
-  Image as ImageIcon,
   ZoomIn,
   X,
+  Share2,
+  Check,
 } from 'lucide-react';
 
 interface CommunityPostCardProps {
@@ -31,6 +31,7 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [showInlineComments, setShowInlineComments] = useState(false);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const formatDate = (isoStr: string) => {
     try {
@@ -42,6 +43,42 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
       });
     } catch {
       return isoStr;
+    }
+  };
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?post=${post.id}`;
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: post.title,
+            text: post.content.slice(0, 100) + '...',
+            url: shareUrl,
+          });
+        } catch {
+          // Native share dismissed, clipboard copy intact
+        }
+      }
+
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    } catch (err) {
+      console.error('Lỗi chia sẻ bài viết:', err);
     }
   };
 
@@ -154,7 +191,7 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
           )}
         </div>
 
-        {/* Footer Meta & Reactions */}
+        {/* Footer Meta & Reactions & Share */}
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           
           {/* Left: Author & Attachment indicators */}
@@ -172,8 +209,8 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
             )}
           </div>
 
-          {/* Right: Reactions & Inline Comments Toggle */}
-          <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+          {/* Right: Reactions, Inline Comments Toggle & Share Button */}
+          <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto flex-wrap">
             <ReactionBar
               postId={post.id}
               reactionsCount={post.reactions_count}
@@ -193,6 +230,20 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
               <MessageSquare className="w-4 h-4" />
               <span>{post.comments_count || 0} bình luận</span>
               {showInlineComments ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleShare}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                copied
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+              title="Sao chép liên kết chia sẻ bài viết"
+            >
+              {copied ? <Check className="w-4 h-4 text-white" /> : <Share2 className="w-4 h-4 text-sky-500" />}
+              <span>{copied ? 'Đã chép link! ✨' : 'Chia sẻ'}</span>
             </button>
           </div>
 
@@ -214,3 +265,4 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
     </>
   );
 };
+

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { CommunityPost } from '../../types/community.ts';
 import { ReactionBar } from './ReactionBar.tsx';
 import { CommunityCommentList } from './CommunityCommentList.tsx';
-import { X, Pin, AlertCircle, Clock, User, ExternalLink, Paperclip, ChevronLeft, ChevronRight, ZoomIn, FileText } from 'lucide-react';
+import { X, Pin, AlertCircle, Clock, User, ExternalLink, Paperclip, ChevronLeft, ChevronRight, ZoomIn, FileText, Share2, Check } from 'lucide-react';
 
 interface CommunityPostDetailProps {
   post: CommunityPost;
@@ -28,6 +28,42 @@ export const CommunityPostDetail: React.FC<CommunityPostDetailProps> = ({
 }) => {
   const [commentCount, setCommentCount] = useState<number>(post.comments_count || 0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?post=${post.id}`;
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: post.title,
+            text: post.content.slice(0, 100) + '...',
+            url: shareUrl,
+          });
+        } catch {
+          // Native share dismissed
+        }
+      }
+
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    } catch (err) {
+      console.error('Lỗi chia sẻ bài viết:', err);
+    }
+  };
 
   const imageAtts = (post.attachments || []).filter(a => isImageAttachment(a.file_url, a.file_type));
   const fileAtts = (post.attachments || []).filter(a => !isImageAttachment(a.file_url, a.file_type));
@@ -358,17 +394,33 @@ export const CommunityPostDetail: React.FC<CommunityPostDetailProps> = ({
               </div>
             )}
 
-            {/* Reaction Bar */}
+            {/* Reaction Bar & Share Button */}
             <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 flex-wrap">
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                Thả cảm xúc:
-              </span>
-              <ReactionBar
-                postId={post.id}
-                reactionsCount={post.reactions_count}
-                userReactions={post.user_reactions}
-                onReactionChange={onPostUpdate}
-              />
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                  Thả cảm xúc:
+                </span>
+                <ReactionBar
+                  postId={post.id}
+                  reactionsCount={post.reactions_count}
+                  userReactions={post.user_reactions}
+                  onReactionChange={onPostUpdate}
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleShare}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                  copied
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'bg-sky-600 text-white hover:bg-sky-700 shadow-xs'
+                }`}
+                title="Sao chép đường dẫn trực tiếp bài viết"
+              >
+                {copied ? <Check className="w-4 h-4 text-white" /> : <Share2 className="w-4 h-4 text-white" />}
+                <span>{copied ? 'Đã sao chép liên kết! ✨' : 'Chia sẻ bài viết'}</span>
+              </button>
             </div>
 
             {/* Comments Section */}

@@ -62,7 +62,13 @@ export const CommunityHome: React.FC = () => {
       const data = await getPosts(selectedCategory, searchQuery);
       setPosts(data);
 
-      if (activePost) {
+      // Tự động mở bài viết nếu đường dẫn chứa ?post=POST_ID
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetPostId = urlParams.get('post');
+      if (targetPostId) {
+        const found = data.find(p => p.id === targetPostId);
+        if (found) setActivePost(found);
+      } else if (activePost) {
         const updatedActive = data.find(p => p.id === activePost.id);
         if (updatedActive) setActivePost(updatedActive);
       }
