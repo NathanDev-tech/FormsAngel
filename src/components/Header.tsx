@@ -1,10 +1,10 @@
 import React from 'react';
-import { Sparkles, Users, UserPlus, BarChart3, Moon, Sun, Music, Layers } from 'lucide-react';
+import { Sparkles, Users, UserPlus, BarChart3, Moon, Sun, Music, Layers, MessageCircle } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
-  activeTab: 'form' | 'list' | 'stats' | 'forms';
-  setActiveTab: (tab: 'form' | 'list' | 'stats' | 'forms') => void;
+  activeTab: 'form' | 'list' | 'stats' | 'forms' | 'community';
+  setActiveTab: (tab: 'form' | 'list' | 'stats' | 'forms' | 'community') => void;
   totalMembers: number;
   darkMode: boolean;
   setDarkMode: (val: boolean | ((prev: boolean) => boolean)) => void;
@@ -164,6 +164,20 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <Layers className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Biểu Mẫu</span>
+              </button>
+
+              <button
+                type="button"
+                id="tab-btn-community"
+                onClick={() => setActiveTab('community')}
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition-all duration-200 ${
+                  activeTab === 'community'
+                    ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-md shadow-sky-950/5 ring-1 ring-slate-200 dark:ring-slate-700 font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium hover:bg-slate-200/50 dark:hover:bg-slate-700/50'
+                }`}
+              >
+                <MessageCircle className="w-4 h-4 shrink-0 text-amber-500" />
+                <span className="whitespace-nowrap">Diễn Đàn</span>
               </button>
             </nav>
 

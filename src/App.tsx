@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header.tsx';
 import { RegistrationForm } from './components/RegistrationForm.tsx';
 import { MembersTable } from './components/MembersTable.tsx';
@@ -10,13 +10,14 @@ import { ImportCsvModal } from './components/ImportCsvModal.tsx';
 import { ToastContainer } from './components/Toast.tsx';
 import { ChoirMember, MemberFormData, ToastMessage } from './types.ts';
 import { FormsDashboard } from './components/admin/FormsDashboard.tsx';
+import { CommunityAdmin } from './components/community/CommunityAdmin.tsx';
 import { getMembers, addMember, addMultipleMembers, updateMember, deleteMember, resetToSeedData, subscribeSupabaseRealtime } from './lib/api.ts';
 import { Heart, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [members, setMembers] = useState<ChoirMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats' | 'forms'>('list');
+  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats' | 'forms' | 'community'>('list');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // Dark mode state with localStorage persistence
@@ -216,6 +217,10 @@ export default function App() {
             {activeTab === 'forms' && (
               <FormsDashboard />
             )}
+
+            {activeTab === 'community' && (
+              <CommunityAdmin />
+            )}
           </>
         )}
       </main>
@@ -279,5 +284,3 @@ export default function App() {
     </div>
   );
 }
-
-

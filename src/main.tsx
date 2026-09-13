@@ -2,7 +2,36 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { PublicFormPage } from './components/public/PublicFormPage.tsx';
+import { CommunityHome } from './components/community/CommunityHome.tsx';
 import './index.css';
+
+// Helper nhận dạng route Public Community (/community hoặc /FormsAngel/community)
+function parseCommunityRoute(): boolean {
+  const pathname = window.location.pathname;
+  const search = window.location.search;
+  const hash = window.location.hash;
+
+  // 1. Kiểm tra URL đến từ GitHub Pages 404 redirect (?p=community)
+  if (search.includes('?p=')) {
+    const params = new URLSearchParams(search);
+    const p = (params.get('p') || '').toLowerCase();
+    if (p === 'community' || p.startsWith('community/')) {
+      return true;
+    }
+  }
+
+  // 2. Kiểm tra Pathname trực tiếp (/community hoặc /FormsAngel/community)
+  if (pathname.match(/\/(?:FormsAngel\/)?community(?:\/.*)?$/i)) {
+    return true;
+  }
+
+  // 3. Kiểm tra Hash Routing (#/community hoặc #/FormsAngel/community)
+  if (hash && hash.match(/#\/(?:FormsAngel\/)?community(?:\/.*)?$/i)) {
+    return true;
+  }
+
+  return false;
+}
 
 // Helper nhận dạng route Public Form (/form/:slug hoặc /FormsAngel/form/:slug)
 function parsePublicFormSlug(): string | null {
@@ -37,11 +66,14 @@ function parsePublicFormSlug(): string | null {
   return null;
 }
 
+const isCommunity = parseCommunityRoute();
 const publicSlug = parsePublicFormSlug();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {publicSlug ? (
+    {isCommunity ? (
+      <CommunityHome />
+    ) : publicSlug ? (
       <PublicFormPage slug={publicSlug} />
     ) : (
       <App />
