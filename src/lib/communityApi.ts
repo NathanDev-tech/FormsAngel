@@ -271,7 +271,7 @@ export async function createPost(input: CreatePostInput): Promise<CommunityPost>
     id: newPostId,
     title: input.title.trim(),
     content: input.content.trim(),
-    category: input.category || '📢 Thông báo',
+    category: input.category || '📢 Thông báo quan trọng',
     author_name: input.author_name?.trim() || 'Trưởng Ca Đoàn',
     is_pinned: !!input.is_pinned,
     is_important: !!input.is_important,

@@ -2,27 +2,19 @@
  * Danh mục bài viết trong Diễn đàn Cộng đồng Ca Đoàn Thiên Thần.
  */
 export type CommunityCategory = 
-  | '📢 Thông báo'
-  | '📅 Lịch hoạt động'
-  | '🎵 Tập hát'
   | '⛪ Thánh lễ'
-  | '🎉 Sự kiện'
-  | '🙏 Sinh hoạt'
-  | '💬 Thảo luận'
-  | '⚠️ Quan trọng';
+  | '📢 Thông báo quan trọng'
+  | '🎵 Tập hát'
+  | '🎉 Sự kiện';
 
 /**
  * Mảng danh sách các danh mục bài viết phục vụ cho dropdown và bộ lọc filter pills.
  */
 export const COMMUNITY_CATEGORIES: CommunityCategory[] = [
-  '📢 Thông báo',
-  '📅 Lịch hoạt động',
-  '🎵 Tập hát',
   '⛪ Thánh lễ',
+  '📢 Thông báo quan trọng',
+  '🎵 Tập hát',
   '🎉 Sự kiện',
-  '🙏 Sinh hoạt',
-  '💬 Thảo luận',
-  '⚠️ Quan trọng',
 ];
 
 /**
