@@ -373,48 +373,73 @@ export const CommunityHome: React.FC = () => {
               </div>
             </div>
 
-            {/* Widget 3: NỘI QUY CA VIÊN - CA ĐOÀN THIÊN THẦN */}
-            <div className="p-5 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-sky-500/10 dark:from-amber-950/40 dark:to-slate-900 border border-amber-300/60 dark:border-amber-700/50 shadow-xs space-y-3.5 text-xs">
-              <div className="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-300 text-sm pb-2.5 border-b border-amber-200/80 dark:border-amber-900/60">
-                <div className="w-7 h-7 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0 font-extrabold text-sm">
+            {/* Widget 3: NỘI QUY CA VIÊN – CA ĐOÀN THIÊN THẦN (Tăng kích thước font chữ to hơn) */}
+            <div className="p-5 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-sky-500/10 dark:from-amber-950/40 dark:to-slate-900 border border-amber-300/60 dark:border-amber-700/50 shadow-xs space-y-4">
+              <div className="flex items-center gap-2.5 font-bold text-amber-950 dark:text-amber-200 text-sm sm:text-base pb-3 border-b border-amber-200/80 dark:border-amber-900/60">
+                <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0 font-extrabold text-base">
                   📜
                 </div>
-                <span>NỘI QUY CA VIÊN THIÊN THẦN</span>
+                <span>NỘI QUY CA VIÊN – CA ĐOÀN THIÊN THẦN</span>
               </div>
 
-              <div className="space-y-2.5 text-[11.5px] text-slate-700 dark:text-slate-200 leading-snug">
-                <div className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">1</span>
-                  <span><strong>Trách nhiệm & đúng giờ:</strong> Đi tập hát và hát phục vụ đúng giờ, có trách nhiệm với lịch phân công.</span>
+              <div className="space-y-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 leading-relaxed max-h-[480px] overflow-y-auto pr-1 font-medium">
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">1</span>
+                  <span><strong>Tham gia có trách nhiệm:</strong> Đã tham gia ca đoàn thì có trách nhiệm với lịch tập và lịch hát phục vụ ca đoàn.</span>
                 </div>
 
-                <div className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">2</span>
-                  <span><strong>Xin phép khi vắng:</strong> Báo trước cho Ban Điều Hành nếu không thể tham dự lễ/buổi tập.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">2</span>
+                  <span><strong>Đúng giờ:</strong> Đi tập hát và hát lễ phục vụ đúng giờ, hạn chế tối đa việc đi trễ.</span>
                 </div>
 
-                <div className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">3</span>
-                  <span><strong>Tập nghiêm túc & trật tự:</strong> Tập trung học bài, không đùa giỡn, tắt chuông/dùng điện thoại.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">3</span>
+                  <span><strong>Xin phép khi vắng:</strong> Nếu không thể tham dự thánh lễ hoặc tập hát, phải báo trước cho Ban Điều Hành.</span>
                 </div>
 
-                <div className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">4</span>
-                  <span><strong>Trang phục lịch sự:</strong> Giữ trang phục TNTT & tác phong phù hợp khi tập hát và phục vụ Lễ.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">4</span>
+                  <span><strong>Tập luyện nghiêm túc:</strong> Tập trung, chủ động học bài và thực hiện theo hướng dẫn của Ban Điều Hành.</span>
                 </div>
 
-                <div className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">5</span>
-                  <span><strong>Yêu thương & Hiệp nhất:</strong> Tôn trọng nhau, giữ uy tín Ca Đoàn & đặt tinh thần phục vụ Chúa lên trên hết.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">5</span>
+                  <span><strong>Trang phục lịch sự:</strong> Giữ trang phục TNTT và tác phong phù hợp khi tập hát và phục vụ hát Thánh lễ.</span>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">6</span>
+                  <span><strong>Giữ trật tự:</strong> Không nói chuyện, đùa giỡn hoặc sử dụng điện thoại khi đang tập và phục vụ.</span>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">7</span>
+                  <span><strong>Tôn trọng nhau:</strong> Không nói xấu, xúc phạm, gây mất đoàn kết hoặc tạo bè phái trong ca đoàn.</span>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">8</span>
+                  <span><strong>Tuân thủ phân công:</strong> Thực hiện đúng vị trí và nhiệm vụ đã được phân công.</span>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">9</span>
+                  <span><strong>Giữ hình ảnh ca đoàn:</strong> Mỗi ca viên có trách nhiệm giữ gìn hình ảnh và uy tín của Ca Đoàn Thiên Thần.</span>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">10</span>
+                  <span><strong>Tinh thần phục vụ:</strong> Luôn đặt tinh thần yêu thương, hiệp nhất và phục vụ Thiên Chúa lên trên lợi ích cá nhân.</span>
                 </div>
               </div>
 
-              <div className="pt-2.5 border-t border-amber-200/80 dark:border-amber-900/60 text-center bg-amber-100/60 dark:bg-amber-950/50 p-2.5 rounded-2xl border border-amber-300/50 dark:border-amber-800/40 space-y-1">
-                <p className="font-bold text-amber-900 dark:text-amber-300 text-[11px] italic">
-                  "Đã nhận lời phục vụ – hãy có trách nhiệm với lời mình nói."
+              <div className="pt-3 border-t border-amber-200/80 dark:border-amber-900/60 text-center bg-amber-100/70 dark:bg-amber-950/60 p-3.5 rounded-2xl border border-amber-300/50 dark:border-amber-800/40 space-y-1.5">
+                <p className="font-bold text-amber-950 dark:text-amber-200 text-xs sm:text-sm italic">
+                  “Đã nhận lời phục vụ – hãy có trách nhiệm với lời mình nói.”
                 </p>
-                <p className="text-[10px] font-semibold text-sky-700 dark:text-sky-400">
-                  🕊️ Hát để phục vụ, phục vụ trong yêu thương
+                <p className="text-xs font-bold text-sky-800 dark:text-sky-300">
+                  🕊️ Ca Đoàn Thiên Thần – Hát để phục vụ, phục vụ trong yêu thương.
                 </p>
               </div>
             </div>

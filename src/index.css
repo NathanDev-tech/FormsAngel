@@ -3,6 +3,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  html {
+    font-size: 17px; /* Tăng nhẹ kích thước chữ cho toàn bộ dự án */
+  }
+
   :root {
     --font-serif: 'Times New Roman', Times, serif;
     --font-sans: 'Times New Roman', Times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -19,6 +23,14 @@
   h1, h2, h3, h4, .font-times, .font-serif {
     font-family: 'Times New Roman', Times, serif !important;
   }
+}
+
+/* Nâng nhẹ các font chữ nhỏ để nhìn rõ ràng hơn trên toàn dự án */
+.text-\[10px\] {
+  font-size: 11.5px !important;
+}
+.text-\[11px\] {
+  font-size: 12.5px !important;
 }
 
 /* Ngăn iOS Safari tự động phóng to (zoom) khi focus vào ô input trên di động */
