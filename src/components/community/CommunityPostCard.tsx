@@ -28,7 +28,11 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
   };
 
   const hasAttachments = post.attachments && post.attachments.length > 0;
-  const imageAttachment = hasAttachments ? post.attachments!.find(a => a.file_type === 'image' || a.file_url.match(/\.(jpeg|jpg|gif|png|webp)/i)) : null;
+  const imageAttachment = hasAttachments ? post.attachments!.find(a =>
+    a.file_type === 'image' ||
+    a.file_url.startsWith('data:image/') ||
+    /\.(jpeg|jpg|gif|png|webp|avif|svg)(\?.*)?$/i.test(a.file_url)
+  ) : null;
 
   return (
     <article className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-4">

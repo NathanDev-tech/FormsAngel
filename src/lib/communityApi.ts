@@ -302,7 +302,15 @@ export async function getPosts(
   return filtered.map(post => {
     const postComments = localComments.filter(c => c.post_id === post.id);
     const postReactions = localReactions.filter(r => r.post_id === post.id);
-    const postAtts = [...(post.attachments || []), ...localAttachments.filter(a => a.post_id === post.id)];
+    const rawAtts = [...(post.attachments || []), ...localAttachments.filter(a => a.post_id === post.id)];
+    const postAttsMap = new Map<string, CommunityAttachment>();
+    rawAtts.forEach(att => {
+      const key = att.id || att.file_url;
+      if (!postAttsMap.has(key)) {
+        postAttsMap.set(key, att);
+      }
+    });
+    const postAtts = Array.from(postAttsMap.values());
 
     const reactionsCount: Record<ReactionType, number> = { heart: 0, like: 0, pray: 0, party: 0 };
     const userReactions: ReactionType[] = [];
