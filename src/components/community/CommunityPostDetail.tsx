@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { CommunityPost } from '../../types/community.ts';
 import { ReactionBar } from './ReactionBar.tsx';
 import { CommunityCommentList } from './CommunityCommentList.tsx';
+import { getCommunityPostShareUrl } from '../../utils/communityUtils.ts';
 import { X, Pin, AlertCircle, Clock, User, ExternalLink, Paperclip, ChevronLeft, ChevronRight, ZoomIn, FileText, Share2, Check } from 'lucide-react';
 
 interface CommunityPostDetailProps {
@@ -31,8 +32,7 @@ export const CommunityPostDetail: React.FC<CommunityPostDetailProps> = ({
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?post=${post.id}`;
+    const shareUrl = getCommunityPostShareUrl(post.id);
 
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {

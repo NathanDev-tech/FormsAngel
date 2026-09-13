@@ -56,6 +56,22 @@ export const CommunityHome: React.FC = () => {
     localStorage.setItem('ca_doan_dark_mode', JSON.stringify(darkMode));
   }, [darkMode]);
 
+  // Synchronize active post with URL parameter
+  const handleSelectPost = (post: CommunityPost | null) => {
+    setActivePost(post);
+    try {
+      const url = new URL(window.location.href);
+      if (post) {
+        url.searchParams.set('post', post.id);
+      } else {
+        url.searchParams.delete('post');
+      }
+      window.history.replaceState({}, '', url.toString());
+    } catch (err) {
+      console.error('Lỗi cập nhật URL:', err);
+    }
+  };
+
   // Load posts
   const fetchPosts = async () => {
     try {
@@ -262,7 +278,7 @@ export const CommunityHome: React.FC = () => {
             {!searchQuery && selectedCategory === 'Tất cả' && (
               <PinnedPosts
                 posts={posts}
-                onSelectPost={post => setActivePost(post)}
+                onSelectPost={post => handleSelectPost(post)}
               />
             )}
 
@@ -300,7 +316,7 @@ export const CommunityHome: React.FC = () => {
                   <CommunityPostCard
                     key={post.id}
                     post={post}
-                    onSelect={p => setActivePost(p)}
+                    onSelect={p => handleSelectPost(p)}
                     onReactionChange={fetchPosts}
                   />
                 ))}
@@ -341,7 +357,7 @@ export const CommunityHome: React.FC = () => {
       {activePost && (
         <CommunityPostDetail
           post={activePost}
-          onClose={() => setActivePost(null)}
+          onClose={() => handleSelectPost(null)}
           onPostUpdate={fetchPosts}
         />
       )}

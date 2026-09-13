@@ -120,7 +120,7 @@ export const CommunityComposer: React.FC<CommunityComposerProps> = ({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    const files = Array.from(e.dataTransfer.files).filter(f =>
+    const files = Array.from(e.dataTransfer.files).filter((f: File) =>
       f.type.startsWith('image/') || f.type === 'application/pdf' || /\.(doc|docx)$/i.test(f.name)
     );
     processFiles(files);

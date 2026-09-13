@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CommunityPost } from '../../types/community.ts';
 import { ReactionBar } from './ReactionBar.tsx';
 import { CommunityCommentList } from './CommunityCommentList.tsx';
+import { getCommunityPostShareUrl } from '../../utils/communityUtils.ts';
 import {
   Pin,
   AlertCircle,
@@ -48,8 +49,7 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?post=${post.id}`;
+    const shareUrl = getCommunityPostShareUrl(post.id);
 
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
