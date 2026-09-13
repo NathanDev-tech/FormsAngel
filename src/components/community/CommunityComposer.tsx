@@ -9,14 +9,14 @@ interface CommunityComposerProps {
   onSubmit: (input: CreatePostInput) => Promise<boolean>;
 }
 
-// Nén ảnh về max 1200px và quality 0.82 để tiết kiệm localStorage
+// Nén ảnh nâng cao về max 1920px và quality 0.90 để bảo toàn 100% chi tiết & độ sắc nét
 async function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
       URL.revokeObjectURL(url);
-      const MAX = 1200;
+      const MAX = 1920;
       let { width, height } = img;
       if (width > MAX || height > MAX) {
         if (width > height) { height = Math.round((height / width) * MAX); width = MAX; }
@@ -27,8 +27,14 @@ async function compressImage(file: File): Promise<string> {
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       if (!ctx) { reject(new Error('Canvas not supported')); return; }
+
+      const isPng = file.type === 'image/png';
+      if (!isPng) {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+      }
       ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.82));
+      resolve(canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', 0.90));
     };
     img.onerror = reject;
     img.src = url;
@@ -310,11 +316,11 @@ export const CommunityComposer: React.FC<CommunityComposerProps> = ({
                     {imageAtts.map((att, originalIdx) => {
                       const idx = attachments.indexOf(att);
                       return (
-                        <div key={originalIdx} className="relative group rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 aspect-square">
+                        <div key={originalIdx} className="relative group rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-1.5 min-h-[140px]">
                           <img
                             src={att.file_url}
                             alt={att.file_name}
-                            className="w-full h-full object-cover"
+                            className="w-full max-h-48 object-contain rounded-xl"
                           />
                           {/* Overlay */}
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">

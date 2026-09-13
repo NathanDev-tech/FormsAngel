@@ -82,20 +82,20 @@ export const CommunityPostCard: React.FC<CommunityPostCardProps> = ({
           {post.content}
         </p>
 
-        {/* Image Attachment Preview */}
+        {/* Image Attachment Preview - Hiển thị 100% trọn vẹn ảnh không bị cắt */}
         {imageAttachment && (
           <div 
             onClick={() => onSelect(post)}
-            className="mt-3.5 rounded-2xl overflow-hidden max-h-60 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer relative group/img"
+            className="mt-3.5 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950/50 border border-slate-200/80 dark:border-slate-800 cursor-pointer relative group/img flex items-center justify-center p-1.5"
           >
             <img 
               src={imageAttachment.file_url} 
               alt={imageAttachment.file_name} 
-              className="w-full h-48 sm:h-56 object-cover group-hover/img:scale-105 transition-transform duration-300"
+              className="w-full max-h-[380px] object-contain rounded-xl group-hover/img:scale-[1.01] transition-transform duration-300"
             />
-            <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white text-[11px] font-medium flex items-center gap-1">
+            <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-xl bg-black/70 backdrop-blur-md text-white text-[11px] font-medium flex items-center gap-1.5 shadow-md">
               <ImageIcon className="w-3.5 h-3.5" />
-              <span>Xem ảnh</span>
+              <span>Xem bài & ảnh đầy đủ</span>
             </div>
           </div>
         )}

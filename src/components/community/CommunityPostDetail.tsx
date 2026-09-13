@@ -71,17 +71,17 @@ export const CommunityPostDetail: React.FC<CommunityPostDetailProps> = ({
           <span>Ảnh đính kèm ({count})</span>
         </h4>
 
-        {/* Single image - full width */}
+        {/* Single image - full width & 100% visible */}
         {count === 1 && (
           <button
             type="button"
             onClick={() => setLightboxIndex(0)}
-            className="group w-full block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-zoom-in relative"
+            className="group w-full flex items-center justify-center rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950/60 p-2 cursor-zoom-in relative"
           >
             <img
               src={imageAtts[0].file_url}
               alt={imageAtts[0].file_name}
-              className="w-full max-h-[500px] object-contain sm:object-cover group-hover:scale-[1.01] transition-transform duration-300"
+              className="w-full max-h-[600px] object-contain rounded-xl group-hover:scale-[1.01] transition-transform duration-300"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
@@ -92,99 +92,90 @@ export const CommunityPostDetail: React.FC<CommunityPostDetailProps> = ({
 
         {/* 2 images - side by side */}
         {count === 2 && (
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             {imageAtts.map((att, i) => (
               <button
                 key={att.id}
                 type="button"
                 onClick={() => setLightboxIndex(i)}
-                className="group block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-zoom-in relative"
+                className="group flex items-center justify-center rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950/60 p-1.5 cursor-zoom-in relative min-h-[220px]"
               >
                 <img
                   src={att.file_url}
                   alt={att.file_name}
-                  className="w-full h-48 sm:h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full max-h-72 object-contain group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
               </button>
             ))}
           </div>
         )}
 
-        {/* 3 images - 1 large + 2 small */}
+        {/* 3 images */}
         {count === 3 && (
-          <div className="grid grid-cols-3 gap-1.5">
-            <button
-              type="button"
-              onClick={() => setLightboxIndex(0)}
-              className="group col-span-2 block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-zoom-in relative"
-            >
-              <img src={imageAtts[0].file_url} alt={imageAtts[0].file_name} className="w-full h-52 sm:h-72 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-            </button>
-            <div className="flex flex-col gap-1.5">
-              {imageAtts.slice(1, 3).map((att, i) => (
-                <button
-                  key={att.id}
-                  type="button"
-                  onClick={() => setLightboxIndex(i + 1)}
-                  className="group block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-zoom-in relative flex-1"
-                >
-                  <img src={att.file_url} alt={att.file_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" style={{ minHeight: '100px' }} loading="lazy" />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                </button>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {imageAtts.map((att, i) => (
+              <button
+                key={att.id}
+                type="button"
+                onClick={() => setLightboxIndex(i)}
+                className="group flex items-center justify-center rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950/60 p-1.5 cursor-zoom-in relative min-h-[180px]"
+              >
+                <img
+                  src={att.file_url}
+                  alt={att.file_name}
+                  className="w-full max-h-64 object-contain group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+              </button>
+            ))}
           </div>
         )}
 
         {/* 4 images - 2x2 grid */}
         {count === 4 && (
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             {imageAtts.map((att, i) => (
               <button
                 key={att.id}
                 type="button"
                 onClick={() => setLightboxIndex(i)}
-                className="group block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-zoom-in relative"
+                className="group flex items-center justify-center rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950/60 p-1.5 cursor-zoom-in relative min-h-[180px]"
               >
-                <img src={att.file_url} alt={att.file_name} className="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                <img
+                  src={att.file_url}
+                  alt={att.file_name}
+                  className="w-full max-h-56 object-contain group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
               </button>
             ))}
           </div>
         )}
 
-        {/* 5+ images - 2 main + grid với "+N more" */}
+        {/* 5+ images */}
         {count >= 5 && (
-          <div className="grid grid-cols-2 gap-1.5">
-            {/* First 2 big */}
-            {imageAtts.slice(0, 2).map((att, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {imageAtts.slice(0, 6).map((att, i) => (
               <button
                 key={att.id}
                 type="button"
                 onClick={() => setLightboxIndex(i)}
-                className="group block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-zoom-in relative"
+                className="group flex items-center justify-center rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-950/60 p-1.5 cursor-zoom-in relative min-h-[160px]"
               >
-                <img src={att.file_url} alt={att.file_name} className="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-              </button>
-            ))}
-            {/* Next 3 with "+N more" overlay on last */}
-            {imageAtts.slice(2, 5).map((att, i) => (
-              <button
-                key={att.id}
-                type="button"
-                onClick={() => setLightboxIndex(i + 2)}
-                className="group block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 cursor-zoom-in relative"
-              >
-                <img src={att.file_url} alt={att.file_name} className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                {/* "+N more" overlay on the last visible item if there are more */}
-                {i === 2 && count > 5 && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white text-2xl font-extrabold drop-shadow-lg">+{count - 5}</span>
+                <img
+                  src={att.file_url}
+                  alt={att.file_name}
+                  className="w-full max-h-48 object-contain group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                {i === 5 && count > 6 && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-2xl">
+                    <span className="text-white text-2xl font-extrabold drop-shadow-lg">+{count - 6}</span>
                   </div>
                 )}
               </button>
