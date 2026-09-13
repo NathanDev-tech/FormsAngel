@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { CommunityPost, CreatePostInput, COMMUNITY_CATEGORIES, CommunityCategory } from '../../types/community.ts';
-import { X, Send, Paperclip, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { CommunityPost, CreatePostInput, COMMUNITY_CATEGORIES } from '../../types/community.ts';
+import { X, Send, Paperclip, Upload, Trash2, Image as ImageIcon, FileText } from 'lucide-react';
 
 interface CommunityComposerProps {
   initialPost?: CommunityPost | null;
@@ -17,6 +17,8 @@ export const CommunityComposer: React.FC<CommunityComposerProps> = ({
 }) => {
   if (!isOpen) return null;
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [title, setTitle] = useState(initialPost?.title || '');
   const [category, setCategory] = useState<string>(initialPost?.category || COMMUNITY_CATEGORIES[0]);
   const [authorName, setAuthorName] = useState(initialPost?.author_name || 'Trưởng Ca Đoàn');
@@ -25,7 +27,7 @@ export const CommunityComposer: React.FC<CommunityComposerProps> = ({
   const [isImportant, setIsImportant] = useState(initialPost?.is_important || false);
   const [commentsEnabled, setCommentsEnabled] = useState(initialPost?.comments_enabled ?? true);
   
-  // Attachments state
+  // Danh sách tệp đính kèm
   const [attachments, setAttachments] = useState<{ file_name: string; file_url: string; file_type: string; file_size?: string }[]>(
     initialPost?.attachments?.map(a => ({
       file_name: a.file_name,
@@ -35,25 +37,52 @@ export const CommunityComposer: React.FC<CommunityComposerProps> = ({
     })) || []
   );
 
-  const [newAttName, setNewAttName] = useState('');
-  const [newAttUrl, setNewAttUrl] = useState('');
-
+  const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleAddAttachment = () => {
-    if (!newAttUrl.trim()) return;
-    const name = newAttName.trim() || 'File_dinh_kem_' + (attachments.length + 1);
-    const type = newAttUrl.match(/\.(jpeg|jpg|gif|png|webp)/i) ? 'image' : 'file';
+  // Xử lý chọn tệp từ máy tính / thiết bị
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-    setAttachments(prev => [...prev, {
-      file_name: name,
-      file_url: newAttUrl.trim(),
-      file_type: type,
-    }]);
+    setIsUploading(true);
+    const fileList: File[] = Array.from(files);
 
-    setNewAttName('');
-    setNewAttUrl('');
+    const promises = fileList.map((file: File) => {
+      return new Promise<{ file_name: string; file_url: string; file_type: string; file_size: string }>((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+          const result = event.target?.result as string;
+          const isImg = file.type.startsWith('image/');
+          const sizeMb = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+          resolve({
+            file_name: file.name,
+            file_url: result,
+            file_type: isImg ? 'image' : 'file',
+            file_size: sizeMb,
+          });
+        };
+
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(promises)
+      .then(newItems => {
+        setAttachments(prev => [...prev, ...newItems]);
+      })
+      .catch(err => {
+        console.error('Lỗi tải tệp:', err);
+        setErrorMsg('Không thể đọc file đã chọn, vui lòng thử lại.');
+      })
+      .finally(() => {
+        setIsUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      });
   };
 
   const handleRemoveAttachment = (index: number) => {
@@ -188,54 +217,97 @@ export const CommunityComposer: React.FC<CommunityComposerProps> = ({
             />
           </div>
 
-          {/* Attachments UI */}
+          {/* Direct Image / File Upload Dropzone */}
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/70 space-y-3">
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Paperclip className="w-4 h-4 text-amber-500" />
-              <span>Ảnh & Tệp đính kèm (URL)</span>
-            </label>
-
-            <div className="flex gap-2 flex-col sm:flex-row">
-              <input
-                type="text"
-                value={newAttName}
-                onChange={e => setNewAttName(e.target.value)}
-                placeholder="Tên file (vd: Lich_Thang_9.png)"
-                className="sm:w-1/3 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"
-              />
-              <input
-                type="url"
-                value={newAttUrl}
-                onChange={e => setNewAttUrl(e.target.value)}
-                placeholder="Đường dẫn ảnh/file URL (https://...)"
-                className="sm:w-2/3 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-100"
-              />
-              <button
-                type="button"
-                onClick={handleAddAttachment}
-                className="px-3 py-1.5 rounded-xl bg-sky-600 text-white text-xs font-bold shrink-0 hover:bg-sky-700 transition-colors flex items-center gap-1 justify-center"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Thêm</span>
-              </button>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <Paperclip className="w-4 h-4 text-amber-500" />
+                <span>Tải Ảnh / Tệp Đính Kèm Từ Máy Tính</span>
+              </label>
+              {attachments.length > 0 && (
+                <span className="text-[11px] font-semibold text-slate-500">
+                  {attachments.length} tệp đã chọn
+                </span>
+              )}
             </div>
 
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept="image/*,.pdf,.doc,.docx"
+              multiple
+              className="hidden"
+            />
+
+            {/* Upload Action Button / Dropzone */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="w-full py-4 px-4 rounded-2xl border-2 border-dashed border-sky-300 dark:border-slate-600 hover:border-sky-500 dark:hover:border-sky-400 bg-white dark:bg-slate-900/80 transition-all flex flex-col items-center justify-center gap-2 group cursor-pointer"
+            >
+              <div className="w-10 h-10 rounded-full bg-sky-50 dark:bg-sky-950/80 text-sky-600 dark:text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                {isUploading ? (
+                  <div className="w-5 h-5 border-2 border-sky-500/20 border-t-sky-500 rounded-full animate-spin" />
+                ) : (
+                  <Upload className="w-5 h-5" />
+                )}
+              </div>
+              <div className="text-center">
+                <span className="text-xs font-bold text-sky-700 dark:text-sky-300 group-hover:underline">
+                  {isUploading ? 'Đang đọc dữ liệu tệp...' : '📁 Nhấp để chọn ảnh / tệp từ thiết bị của bạn'}
+                </span>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  Hỗ trợ định dạng ảnh (PNG, JPG, WEBP) và tài liệu (PDF, Word)
+                </p>
+              </div>
+            </button>
+
+            {/* Attached Files & Live Thumbnails Grid */}
             {attachments.length > 0 && (
-              <div className="space-y-1.5 pt-1">
-                {attachments.map((att, idx) => (
-                  <div key={idx} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs">
-                    <span className="truncate text-slate-700 dark:text-slate-300 font-medium">
-                      {att.file_name} ({att.file_url})
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveAttachment(idx)}
-                      className="text-rose-500 hover:text-rose-700 p-1"
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+                {attachments.map((att, idx) => {
+                  const isImg = att.file_type === 'image' || att.file_url.startsWith('data:image/');
+
+                  return (
+                    <div
+                      key={idx}
+                      className="group relative p-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
+                      <div className="flex items-center gap-2.5 truncate">
+                        {isImg ? (
+                          <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
+                            <img src={att.file_url} alt={att.file_name} className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200 dark:border-amber-800">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                        )}
+
+                        <div className="truncate text-left">
+                          <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                            {att.file_name}
+                          </p>
+                          {att.file_size && (
+                            <p className="text-[10px] text-slate-400">{att.file_size}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAttachment(idx)}
+                        className="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/60 transition-colors shrink-0"
+                        title="Xóa tệp này"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -284,7 +356,7 @@ export const CommunityComposer: React.FC<CommunityComposerProps> = ({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploading}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-sky-600/20 disabled:opacity-50 transition-all"
             >
               {isSubmitting ? (

@@ -15,19 +15,19 @@ const LOCAL_COMMENTS_KEY = 'formsangel_community_comments_v1';
 const LOCAL_REACTIONS_KEY = 'formsangel_community_reactions_v1';
 const LOCAL_ATTACHMENTS_KEY = 'formsangel_community_attachments_v1';
 
-// Seed Data Mặc Định cho Diễn Đàn Cộng Đồng Ca Đoàn Thiên Thần
+// Seed Data Mặc Định phong phú cho Diễn Đàn Cộng Đồng Ca Đoàn Thiên Thần
 const DEFAULT_SEED_POSTS: CommunityPost[] = [
   {
     id: 'post_seed_1',
     title: '📢 LỊCH TẬP HÁT VÀ PHỤC VỤ THÁNH LỄ THÁNG 9/2026',
-    content: 'Kính gửi quý Anh Chị Em ca viên Ca Đoàn Thiên Thần,\n\nBan Hành Giáo và Ban Điều Hành Ca Đoàn xin thông báo lịch tập hát và phục vụ Thánh Lễ trong tháng 9 như sau:\n\n1. Lịch Tập Hát:\n- Thứ Ba & Thứ Năm hàng tuần lúc 19:30 tại nhà mục vụ Giáo Xứ Bắc Hòa.\n- Riêng Thứ Bảy tuần này tập hát bổ sung lúc 19:00 để chuẩn bị cho Thánh Lễ Quan Thầy.\n\n2. Lịch Phục Vụ:\n- Thánh Lễ 07:00 Sáng Chủ Nhật hàng tuần.\n\nRất mong toàn thể anh chị em sắp xếp thời gian đi tập hát đông đủ và đúng giờ.',
+    content: 'Kính gửi quý Anh Chị Em ca viên Ca Đoàn Thiên Thần,\n\nBan Hành Giáo và Ban Điều Hành Ca Đoàn xin thông báo lịch tập hát và phục vụ Thánh Lễ trong tháng 9 như sau:\n\n1. Lịch Tập Hát:\n- Thứ Ba & Thứ Năm hàng tuần lúc 19:30 tại nhà mục vụ Giáo Xứ Bắc Hòa.\n- Riêng Thứ Bảy tuần này tập hát bổ sung lúc 19:00 để chuẩn bị cho Thánh Lễ Quan Thầy.\n\n2. Lịch Phục Vụ:\n- Thánh Lễ 07:00 Sáng Chủ Nhật hàng tuần tại Thánh Đường Giáo Xứ.\n\nRất mong toàn thể anh chị em sắp xếp thời gian đi tập hát đông đủ và đúng giờ.',
     category: '📢 Thông báo',
     author_name: 'Trưởng Ca Đoàn',
     is_pinned: true,
     is_important: true,
     comments_enabled: true,
-    created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-    updated_at: new Date(Date.now() - 3600000 * 24).toISOString(),
+    created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
+    updated_at: new Date(Date.now() - 3600000 * 12).toISOString(),
     attachments: [
       {
         id: 'att_seed_1',
@@ -36,33 +36,44 @@ const DEFAULT_SEED_POSTS: CommunityPost[] = [
         file_url: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
         file_type: 'image',
         file_size: '1.2 MB',
-        created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
+        created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
       }
     ]
   },
   {
     id: 'post_seed_2',
-    title: '⛪ CHƯƠNG TRÌNH THÁNH LỄ TẠ ƠN BỔN MẠNG CA ĐOÀN THIÊN THẦN',
-    content: 'Hướng tới Ngày Lễ Các Tổng Lãnh Thiên Thần (29/09),\nCa Đoàn chúng ta sẽ cử hành Thánh Lễ Tạ Ơn Bổn Mạng trọng thể.\n\nThời gian: 18:00 Thứ Ba, ngày 29/09/2026\nĐịa điểm: Thánh Đường Giáo Xứ Bắc Hòa\n\nSau Thánh Lễ sẽ có buổi tiệc mừng nhẹ và giao lưu thân mật tại khuôn viên nhà mục vụ. Kính mời toàn thể ca viên và gia đình cùng tham dự!',
+    title: '⛪ CHƯƠNG TRÌNH THÁNH LỄ TẠ ƠN BỔN MẠNG CA ĐOÀN THIÊN THẦN (29/09)',
+    content: 'Hướng tới Ngày Lễ Các Tổng Lãnh Thiên Thần (29/09),\nCa Đoàn chúng ta sẽ cử hành Thánh Lễ Tạ Ơn Bổn Mạng trọng thể.\n\n• Thời gian: 18:00 Thứ Ba, ngày 29/09/2026\n• Địa điểm: Thánh Đường Giáo Xứ Bắc Hòa\n• Phục trang: Đồng phục ca đoàn màu trắng xanh\n\nSau Thánh Lễ sẽ có buổi tiệc mừng nhẹ và giao lưu thân mật tại khuôn viên nhà mục vụ. Kính mời toàn thể ca viên và gia đình cùng tham dự đông đủ!',
     category: '⛪ Thánh lễ',
     author_name: 'Ban Điều Hành',
     is_pinned: true,
     is_important: false,
     comments_enabled: true,
-    created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
-    updated_at: new Date(Date.now() - 3600000 * 48).toISOString(),
+    created_at: new Date(Date.now() - 3600000 * 36).toISOString(),
+    updated_at: new Date(Date.now() - 3600000 * 36).toISOString(),
+    attachments: [
+      {
+        id: 'att_seed_2',
+        post_id: 'post_seed_2',
+        file_name: 'Thanh_Le_Bon_Mang.jpg',
+        file_url: 'https://images.unsplash.com/photo-1548625361-185d2eb34d4a?auto=format&fit=crop&w=1200&q=80',
+        file_type: 'image',
+        file_size: '2.4 MB',
+        created_at: new Date(Date.now() - 3600000 * 36).toISOString(),
+      }
+    ]
   },
   {
     id: 'post_seed_3',
-    title: '🎵 CHIA SẺ TẬP BẢN NHẠC "TIN NGHĨA CHÚA MANG TẤT CẢ" (TÔN VINH LỄ CHỦ NHẬT)',
-    content: 'Thân gửi các ca viên các giọng Soprano, Alto, Tenor, Bass!\n\nBản nhạc tuần này đã được Ca Trưởng biên soạn lại theo bè 4 giọng. Mọi người xem trước và nghe phần audio thu âm mẫu để tập thuộc giai điệu nhé.\n\nChúc anh chị em tuần mới tràn đầy ơn Chúa!',
+    title: '🎵 BẢN NHẠC TẬP HÁT: "TIN NGHĨA CHÚA MANG TẤT CẢ" (BÈ 4 GIỌNG)',
+    content: 'Thân gửi các ca viên các giọng Soprano, Alto, Tenor, Bass!\n\nBản nhạc tuần này đã được Ca Trưởng biên soạn lại theo bè 4 giọng chuẩn. Mọi người tải bản nhạc về tập trước và nghe phần audio thu âm mẫu để thuộc giai điệu nhé.\n\nChúc anh chị em tuần mới tràn đầy ơn Chúa!',
     category: '🎵 Tập hát',
     author_name: 'Ca Trưởng',
     is_pinned: false,
     is_important: false,
     comments_enabled: true,
-    created_at: new Date(Date.now() - 3600000 * 72).toISOString(),
-    updated_at: new Date(Date.now() - 3600000 * 72).toISOString(),
+    created_at: new Date(Date.now() - 3600000 * 60).toISOString(),
+    updated_at: new Date(Date.now() - 3600000 * 60).toISOString(),
   }
 ];
 
@@ -72,14 +83,14 @@ const DEFAULT_SEED_COMMENTS: CommunityComment[] = [
     post_id: 'post_seed_1',
     author_name: 'Nguyễn Minh',
     content: 'Dạ con đã nhận thông báo ạ. Thứ Bảy tuần này con sẽ có mặt đúng 19:00!',
-    created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
+    created_at: new Date(Date.now() - 3600000 * 8).toISOString(),
   },
   {
     id: 'comm_seed_2',
     post_id: 'post_seed_1',
     author_name: 'Trần Thị Thu',
     content: 'Dạ cảm ơn Ban Điều Hành! Giọng Alto tuần này tập bài nào vậy ạ?',
-    created_at: new Date(Date.now() - 3600000 * 10).toISOString(),
+    created_at: new Date(Date.now() - 3600000 * 6).toISOString(),
   },
   {
     id: 'comm_seed_3',
@@ -87,7 +98,7 @@ const DEFAULT_SEED_COMMENTS: CommunityComment[] = [
     parent_comment_id: 'comm_seed_2',
     author_name: 'Ca Trưởng',
     content: 'Giọng Alto tập bài Đáp Ca và Alleluia mới nhé Thu!',
-    created_at: new Date(Date.now() - 3600000 * 8).toISOString(),
+    created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
   }
 ];
 
@@ -99,11 +110,14 @@ const DEFAULT_SEED_REACTIONS: CommunityReaction[] = [
   { id: 'react_5', post_id: 'post_seed_2', reaction_type: 'heart', visitor_id: 'visitor_4', created_at: new Date().toISOString() },
 ];
 
-// Helper Storage
+// Helper Local Storage
 function getLocalPosts(): CommunityPost[] {
   try {
     const data = localStorage.getItem(LOCAL_POSTS_KEY);
-    if (data) return JSON.parse(data);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
     localStorage.setItem(LOCAL_POSTS_KEY, JSON.stringify(DEFAULT_SEED_POSTS));
     return DEFAULT_SEED_POSTS;
   } catch {
@@ -122,7 +136,10 @@ function saveLocalPosts(posts: CommunityPost[]) {
 function getLocalComments(): CommunityComment[] {
   try {
     const data = localStorage.getItem(LOCAL_COMMENTS_KEY);
-    if (data) return JSON.parse(data);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
     localStorage.setItem(LOCAL_COMMENTS_KEY, JSON.stringify(DEFAULT_SEED_COMMENTS));
     return DEFAULT_SEED_COMMENTS;
   } catch {
@@ -141,7 +158,10 @@ function saveLocalComments(comments: CommunityComment[]) {
 function getLocalReactions(): CommunityReaction[] {
   try {
     const data = localStorage.getItem(LOCAL_REACTIONS_KEY);
-    if (data) return JSON.parse(data);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
     localStorage.setItem(LOCAL_REACTIONS_KEY, JSON.stringify(DEFAULT_SEED_REACTIONS));
     return DEFAULT_SEED_REACTIONS;
   } catch {
@@ -183,6 +203,7 @@ export async function getPosts(
 ): Promise<CommunityPost[]> {
   const supabase = getSupabase();
   const visitorId = getOrCreateVisitorId();
+  let posts: CommunityPost[] = [];
 
   if (supabase) {
     try {
@@ -198,8 +219,7 @@ export async function getPosts(
 
       const { data: postsData, error } = await query;
 
-      if (!error && postsData) {
-        // Lấy thông tin đính kèm, reactions, comment count cho từng bài
+      if (!error && postsData && postsData.length > 0) {
         const resultPosts: CommunityPost[] = [];
 
         for (const post of postsData) {
@@ -210,19 +230,16 @@ export async function getPosts(
             if (!matchTitle && !matchContent) continue;
           }
 
-          // Lấy attachments
           const { data: atts } = await supabase
             .from('community_attachments')
             .select('*')
             .eq('post_id', post.id);
 
-          // Lấy comment count
           const { count: commentCount } = await supabase
             .from('community_comments')
             .select('*', { count: 'exact', head: true })
             .eq('post_id', post.id);
 
-          // Lấy reactions
           const { data: reactData } = await supabase
             .from('community_reactions')
             .select('*')
@@ -249,14 +266,16 @@ export async function getPosts(
           });
         }
 
-        return resultPosts;
+        if (resultPosts.length > 0) {
+          return resultPosts;
+        }
       }
     } catch (err) {
-      console.warn('Lỗi getPosts từ Supabase, chuyển sang local storage fallback:', err);
+      console.warn('Supabase getPosts error, switching to local seed fallback:', err);
     }
   }
 
-  // Fallback Local Storage
+  // Fallback Local Storage với Seed Data Đảm Bảo Không Bao Giờ Trống Dữ Liệu
   const localPosts = getLocalPosts();
   const localComments = getLocalComments();
   const localReactions = getLocalReactions();
@@ -275,7 +294,6 @@ export async function getPosts(
     );
   }
 
-  // Sort pinned first, then newest
   filtered.sort((a, b) => {
     if (a.is_pinned !== b.is_pinned) return a.is_pinned ? -1 : 1;
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -408,7 +426,6 @@ export async function createPost(input: CreatePostInput): Promise<CommunityPost>
     }
   }
 
-  // Local storage
   saveLocalPostFallback(newPostObj);
   return newPostObj;
 }
@@ -533,7 +550,7 @@ export async function getComments(postId: string): Promise<CommunityComment[]> {
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
-      if (!error && commentsData) {
+      if (!error && commentsData && commentsData.length > 0) {
         return buildCommentTree(commentsData);
       }
     } catch (err) {
@@ -546,7 +563,6 @@ export async function getComments(postId: string): Promise<CommunityComment[]> {
   return buildCommentTree(allComments);
 }
 
-// Helper dựng cây bình luận (cấp 1 và cấp 2 replies)
 function buildCommentTree(rawComments: CommunityComment[]): CommunityComment[] {
   const map: Record<string, CommunityComment> = {};
   const roots: CommunityComment[] = [];
@@ -655,7 +671,6 @@ export async function toggleReaction(
 
   if (supabase) {
     try {
-      // Kiểm tra xem đã thả reaction này chưa
       const { data: existing } = await supabase
         .from('community_reactions')
         .select('*')
@@ -707,7 +722,6 @@ export async function toggleReaction(
   }
   saveLocalReactions(reactions);
 
-  // Đếm lại tổng số lượt reaction của loại này
   const totalCount = reactions.filter(
     r => r.post_id === postId && r.reaction_type === reactionType
   ).length;

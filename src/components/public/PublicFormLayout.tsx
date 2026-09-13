@@ -18,8 +18,8 @@ export const PublicFormLayout: React.FC<PublicFormLayoutProps> = ({ children }) 
         {/* Brand Header */}
         <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-md shadow-slate-950/5">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl overflow-hidden shadow-sm ring-2 ring-amber-400/40 shrink-0 bg-slate-900 flex items-center justify-center p-0.5 bg-gradient-to-br from-sky-400 to-indigo-600">
-              <div className="w-full h-full rounded-[14px] overflow-hidden bg-slate-900 flex items-center justify-center">
+            <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full overflow-hidden shadow-sm ring-2 ring-amber-400/50 shrink-0 bg-slate-900 flex items-center justify-center p-0.5 bg-gradient-to-br from-sky-400 via-amber-300 to-indigo-600">
+              <div className="w-full h-full rounded-full overflow-hidden bg-slate-900 flex items-center justify-center">
                 <img
                   src={logoImg}
                   alt="FormsAngel Logo"

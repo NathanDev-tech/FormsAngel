@@ -31,8 +31,8 @@ export const Header: React.FC<HeaderProps> = ({
               
               {/* Angelic Glowing Emblem Logo */}
               <div className="relative group shrink-0">
-                <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl overflow-hidden shadow-md shadow-sky-500/10 dark:shadow-sky-900/30 ring-2 ring-amber-400/40 dark:ring-amber-500/30 p-0.5 bg-gradient-to-br from-sky-400 via-amber-300 to-indigo-600 transition-transform duration-300 group-hover:scale-105">
-                  <div className="w-full h-full rounded-[14px] overflow-hidden bg-slate-900 flex items-center justify-center">
+                <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-full overflow-hidden shadow-md shadow-sky-500/10 dark:shadow-sky-900/30 ring-2 ring-amber-400/50 dark:ring-amber-500/40 p-0.5 bg-gradient-to-br from-sky-400 via-amber-300 to-indigo-600 transition-transform duration-300 group-hover:scale-105">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-slate-900 flex items-center justify-center">
                     <img
                       src={logoImg}
                       alt="Logo Ca Đoàn Thiên Thần"
