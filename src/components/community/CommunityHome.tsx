@@ -7,6 +7,7 @@ import { PinnedPosts } from './PinnedPosts.tsx';
 import { CommunityPostCard } from './CommunityPostCard.tsx';
 import { CommunityPostDetail } from './CommunityPostDetail.tsx';
 import { CommunityComposer } from './CommunityComposer.tsx';
+import { RulesWidget } from './RulesWidget.tsx';
 import logoImg from '../../assets/logo.png';
 import {
   Sparkles,
@@ -305,144 +306,8 @@ export const CommunityHome: React.FC = () => {
           {/* Right Sidebar Widgets Column (lg:col-span-4) - Hiển thị cột bên trên Laptop/Desktop, hiển thị xếp dưới trên Mobile */}
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
             
-            {/* Widget 1: Lịch Hoạt Động Nổi Bật */}
-            <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
-                <div className="w-7 h-7 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-xs shrink-0">
-                  <Calendar className="w-4 h-4" />
-                </div>
-                <span>📅 LỊCH PHỤC VỤ TUẦN NÀY</span>
-              </div>
-
-              <div className="space-y-3 text-xs">
-                <div className="p-3 rounded-2xl bg-sky-50/60 dark:bg-slate-800/60 border border-sky-100 dark:border-slate-700/80 space-y-1">
-                  <div className="flex justify-between font-bold text-sky-800 dark:text-sky-300">
-                    <span>🎵 Tập hát định kỳ</span>
-                    <span>Thứ 5 & Thứ 7</span>
-                  </div>
-                  <p className="text-slate-600 dark:text-slate-400">Hàng tuần tại Phòng Tập Hát</p>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-amber-50/60 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900/50 space-y-1">
-                  <div className="flex justify-between font-bold text-amber-900 dark:text-amber-300">
-                    <span>⛪ Thánh Lễ Chủ Nhật</span>
-                    <span>06:30</span>
-                  </div>
-                  <p className="text-slate-600 dark:text-slate-400">Thánh Đường Giáo Xứ Bắc Hòa</p>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 space-y-1">
-                  <div className="flex justify-between font-bold text-indigo-900 dark:text-indigo-300">
-                    <span>🎉 Lễ Bổn Mạng</span>
-                    <span>29/09 hằng năm</span>
-                  </div>
-                  <p className="text-slate-600 dark:text-slate-400">Lễ Các Tổng Lãnh Thiên Thần</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Widget 2: Thống Kê Diễn Đàn */}
-            <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
-                <div className="w-7 h-7 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0">
-                  <TrendingUp className="w-4 h-4" />
-                </div>
-                <span>📊 THỐNG KÊ CỘNG ĐỒNG</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 text-center">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
-                  <span className="text-xl font-extrabold text-sky-600 dark:text-sky-400 block">{posts.length}</span>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Bài viết</span>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
-                  <span className="text-xl font-extrabold text-amber-500 block">{totalPinned}</span>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Bài ghim</span>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
-                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 block">{totalComments}</span>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Bình luận</span>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
-                  <span className="text-xl font-extrabold text-rose-500 block">100%</span>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Công khai</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Widget 3: NỘI QUY CA VIÊN – CA ĐOÀN THIÊN THẦN (Tăng kích thước font chữ to hơn) */}
-            <div className="p-5 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-sky-500/10 dark:from-amber-950/40 dark:to-slate-900 border border-amber-300/60 dark:border-amber-700/50 shadow-xs space-y-4">
-              <div className="flex items-center gap-2.5 font-bold text-amber-950 dark:text-amber-200 text-sm sm:text-base pb-3 border-b border-amber-200/80 dark:border-amber-900/60">
-                <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0 font-extrabold text-base">
-                  📜
-                </div>
-                <span>NỘI QUY CA VIÊN – CA ĐOÀN THIÊN THẦN</span>
-              </div>
-
-              <div className="space-y-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 leading-relaxed max-h-[480px] overflow-y-auto pr-1 font-medium">
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">1</span>
-                  <span><strong>Tham gia có trách nhiệm:</strong> Đã tham gia ca đoàn thì có trách nhiệm với lịch tập và lịch hát phục vụ ca đoàn.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">2</span>
-                  <span><strong>Đúng giờ:</strong> Đi tập hát và hát lễ phục vụ đúng giờ, hạn chế tối đa việc đi trễ.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">3</span>
-                  <span><strong>Xin phép khi vắng:</strong> Nếu không thể tham dự thánh lễ hoặc tập hát, phải báo trước cho Ban Điều Hành.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">4</span>
-                  <span><strong>Tập luyện nghiêm túc:</strong> Tập trung, chủ động học bài và thực hiện theo hướng dẫn của Ban Điều Hành.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">5</span>
-                  <span><strong>Trang phục lịch sự:</strong> Giữ trang phục TNTT và tác phong phù hợp khi tập hát và phục vụ hát Thánh lễ.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">6</span>
-                  <span><strong>Giữ trật tự:</strong> Không nói chuyện, đùa giỡn hoặc sử dụng điện thoại khi đang tập và phục vụ.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">7</span>
-                  <span><strong>Tôn trọng nhau:</strong> Không nói xấu, xúc phạm, gây mất đoàn kết hoặc tạo bè phái trong ca đoàn.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">8</span>
-                  <span><strong>Tuân thủ phân công:</strong> Thực hiện đúng vị trí và nhiệm vụ đã được phân công.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">9</span>
-                  <span><strong>Giữ hình ảnh ca đoàn:</strong> Mỗi ca viên có trách nhiệm giữ gìn hình ảnh và uy tín của Ca Đoàn Thiên Thần.</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">10</span>
-                  <span><strong>Tinh thần phục vụ:</strong> Luôn đặt tinh thần yêu thương, hiệp nhất và phục vụ Thiên Chúa lên trên lợi ích cá nhân.</span>
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-amber-200/80 dark:border-amber-900/60 text-center bg-amber-100/70 dark:bg-amber-950/60 p-3.5 rounded-2xl border border-amber-300/50 dark:border-amber-800/40 space-y-1.5">
-                <p className="font-bold text-amber-950 dark:text-amber-200 text-xs sm:text-sm italic">
-                  “Đã nhận lời phục vụ – hãy có trách nhiệm với lời mình nói.”
-                </p>
-                <p className="text-xs font-bold text-sky-800 dark:text-sky-300">
-                  🕊️ Ca Đoàn Thiên Thần – Hát để phục vụ, phục vụ trong yêu thương.
-                </p>
-              </div>
-            </div>
+            {/* Widget: NỘI QUY CA VIÊN – CA ĐOÀN THIÊN THẦN (Đầy đủ 10 điều) */}
+            <RulesWidget />
 
           </div>
 
@@ -461,7 +326,7 @@ export const CommunityHome: React.FC = () => {
           </div>
 
           <div className="text-[11px] text-slate-400">
-            Giáo Phận Xuân Lộc • Giáo Hạt Phú Thịnh • Phụng Sự Thánh Nhạc
+            Giáo Phận Xuân Lộc • Giáo Hạt Phú Thịnh
           </div>
         </div>
       </footer>

@@ -33,6 +33,30 @@
   font-size: 12.5px !important;
 }
 
+/* Custom scrollbar siêu mỏng, sang trọng cho các khung scroll */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.35);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.65);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Ngăn iOS Safari tự động phóng to (zoom) khi focus vào ô input trên di động */
 @media screen and (max-width: 768px) {
   input[type="text"],

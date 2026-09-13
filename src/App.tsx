@@ -232,7 +232,7 @@ export default function App() {
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             <span className="font-semibold text-slate-700 dark:text-slate-300">Ca Đoàn Thiên Thần</span>
             <span>•</span>
-            <span>Phụng sự Thánh Nhạc</span>
+            <span>Giáo Xứ Bắc Hòa</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
