@@ -79,13 +79,13 @@ export function getBirthYear(dateStr: string | undefined | null): string {
  * - Thêm Sức: Xanh nước biển (#dbeafe / #1d4ed8)
  * - Sống Đạo: Màu vàng (#fef3c7 / #b45309)
  * - Vào Đời: Màu nâu (#f5e6d3 / #78350f)
- * - Giáo Lý Viên / Dự Trưởng: Màu đỏ (#fee2e2 / #b91c1c)
+ * - GiLV/Dự Trưởng: Màu đỏ (#fee2e2 / #b91c1c)
  */
 export function getExcelClassBadgeStyle(className: string | undefined | null): string {
   if (!className || className === '—') return 'color: #64748b; font-style: italic;';
   const lower = className.toLowerCase().trim();
 
-  if (lower.includes('giáo lý') || lower.includes('dự trưởng') || lower.includes('glv')) {
+  if (lower.includes('giáo lý') || lower.includes('dự trưởng') || lower.includes('glv') || lower.includes('glv')) {
     return 'background-color: #fee2e2; color: #b91c1c; font-weight: bold; border: 0.5pt solid #fca5a5; padding: 2pt 8pt; border-radius: 4pt;';
   }
   if (lower.includes('xưng tội')) {
@@ -132,7 +132,7 @@ export function exportDecoratedExcel(
     if (!lop || lop === '—') return `<span style="color:#94a3b8;font-style:italic;">—</span>`;
     const l = lop.toLowerCase();
     let bg = '#e0f2fe'; let color = '#0369a1'; let border = '#bae6fd';
-    if (l.includes('giáo lý') || l.includes('dự trưởng')) { bg = '#fef2f2'; color = '#b91c1c'; border = '#fecaca'; }
+    if (l.includes('giáo lý') || l.includes('dự trưởng') || l.includes('glv') || l.includes('gilv')) { bg = '#fef2f2'; color = '#b91c1c'; border = '#fecaca'; }
     else if (l.includes('xưng tội')) { bg = '#f0fdf4'; color = '#15803d'; border = '#bbf7d0'; }
     else if (l.includes('thêm sức')) { bg = '#eff6ff'; color = '#1d4ed8'; border = '#bfdbfe'; }
     else if (l.includes('sống đạo')) { bg = '#fffbeb'; color = '#b45309'; border = '#fde68a'; }
@@ -229,7 +229,7 @@ export function exportDecoratedExcel(
       <th style="font-family:'Times New Roman',serif;font-size:10.5pt;font-weight:bold;color:#ffffff;text-align:left;vertical-align:middle;border:0.5pt solid #334155;padding-left:8pt;">Họ và Tên</th>
       <th style="font-family:'Times New Roman',serif;font-size:10.5pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;">Ngày sinh</th>
       <th style="font-family:'Times New Roman',serif;font-size:10.5pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;">Số ĐT</th>
-      <th style="font-family:'Times New Roman',serif;font-size:10.5pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;">Giọng / Lớp</th>
+      <th style="font-family:'Times New Roman',serif;font-size:10.5pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;">Lớp</th>
       <th style="font-family:'Times New Roman',serif;font-size:10.5pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;">Bổn Phận</th>
       <th style="font-family:'Times New Roman',serif;font-size:10.5pt;font-weight:bold;color:#ffffff;text-align:center;vertical-align:middle;border:0.5pt solid #334155;">Trạng Thái</th>
     </tr>
@@ -302,7 +302,7 @@ export function exportMembersToCsv(
   const metaLine = `Ngày xuất: ${todayStr},Tổng: ${totalCount} ca viên,Hoạt động: ${activeCount},Tạm nghỉ: ${pauseCount},Nghỉ hẳn: ${leaveCount}`;
 
   // Dòng tiêu đề cột chuẩn (8 cột - không có Ngày gia nhập)
-  const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Ngày sinh', 'SĐT', 'Giọng/Lớp', 'Bổn phận', 'Trạng thái'];
+  const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Ngày sinh', 'SĐT', 'Lớp', 'Bổn phận', 'Trạng thái'];
   const headerRow = headers.map(escapeCsvCell).join(',');
 
   // Dữ liệu từng ca viên
@@ -453,7 +453,7 @@ export function parseCsvContent(csvText: string): ParsedCsvMemberRow[] {
 
     // Kiem tra xem co phai dong Header hay khong
     const joinCols = columns.join(' ').toLowerCase();
-    if (!headerMap && (joinCols.includes('tên thánh') || joinCols.includes('họ và tên') || joinCols.includes('sđt') || joinCols.includes('giọng/lớp'))) {
+    if (!headerMap && (joinCols.includes('tên thánh') || joinCols.includes('họ và tên') || joinCols.includes('sđt') || joinCols.includes('lớp') || joinCols.includes('giọng/lớp'))) {
       headerMap = {};
       columns.forEach((col, idx) => {
         const cLower = col.toLowerCase().trim();
@@ -535,7 +535,7 @@ export function parseCsvContent(csvText: string): ParsedCsvMemberRow[] {
  * Tải file CSV mẫu chuẩn định dạng cho người dùng nhập liệu
  */
 export function downloadSampleCsvTemplate(): void {
-  const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Ngày sinh', 'SĐT', 'Giọng/Lớp', 'Bổn phận', 'Trạng thái', 'Ghi chú'];
+  const headers = ['STT', 'Tên Thánh', 'Họ và Tên', 'Ngày sinh', 'SĐT', 'Lớp', 'Bổn phận', 'Trạng thái', 'Ghi chú'];
   const sampleRows = [
     ['1', 'Maria', 'Nguyễn Thị Thu Hà', '15/08/2005', '0912345678', 'Thêm Sức 1', 'Ca Viên', 'Hoạt động', 'Ca viên soprano'],
     ['2', 'Giuse', 'Trần Văn Minh', '20/11/2003', '0987654321', 'Sống Đạo 2', 'Nhạc công', 'Hoạt động', 'Chơi organ'],

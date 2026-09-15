@@ -218,7 +218,7 @@ export const ImportCsvModal: React.FC<ImportCsvModalProps> = ({
                   Kéo thả file CSV vào đây hoặc click để chọn file
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-4">
-                  Hệ thống hỗ trợ file .csv UTF-8 xuất từ Excel, Google Sheets có chứa Tên Thánh, Họ và Tên, Ngày sinh, SĐT, Giọng/Lớp...
+                  Hệ thống hỗ trợ file .csv UTF-8 xuất từ Excel, Google Sheets có chứa Tên Thánh, Họ và Tên, Ngày sinh, SĐT, Lớp...
                 </p>
 
                 <button
@@ -335,7 +335,7 @@ export const ImportCsvModal: React.FC<ImportCsvModalProps> = ({
                       <th className="p-3">Họ và Tên</th>
                       <th className="p-3">Ngày Sinh</th>
                       <th className="p-3">SĐT</th>
-                      <th className="p-3">Giọng/Lớp</th>
+                      <th className="p-3">Lớp</th>
                       <th className="p-3">Bổn phận</th>
                       <th className="p-3">Trạng thái</th>
                     </tr>

@@ -3,7 +3,7 @@ export interface ChoirMember {
   tenThanh: string;       // Tên Thánh (e.g. Maria, Giuse, Têrêsa, Anna, Phêrô...)
   hoVaTen: string;        // Họ và Tên (e.g. Nguyễn Ngọc Bảo An)
   ngaySinh: string;       // Ngày Sinh / Năm Sinh (YYYY-MM-DD hoặc YYYY)
-  lop: string;            // Giọng / Lớp (e.g. Sống Đạo 1A, Thêm Sức 3, Xưng Tội 3, Vào Đời 1...)
+  lop: string;            // Lớp (e.g. Sống Đạo 1A, Thêm Sức 3, Xưng Tội 3, Vào Đời 1...)
   soDienThoai: string;    // Số Điện Thoại
   bonPhan?: string;       // Bổn phận (e.g. Ca Viên, Nhạc công, Thư ký, Thủ quỹ, Ca trưởng...)
   trangThai?: 'Hoạt động' | 'Tạm nghỉ' | 'Nghỉ hẳn' | string; // Trạng thái hoạt động

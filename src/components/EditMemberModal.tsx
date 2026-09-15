@@ -135,7 +135,7 @@ export const EditMemberModal: React.FC<EditMemberModalProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                4. Giọng / Lớp
+                4. Lớp
               </label>
               <span className="text-[11px] text-sky-600 dark:text-sky-400 flex items-center gap-1 font-serif">
                 <BookOpen className="w-3 h-3" /> 4 Khối Lớp Giáo Lý

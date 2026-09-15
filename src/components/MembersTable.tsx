@@ -29,13 +29,13 @@ interface MembersTableProps {
 // - Thêm Sức: Xanh nước biển (Blue)
 // - Sống Đạo: Màu vàng (Amber/Yellow)
 // - Vào Đời: Màu nâu (Brown)
-// - Giáo lý viên / Dự trưởng: Màu đỏ (Red/Rose)
+// - GiLV/Dự Trưởng: Màu đỏ (Red/Rose)
 export function getClassBadgeColor(className: string): string {
   if (!className) return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700';
   const lower = className.toLowerCase();
 
-  // 1. Giáo lý viên / Dự trưởng -> Màu đỏ (Red)
-  if (lower.includes('giáo lý') || lower.includes('dự trưởng') || lower.includes('glv')) {
+  // 1. GiLV/Dự Trưởng -> Màu đỏ (Red)
+  if (lower.includes('giáo lý') || lower.includes('dự trưởng') || lower.includes('glv') || lower.includes('glv')) {
     return 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border-rose-300 dark:border-rose-800 font-bold';
   }
   // 2. Xưng Tội -> Màu xanh lá (Green)
@@ -138,11 +138,11 @@ export const MembersTable: React.FC<MembersTableProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-      
+
       {/* Top Banner: Header & Actions Bar */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-sky-100 dark:border-slate-800 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          
+
           {/* Header & Total Count */}
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-1">
@@ -192,7 +192,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
 
         {/* Filter & Search Toolbar */}
         <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-          
+
           {/* Ô tìm kiếm nhanh theo tên hoặc lớp */}
           <div className="relative flex-1 max-w-md">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -236,7 +236,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
 
       {/* Main Table Card */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-sky-100/80 dark:border-slate-800 shadow-xl shadow-sky-900/5 overflow-hidden">
-        
+
         {/* Mobile Card List View (dành cho điện thoại di động màn hình nhỏ < 768px) */}
         <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800/80">
           {sortedMembers.length === 0 ? (
@@ -305,13 +305,12 @@ export const MembersTable: React.FC<MembersTableProps> = ({
 
                     {/* Status Badge */}
                     <span
-                      className={`shrink-0 px-2 py-0.5 rounded text-[11px] font-bold ${
-                        (member.trangThai || 'Hoạt động') === 'Hoạt động'
+                      className={`shrink-0 px-2 py-0.5 rounded text-[11px] font-bold ${(member.trangThai || 'Hoạt động') === 'Hoạt động'
                           ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
                           : member.trangThai === 'Tạm nghỉ'
-                          ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
-                          : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-                      }`}
+                            ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                            : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                        }`}
                     >
                       {member.trangThai || 'Hoạt động'}
                     </span>
@@ -320,7 +319,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                   {/* Info details grid inside Card */}
                   <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-100 dark:border-slate-800/60">
                     <div>
-                      <span className="text-slate-400 text-[11px] block">Giọng/Lớp:</span>
+                      <span className="text-slate-400 text-[11px] block">Lớp:</span>
                       {member.lop ? (
                         <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium border ${getClassBadgeColor(member.lop)}`}>
                           {member.lop}
@@ -399,7 +398,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
             <thead>
               <tr className="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700/80 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 <th className="py-3.5 px-4 w-12 text-center">STT</th>
-                
+
                 {/* 1. Tên Thánh */}
                 <th
                   onClick={() => handleSort('tenThanh')}
@@ -433,13 +432,13 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                   </div>
                 </th>
 
-                {/* 4. Giọng / Lớp */}
+                {/* 4. Lớp */}
                 <th
                   onClick={() => handleSort('lop')}
                   className="py-3.5 px-4 cursor-pointer select-none group hover:text-slate-900 dark:hover:text-white transition-colors"
                 >
                   <div className="flex items-center gap-1.5">
-                    <span>Giọng/Lớp</span>
+                    <span>Lớp</span>
                     {renderSortIcon('lop')}
                   </div>
                 </th>
@@ -541,7 +540,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                         )}
                       </td>
 
-                      {/* 4. Giọng / Lớp */}
+                      {/* 4. Lớp */}
                       <td className="py-3.5 px-4">
                         {member.lop ? (
                           <span
@@ -580,13 +579,12 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                       {/* 7. Trạng thái */}
                       <td className="py-3.5 px-3 text-center">
                         <span
-                          className={`inline-block px-2.5 py-0.5 rounded text-[11px] font-bold ${
-                            (member.trangThai || 'Hoạt động') === 'Hoạt động'
+                          className={`inline-block px-2.5 py-0.5 rounded text-[11px] font-bold ${(member.trangThai || 'Hoạt động') === 'Hoạt động'
                               ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
                               : member.trangThai === 'Tạm nghỉ'
-                              ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
-                              : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-                          }`}
+                                ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                                : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                            }`}
                         >
                           {member.trangThai || 'Hoạt động'}
                         </span>

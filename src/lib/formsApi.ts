@@ -1,9 +1,9 @@
 import { getSupabase } from './supabase.ts';
-import { 
-  Form, 
-  FormField, 
-  FormWithFields, 
-  FormResponseWithAnswers, 
+import {
+  Form,
+  FormField,
+  FormWithFields,
+  FormResponseWithAnswers,
   CreateFormInput,
   FormResponse,
   FormAnswer
@@ -56,11 +56,11 @@ const DEFAULT_SEED_FORM: FormWithFields = {
     {
       id: 'f4444444-4444-4444-4444-444444444444',
       form_id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-      label: 'Lớp Giáo Lý / Giọng',
+      label: 'Lớp',
       field_type: 'select',
       placeholder: 'Chọn lớp giáo lý...',
       required: true,
-      options: ['Xưng Tội', 'Thêm Sức', 'Sống Đạo', 'Vào Đời', 'Giáo Lý Viên / Dự Trưởng'],
+      options: ['Xưng Tội', 'Thêm Sức', 'Sống Đạo', 'Vào Đời', 'GLV/Dự Trưởng'],
       order_index: 4,
     },
     {
@@ -568,7 +568,7 @@ export async function deleteResponse(responseId: string): Promise<boolean> {
 // ----------------------------------------------------
 export function subscribeFormResponsesRealtime(formId: string, onNewResponse: () => void): () => void {
   const supabase = getSupabase();
-  if (!supabase) return () => {};
+  if (!supabase) return () => { };
 
   try {
     const channel = supabase
@@ -592,6 +592,6 @@ export function subscribeFormResponsesRealtime(formId: string, onNewResponse: ()
     };
   } catch (e) {
     console.warn('Lỗi khởi tạo Realtime Subscription:', e);
-    return () => {};
+    return () => { };
   }
 }

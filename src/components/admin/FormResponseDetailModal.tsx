@@ -34,7 +34,7 @@ export function extractMemberDataFromAnswers(answersMap: Record<string, string>,
       if (!hoVaTen) hoVaTen = val;
     } else if (labelLower.includes('sinh') || labelLower.includes('ngày')) {
       ngaySinh = val;
-    } else if (labelLower.includes('lớp') || labelLower.includes('giáo lý') || labelLower.includes('giọng')) {
+    } else if (labelLower.includes('lớp') || labelLower.includes('giáo lý')) {
       if (val) lop = val;
     } else if (labelLower.includes('điện thoại') || labelLower.includes('sđt') || field.field_type === 'phone') {
       soDienThoai = val;

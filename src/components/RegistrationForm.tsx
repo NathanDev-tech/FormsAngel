@@ -25,8 +25,7 @@ export const CATECHISM_CLASSES = [
   'Thêm Sức',
   'Sống Đạo',
   'Vào Đời',
-  'Giáo Lý Viên',
-  'Dự Trưởng',
+  'GLV/Dự Trưởng',
 ];
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, onViewList }) => {
@@ -127,7 +126,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-sky-100/50 via-amber-50/30 to-transparent dark:from-sky-900/10 dark:via-amber-900/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
         <form onSubmit={handleSubmit} noValidate className="relative space-y-5">
-          
+
           {/* TRƯỜNG 1: Tên Thánh */}
           <div className="space-y-1.5">
             <label htmlFor="field-tenThanh" className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
@@ -217,11 +216,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
                     key={className}
                     type="button"
                     onClick={() => handleSelectClass(className)}
-                    className={`px-3 py-1 text-xs rounded-lg font-medium transition-all cursor-pointer ${
-                      isSelected
+                    className={`px-3 py-1 text-xs rounded-lg font-medium transition-all cursor-pointer ${isSelected
                         ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-300 dark:ring-sky-700'
                         : 'bg-sky-50 dark:bg-slate-800 text-sky-800 dark:text-sky-200 hover:bg-sky-100 dark:hover:bg-slate-700 border border-sky-200/60 dark:border-slate-700'
-                    }`}
+                      }`}
                   >
                     {className}
                   </button>
