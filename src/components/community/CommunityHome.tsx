@@ -8,6 +8,7 @@ import { CommunityPostCard } from './CommunityPostCard.tsx';
 import { CommunityPostDetail } from './CommunityPostDetail.tsx';
 import { CommunityComposer } from './CommunityComposer.tsx';
 import { RulesWidget } from './RulesWidget.tsx';
+import { LiturgicalSongsWidget } from './LiturgicalSongsWidget.tsx';
 import logoImg from '../../assets/logo.png';
 import {
   Sparkles,
@@ -328,6 +329,9 @@ export const CommunityHome: React.FC = () => {
           {/* Right Sidebar Widgets Column (lg:col-span-4) - Hiển thị cột bên trên Laptop/Desktop, hiển thị xếp dưới trên Mobile */}
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
             
+            {/* Widget: LỊCH BÀI HÁT PHỤNG VỤ THÁNH LỄ (Lễ Ngày Tuần 3 mục & Lễ Chúa Nhật/Lễ Trọng 5 mục) */}
+            <LiturgicalSongsWidget />
+
             {/* Widget: NỘI QUY CA VIÊN – CA ĐOÀN THIÊN THẦN (Đầy đủ 10 điều) */}
             <RulesWidget />
 

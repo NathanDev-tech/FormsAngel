@@ -12,6 +12,7 @@ import { CommunitySearch } from './CommunitySearch.tsx';
 import { CommunityFilters } from './CommunityFilters.tsx';
 import { CommunityComposer } from './CommunityComposer.tsx';
 import { CommunityPostDetail } from './CommunityPostDetail.tsx';
+import { LiturgicalSongsWidget } from './LiturgicalSongsWidget.tsx';
 import {
   Plus,
   Pin,
@@ -172,6 +173,9 @@ export const CommunityAdmin: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Quản lý Lịch Bài Hát Phụng Vụ Thánh Lễ (Lễ Ngày Tuần 3 mục & Lễ Chúa Nhật/Lễ Trọng 5 mục) */}
+      <LiturgicalSongsWidget isAdmin={true} />
 
       {/* Controls: Search & Category filters */}
       <div className="space-y-3">

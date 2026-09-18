@@ -9,7 +9,7 @@ export const FormSuccess: React.FC<FormSuccessProps> = ({ formTitle }) => {
   return (
     <div className="bg-white dark:bg-slate-900 p-6 sm:p-10 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm text-center space-y-5">
       <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-inner">
-        <CheckCircle2 className="w-10 h-10 animate-bounce" />
+        <CheckCircle2 className="w-10 h-10" />
       </div>
 
       <div className="space-y-2">

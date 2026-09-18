@@ -21,7 +21,7 @@ export const PinnedPosts: React.FC<PinnedPostsProps> = ({ posts, onSelectPost })
           <Pin className="w-4 h-4 fill-white" />
         </div>
         <span className="tracking-wide">📌 BÀI GHIM QUAN TRỌNG</span>
-        <Sparkles className="w-4 h-4 text-amber-500 animate-pulse ml-auto" />
+        <Sparkles className="w-4 h-4 text-amber-500 ml-auto" />
       </div>
 
       {/* Grid or List of Pinned Cards */}
@@ -38,7 +38,7 @@ export const PinnedPosts: React.FC<PinnedPostsProps> = ({ posts, onSelectPost })
                   {post.category}
                 </span>
                 {post.is_important && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-500 text-white uppercase tracking-wider animate-pulse">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-500 text-white uppercase tracking-wider">
                     Quan trọng
                   </span>
                 )}

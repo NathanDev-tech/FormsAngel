@@ -159,7 +159,7 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300">
                   {responses.length} phản hồi
                 </span>
-                <span className="text-xs text-slate-400">• Realtime</span>
+                <span className="text-xs text-slate-400">• Cập nhật tự động</span>
               </div>
               <h2 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
                 Phản Hồi: {form.title}

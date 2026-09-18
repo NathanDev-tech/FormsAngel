@@ -352,13 +352,13 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                   </div>
 
                   {/* Actions bar inside Mobile Card */}
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/80 text-xs">
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/80 text-xs gap-2">
                     {member.soDienThoai ? (
                       <a
                         href={`tel:${member.soDienThoai}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 font-semibold border border-sky-200/60 dark:border-sky-800/80 active:scale-95 transition-transform"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 font-bold border border-sky-200/60 dark:border-sky-800/80 active:scale-95 transition-all min-h-[42px]"
                       >
-                        <Phone className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                        <Phone className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
                         <span>Gọi điện</span>
                       </a>
                     ) : (
@@ -369,18 +369,18 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                       <button
                         type="button"
                         onClick={() => onEdit(member)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold hover:bg-slate-200 transition-all active:scale-95 min-h-[42px]"
                       >
-                        <Edit2 className="w-3.5 h-3.5 text-slate-500" />
+                        <Edit2 className="w-4 h-4 text-slate-500 shrink-0" />
                         <span>Sửa</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => onDelete(member)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-medium hover:bg-rose-100 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-bold hover:bg-rose-100 transition-all active:scale-95 min-h-[42px]"
                       >
-                        <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                        <Trash2 className="w-4 h-4 text-rose-500 shrink-0" />
                         <span>Xoá</span>
                       </button>
                     </div>
