@@ -2,20 +2,20 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>FormsAngel — Redirecting...</title>
+    <title>Ca Đoàn Thiên Thần - Giáo Xứ Bắc Hòa</title>
     <script type="text/javascript">
-      // GitHub Pages SPA Redirect Script
-      // Chuyển hướng pathname về index.html kèm tham số route giúp SPA khôi phục đúng route /form/:slug khi F5 hoặc mở link trực tiếp.
-      var pathSegmentsToKeep = 1; // Giữ lại /FormsAngel/
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
+      var pathSegmentsToKeep = 1;
+
       var l = window.location;
-      
-      var newUrl = l.protocol + '//' + l.host +
-        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?p=' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/') +
-        (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-        l.hash;
-        
-      l.replace(newUrl);
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
     </script>
   </head>
   <body>
