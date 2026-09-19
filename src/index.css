@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    font-size: 17px; /* Tăng nhẹ kích thước chữ cho toàn bộ dự án */
+    font-size: 18px; /* Tăng nhẹ kích thước chữ cho toàn bộ dự án */
   }
 
   :root {
@@ -27,10 +27,10 @@
 
 /* Nâng nhẹ các font chữ nhỏ để nhìn rõ ràng hơn trên toàn dự án */
 .text-\[10px\] {
-  font-size: 11.5px !important;
+  font-size: 12.5px !important;
 }
 .text-\[11px\] {
-  font-size: 12.5px !important;
+  font-size: 13.5px !important;
 }
 
 /* Custom scrollbar siêu mỏng, sang trọng cho các khung scroll */

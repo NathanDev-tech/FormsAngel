@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserPlus, RotateCcw, Sparkles, HeartHandshake, ArrowRight, BookOpen } from 'lucide-react';
+import { UserPlus, RotateCcw, Music, HeartHandshake, ArrowRight, BookOpen } from 'lucide-react';
 import { MemberFormData } from '../types.ts';
 
 interface RegistrationFormProps {
@@ -109,7 +109,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSubmit, on
       {/* Intro Banner */}
       <div className="mb-6 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-100 dark:border-sky-900/60 text-xs font-medium mb-2.5">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <Music className="w-3.5 h-3.5 text-amber-500" />
           <span>Phiếu Ghi Danh Ca Viên</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white tracking-tight font-serif">

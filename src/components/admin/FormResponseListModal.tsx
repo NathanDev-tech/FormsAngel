@@ -6,6 +6,8 @@ import { FormResponseDetailModal, extractMemberDataFromAnswers } from './FormRes
 import { formatDateVi } from '../../utils/csvExport.ts';
 import { addMember } from '../../lib/api.ts';
 
+import { ConfirmDialogModal } from './ConfirmDialogModal.tsx';
+
 const APPROVED_RESPONSES_KEY = 'formsangel_approved_responses_v1';
 
 function getApprovedResponseIds(): string[] {
@@ -47,6 +49,19 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
   const [approvedIds, setApprovedIds] = useState<string[]>(getApprovedResponseIds);
   const [approvingId, setApprovingId] = useState<string | null>(null);
 
+  // Dialog & Toast States
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [targetDeleteId, setTargetDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  };
+
   const loadData = async () => {
     if (!form) return;
     setLoading(true);
@@ -78,11 +93,27 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
 
   if (!isOpen || !form) return null;
 
-  // Xoá 1 phản hồi
-  const handleDelete = async (resId: string) => {
-    if (window.confirm('Bạn có chắc chắn muốn xoá lượt phản hồi này?')) {
-      await deleteResponse(resId);
-      setResponses(prev => prev.filter(r => r.id !== resId));
+  // Yêu cầu xoá 1 phản hồi
+  const requestDelete = (resId: string) => {
+    setTargetDeleteId(resId);
+    setDeleteModalOpen(true);
+  };
+
+  // Xác nhận xoá
+  const confirmDelete = async () => {
+    if (!targetDeleteId) return;
+    setIsDeleting(true);
+    try {
+      await deleteResponse(targetDeleteId);
+      setResponses(prev => prev.filter(r => r.id !== targetDeleteId));
+      showToast('Đã xoá lượt phản hồi thành công.');
+    } catch (err) {
+      console.error('Lỗi xoá phản hồi:', err);
+      showToast('Không thể xoá phản hồi, vui lòng thử lại.');
+    } finally {
+      setIsDeleting(false);
+      setDeleteModalOpen(false);
+      setTargetDeleteId(null);
     }
   };
 
@@ -96,10 +127,10 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
       await addMember(memberData);
       saveApprovedResponseId(res.id);
       setApprovedIds(prev => [...prev, res.id]);
-      alert(`🎉 Đã duyệt thành công ca viên "${[memberData.tenThanh, memberData.hoVaTen].filter(Boolean).join(' ')}" vào danh sách ca đoàn!`);
+      showToast(`🎉 Đã duyệt thành công ca viên "${[memberData.tenThanh, memberData.hoVaTen].filter(Boolean).join(' ')}" vào danh sách ca đoàn!`);
     } catch (err) {
       console.error('Lỗi duyệt ca viên từ phản hồi:', err);
-      alert('Không thể duyệt ca viên, vui lòng thử lại.');
+      showToast('Không thể duyệt ca viên, vui lòng thử lại.');
     } finally {
       setApprovingId(null);
     }
@@ -108,6 +139,7 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
   const handleApproveSuccess = (resId: string) => {
     saveApprovedResponseId(resId);
     setApprovedIds(prev => [...prev, resId]);
+    showToast('🎉 Đã duyệt thành công ca viên vào danh sách ca đoàn!');
   };
 
   // Xuất file Excel các phản hồi
@@ -279,7 +311,7 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
 
                               <button
                                 type="button"
-                                onClick={() => handleDelete(res.id)}
+                                onClick={() => requestDelete(res.id)}
                                 className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/60 transition-colors"
                                 title="Xoá phản hồi"
                               >
@@ -295,6 +327,16 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
               </div>
             )}
           </div>
+
+          {/* Toast Notification Banner */}
+          {toastMessage && (
+            <div className="mx-4 mb-2 p-3 rounded-xl bg-emerald-500 text-white font-bold text-xs shadow-md flex items-center justify-between animate-fade-in">
+              <span>{toastMessage}</span>
+              <button type="button" onClick={() => setToastMessage(null)} className="text-white/80 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
 
           {/* Footer */}
           <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
@@ -312,6 +354,20 @@ export const FormResponseListModal: React.FC<FormResponseListModalProps> = ({
 
         </div>
       </div>
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialogModal
+        isOpen={deleteModalOpen}
+        title="Xác Nhận Xóa Phản Hồi"
+        message="Bạn có chắc chắn muốn xóa phản hồi này không? Thao tác này không thể hoàn tác."
+        confirmLabel="Đồng Ý Xóa"
+        isDeleting={isDeleting}
+        onConfirm={confirmDelete}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setTargetDeleteId(null);
+        }}
+      />
 
       {/* Response Detail Modal */}
       <FormResponseDetailModal

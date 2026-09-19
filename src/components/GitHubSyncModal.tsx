@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, RefreshCw, Key, GitBranch, CheckCircle2, AlertCircle, Eye, EyeOff, ShieldCheck, Sparkles, HelpCircle } from 'lucide-react';
+import { X, RefreshCw, Key, GitBranch, CheckCircle2, AlertCircle, Eye, EyeOff, ShieldCheck, Music, HelpCircle } from 'lucide-react';
 import { syncService, GitHubConfig } from '../lib/syncService.ts';
 
 interface GitHubSyncModalProps {
@@ -82,8 +82,8 @@ export const GitHubSyncModal: React.FC<GitHubSyncModalProps> = ({
             </div>
             <div>
               <h3 className="text-lg font-bold font-serif flex items-center gap-2">
-                Cấu Hình Đồng Bộ GitHub Real-time
-                <Sparkles className="w-4 h-4 text-amber-300 fill-amber-300" />
+                Cấu Hình Đồng Bộ Real-time
+                <Music className="w-4 h-4 text-amber-300" />
               </h3>
               <p className="text-xs text-sky-100">
                 Đồng bộ tự động dữ liệu ca đoàn tức thì giữa nhiều máy & trình duyệt

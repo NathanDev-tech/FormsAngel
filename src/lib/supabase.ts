@@ -46,3 +46,20 @@ export function getSupabase(): SupabaseClient | null {
   }
   return supabaseInstance;
 }
+
+// Timeout helper: giới hạn thời gian chờ Supabase (mặc định 2.5s) để UI không bao giờ bị đứng
+export function withTimeout<T>(promiseLike: PromiseLike<T> | Promise<T>, ms = 2500): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Network request timed out')), ms);
+    Promise.resolve(promiseLike).then(
+      (res) => {
+        clearTimeout(timer);
+        resolve(res);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      }
+    );
+  });
+}

@@ -23,7 +23,7 @@ export const FormClosed: React.FC<FormClosedProps> = ({ title }) => {
       )}
 
       <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto">
-        Ban quản trị đã tạm ngừng nhận thông tin cho biểu mẫu này. Vui lòng liên hệ ban điều hành nếu bạn cần sự hỗ trợ.
+        Ban Điều Hành Ca Đoàn đã tạm ngừng nhận thông tin cho biểu mẫu này. Vui lòng liên hệ ban điều hành nếu bạn cần sự hỗ trợ.
       </p>
     </div>
   );

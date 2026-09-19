@@ -31,7 +31,7 @@ export const PublicFormLayout: React.FC<PublicFormLayoutProps> = ({ children }) 
 
             <div className="space-y-0.5">
               <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-amber-800 dark:text-amber-300 tracking-wide uppercase">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <Music className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                 <span>Giáo Phận Xuân Lộc • Giáo Hạt Phú Thịnh • Giáo Xứ Bắc Hòa</span>
               </div>
               <h1 className="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-serif tracking-tight flex items-center gap-2">

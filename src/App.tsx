@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Header } from './components/Header.tsx';
+import { Header, AdminTabType } from './components/Header.tsx';
 import { RegistrationForm } from './components/RegistrationForm.tsx';
 import { MembersTable } from './components/MembersTable.tsx';
 import { StatsAndBirthdays } from './components/StatsAndBirthdays.tsx';
@@ -10,14 +10,16 @@ import { ImportCsvModal } from './components/ImportCsvModal.tsx';
 import { ToastContainer } from './components/Toast.tsx';
 import { ChoirMember, MemberFormData, ToastMessage } from './types.ts';
 import { FormsDashboard } from './components/admin/FormsDashboard.tsx';
-import { CommunityAdmin } from './components/community/CommunityAdmin.tsx';
+import { AnnouncementManager } from './components/admin/AnnouncementManager.tsx';
+import { ScheduleManager } from './components/admin/ScheduleManager.tsx';
+import { LiturgyManager } from './components/admin/LiturgyManager.tsx';
 import { getMembers, addMember, addMultipleMembers, updateMember, deleteMember, resetToSeedData, subscribeSupabaseRealtime } from './lib/api.ts';
-import { Heart, Sparkles } from 'lucide-react';
+import { Heart, Music } from 'lucide-react';
 
 export default function App() {
   const [members, setMembers] = useState<ChoirMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'stats' | 'forms' | 'community'>('list');
+  const [activeTab, setActiveTab] = useState<AdminTabType>('list');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // Dark mode state with localStorage persistence
@@ -155,20 +157,9 @@ export default function App() {
     }
   };
 
-  // 4. Khôi phục dữ liệu mẫu
-  const handleResetData = async () => {
-    try {
-      const seeded = await resetToSeedData();
-      setMembers(seeded);
-      addToast('Khôi phục thành công', 'Đã tải lại danh sách ca viên mẫu.', 'success');
-    } catch (err) {
-      console.error('Lỗi khôi phục:', err);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-50/70 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
-      {/* Header */}
+      {/* Admin Header */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -178,7 +169,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 space-y-3">
             <div className="w-10 h-10 border-4 border-sky-400/20 border-t-sky-500 rounded-full animate-spin" />
@@ -214,12 +205,20 @@ export default function App() {
               />
             )}
 
-            {activeTab === 'forms' && (
-              <FormsDashboard />
+            {activeTab === 'announcements' && (
+              <AnnouncementManager />
             )}
 
-            {activeTab === 'community' && (
-              <CommunityAdmin />
+            {activeTab === 'schedules' && (
+              <ScheduleManager />
+            )}
+
+            {activeTab === 'liturgy' && (
+              <LiturgyManager />
+            )}
+
+            {activeTab === 'forms' && (
+              <FormsDashboard />
             )}
           </>
         )}
@@ -227,22 +226,20 @@ export default function App() {
 
       {/* Angelic Footer */}
       <footer className="mt-auto py-6 border-t border-sky-100 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="w-full px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span className="font-semibold text-slate-700 dark:text-slate-300">Ca Đoàn Thiên Thần</span>
+            <Music className="w-3.5 h-3.5 text-amber-500" />
+            <span className="font-semibold text-slate-700 dark:text-slate-300">Ca Đoàn Thiên Thần — Ban Điều Hành</span>
             <span>•</span>
             <span>Giáo Xứ Bắc Hòa</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <span>Giáo Hội Công Giáo Việt Nam</span>
-            <span>•</span>
             <span>Giáo Phận Xuân Lộc</span>
             <span>•</span>
             <span>Giáo Hạt Phú Thịnh</span>
             <span>•</span>
-            <span>Giáo Xứ Bắc Hòa — Ca Đoàn Thiên Thần</span>
+            <span>Giáo Xứ Bắc Hòa</span>
           </div>
         </div>
       </footer>

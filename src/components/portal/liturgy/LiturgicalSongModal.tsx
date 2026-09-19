@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { CreateLiturgicalInput, LiturgicalScheduleType, LiturgicalColor } from '../../types/liturgical.ts';
-import { createLiturgicalSong } from '../../lib/liturgicalApi.ts';
+import { CreateLiturgicalInput, LiturgicalScheduleType, LiturgicalColor } from '../../../types/liturgical.ts';
+import { createLiturgicalSong } from '../../../lib/liturgicalApi.ts';
 import { X, Save, Church, BookOpen, Calendar, Music } from 'lucide-react';
 
 interface LiturgicalSongModalProps {
@@ -67,7 +67,7 @@ export const LiturgicalSongModal: React.FC<LiturgicalSongModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-t-3xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
-        
+
         {/* Mobile Drag Indicator */}
         <div className="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto mt-2.5 sm:hidden shrink-0" />
 
@@ -82,7 +82,7 @@ export const LiturgicalSongModal: React.FC<LiturgicalSongModalProps> = ({
                 Soạn Thảo Lịch Bài Hát Phụng Vụ
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Tạo danh sách bài hát cho Lễ Ngày Tuần (3 mục) & Lễ Chúa Nhật / Lễ Trọng (5 mục)
+                Tạo danh sách bài hát cho Lễ Ngày Tuần & Lễ Chúa Nhật / Lễ Trọng
               </p>
             </div>
           </div>
@@ -98,7 +98,7 @@ export const LiturgicalSongModal: React.FC<LiturgicalSongModalProps> = ({
 
         {/* Form Content Body */}
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
-          
+
           {/* Select Type: Chúa Nhật (5 mục) vs Lễ Tuần (3 mục) */}
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -108,11 +108,10 @@ export const LiturgicalSongModal: React.FC<LiturgicalSongModalProps> = ({
               <button
                 type="button"
                 onClick={() => setType('sunday')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  type === 'sunday' || type === 'solemnity'
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${type === 'sunday' || type === 'solemnity'
                     ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-xs'
                     : 'text-slate-500 dark:text-slate-400'
-                }`}
+                  }`}
               >
                 <BookOpen className="w-4 h-4 text-amber-500" />
                 <span>Chúa Nhật & Lễ Trọng (5 Mục)</span>
@@ -121,11 +120,10 @@ export const LiturgicalSongModal: React.FC<LiturgicalSongModalProps> = ({
               <button
                 type="button"
                 onClick={() => setType('weekday')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  type === 'weekday'
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${type === 'weekday'
                     ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-xs'
                     : 'text-slate-500 dark:text-slate-400'
-                }`}
+                  }`}
               >
                 <Calendar className="w-4 h-4 text-emerald-500" />
                 <span>Lễ Ngày Tuần (3 Mục)</span>

@@ -115,6 +115,8 @@ export function subscribeSupabaseRealtime(onUpdate: (members: ChoirMember[]) => 
 
 // 4. Các thao tác dữ liệu chính (CRUD) thuần Supabase
 
+const INIT_KEY = 'ca_doan_members_init_v2';
+
 // Lấy danh sách ca viên từ Supabase
 export async function getMembers(): Promise<ChoirMember[]> {
   const supabase = getSupabase();
@@ -126,17 +128,10 @@ export async function getMembers(): Promise<ChoirMember[]> {
         .order('created_at', { ascending: false });
 
       if (!error && Array.isArray(data)) {
-        if (data.length > 0) {
-          const members = data.map(fromSupabaseRow);
-          saveLocalFallback(members);
-          return members;
-        } else {
-          // Nếu bảng Supabase vừa tạo chưa có dòng nào, nạp dữ liệu mẫu ban đầu
-          const seedRows = INITIAL_MEMBERS.map(toSupabaseRow);
-          await supabase.from('members').insert(seedRows);
-          saveLocalFallback(INITIAL_MEMBERS);
-          return INITIAL_MEMBERS;
-        }
+        const members = data.map(fromSupabaseRow);
+        saveLocalFallback(members);
+        localStorage.setItem(INIT_KEY, 'true');
+        return members;
       } else if (error) {
         console.warn('⚠️ Lỗi Supabase Query:', error.message);
       }
@@ -261,19 +256,17 @@ export async function deleteMember(id: string): Promise<void> {
   saveLocalFallback(updated);
 }
 
-// Khôi phục dữ liệu mẫu trên Supabase
+// Khôi phục dữ liệu rỗng
 export async function resetToSeedData(): Promise<ChoirMember[]> {
   const supabase = getSupabase();
   if (supabase) {
     try {
       await supabase.from('members').delete().neq('id', '0');
-      const rows = INITIAL_MEMBERS.map(toSupabaseRow);
-      await supabase.from('members').insert(rows);
     } catch (e) {
       console.warn('Lỗi reset Supabase:', e);
     }
   }
 
-  saveLocalFallback(INITIAL_MEMBERS);
-  return INITIAL_MEMBERS;
+  saveLocalFallback([]);
+  return [];
 }

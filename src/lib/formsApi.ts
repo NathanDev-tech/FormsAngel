@@ -13,88 +13,15 @@ import {
 const LOCAL_FORMS_KEY = 'formsangel_local_forms_v1';
 const LOCAL_RESPONSES_KEY = 'formsangel_local_responses_v1';
 
-// Seed Data Mặc Định
-const DEFAULT_SEED_FORM: FormWithFields = {
-  id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-  title: 'Đăng Ký Ca Viên Mới — Ca Đoàn Thiên Thần',
-  slug: 'dang-ky-ca-vien',
-  description: 'Hoan nghênh các anh chị em cùng tham gia phụng sự Thánh Lễ qua lời ca tiếng hát tại Giáo Xứ Bắc Hòa — Giáo Hạt Phú Thịnh.',
-  is_active: true,
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-  fields: [
-    {
-      id: 'f1111111-1111-1111-1111-111111111111',
-      form_id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-      label: 'Tên Thánh',
-      field_type: 'text',
-      placeholder: 'VD: Giuse, Maria, Têrêsa...',
-      required: false,
-      options: [],
-      order_index: 1,
-    },
-    {
-      id: 'f2222222-2222-2222-2222-222222222222',
-      form_id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-      label: 'Họ và Tên',
-      field_type: 'text',
-      placeholder: 'Nhập đầy đủ họ và tên ca viên',
-      required: true,
-      options: [],
-      order_index: 2,
-    },
-    {
-      id: 'f3333333-3333-3333-3333-333333333333',
-      form_id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-      label: 'Ngày & Tháng Sinh',
-      field_type: 'text',
-      placeholder: 'VD: 15/08 (chỉ cần Ngày & Tháng)',
-      required: true,
-      options: [],
-      order_index: 3,
-    },
-    {
-      id: 'f4444444-4444-4444-4444-444444444444',
-      form_id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-      label: 'Lớp',
-      field_type: 'select',
-      placeholder: 'Chọn lớp giáo lý...',
-      required: true,
-      options: ['Xưng Tội', 'Thêm Sức', 'Sống Đạo', 'Vào Đời', 'GLV/Dự Trưởng'],
-      order_index: 4,
-    },
-    {
-      id: 'f5555555-5555-5555-5555-555555555555',
-      form_id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-      label: 'Số Điện Thoại',
-      field_type: 'phone',
-      placeholder: 'VD: 0912345678',
-      required: false,
-      options: [],
-      order_index: 5,
-    },
-    {
-      id: 'f6666666-6666-6666-6666-666666666666',
-      form_id: 'a1b2c3d4-e5f6-7890-abcd-111111111111',
-      label: 'Bổn Phận / Vai Trò',
-      field_type: 'select',
-      placeholder: 'Chọn vai trò...',
-      required: false,
-      options: ['Thành viên', 'Nhạc công', 'Thư ký', 'Ca trưởng', 'Phó ca trưởng'],
-      order_index: 6,
-    }
-  ]
-};
-
 // Helper khởi tạo Storage mẫu nếu chưa có
 function getLocalForms(): FormWithFields[] {
   try {
     const data = localStorage.getItem(LOCAL_FORMS_KEY);
     if (data) return JSON.parse(data);
-    localStorage.setItem(LOCAL_FORMS_KEY, JSON.stringify([DEFAULT_SEED_FORM]));
-    return [DEFAULT_SEED_FORM];
+    localStorage.setItem(LOCAL_FORMS_KEY, JSON.stringify([]));
+    return [];
   } catch {
-    return [DEFAULT_SEED_FORM];
+    return [];
   }
 }
 
@@ -528,7 +455,7 @@ export async function getFormResponses(formId: string): Promise<{ responses: For
 
   // Local fallback
   const forms = getLocalForms();
-  const form = forms.find(f => f.id === formId) || DEFAULT_SEED_FORM;
+  const form = forms.find(f => f.id === formId);
   const localResList = getLocalResponses().filter(r => r.formId === formId);
 
   const responses: FormResponseWithAnswers[] = localResList.map(r => ({
@@ -538,7 +465,7 @@ export async function getFormResponses(formId: string): Promise<{ responses: For
     answersMap: r.answers,
   }));
 
-  return { responses, fields: form.fields };
+  return { responses, fields: form ? form.fields : [] };
 }
 
 // ----------------------------------------------------

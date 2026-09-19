@@ -77,10 +77,8 @@ export const FormResponseDetailModal: React.FC<FormResponseDetailModalProps> = (
       const memberData = extractMemberDataFromAnswers(response.answersMap, fields);
       await addMember(memberData);
       onApproveSuccess(response.id);
-      alert(`🎉 Đã duyệt thành công ca viên "${[memberData.tenThanh, memberData.hoVaTen].filter(Boolean).join(' ')}" vào danh sách ca đoàn!`);
     } catch (err) {
       console.error('Lỗi duyệt ca viên từ phản hồi:', err);
-      alert('Không thể duyệt ca viên, vui lòng thử lại.');
     } finally {
       setApproving(false);
     }

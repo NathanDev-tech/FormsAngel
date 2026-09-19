@@ -84,13 +84,13 @@ export const StatsAndBirthdays: React.FC<StatsProps> = ({
   }, [members, selectedClassTab]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+    <div className="w-full space-y-6">
       
       {/* Overview Top Header Banner */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-sky-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-1">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <Music className="w-3.5 h-3.5 text-amber-500" />
             <span>Thống Kê Tổng Quan & Phân Bố Ca Viên</span>
           </div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white font-serif">

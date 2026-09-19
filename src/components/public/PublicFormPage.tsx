@@ -10,9 +10,10 @@ import { Send, Loader2, FileText, AlertCircle } from 'lucide-react';
 
 interface PublicFormPageProps {
   slug: string;
+  embedded?: boolean;
 }
 
-export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug }) => {
+export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug, embedded = false }) => {
   const [form, setForm] = useState<FormWithFields | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -37,42 +38,50 @@ export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug }) => {
     loadForm();
   }, [slug]);
 
+  // Wrapper component: use PublicFormLayout for public pages, plain div for embedded (portal) mode
+  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    if (embedded) {
+      return <div className="w-full max-w-3xl mx-auto space-y-4 sm:space-y-6">{children}</div>;
+    }
+    return <PublicFormLayout>{children}</PublicFormLayout>;
+  };
+
   // Loading state
   if (loading) {
     return (
-      <PublicFormLayout>
+      <Wrapper>
         <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-md flex flex-col items-center justify-center space-y-3">
           <Loader2 className="w-8 h-8 text-sky-500 animate-spin" />
           <p className="text-sm font-medium text-slate-500">Đang tải biểu mẫu...</p>
         </div>
-      </PublicFormLayout>
+      </Wrapper>
     );
   }
 
   // Form không tồn tại
   if (!form) {
     return (
-      <PublicFormLayout>
+      <Wrapper>
         <FormNotFound />
-      </PublicFormLayout>
+      </Wrapper>
     );
   }
 
   // Form đã đóng
   if (!form.is_active) {
     return (
-      <PublicFormLayout>
+      <Wrapper>
         <FormClosed title={form.title} />
-      </PublicFormLayout>
+      </Wrapper>
     );
   }
 
   // Đã gửi thành công
   if (submitted) {
     return (
-      <PublicFormLayout>
+      <Wrapper>
         <FormSuccess formTitle={form.title} />
-      </PublicFormLayout>
+      </Wrapper>
     );
   }
 
@@ -133,7 +142,7 @@ export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug }) => {
   };
 
   return (
-    <PublicFormLayout>
+    <Wrapper>
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         
         {/* Form Title & Description Card */}
@@ -194,6 +203,6 @@ export const PublicFormPage: React.FC<PublicFormPageProps> = ({ slug }) => {
         </div>
 
       </form>
-    </PublicFormLayout>
+    </Wrapper>
   );
 };

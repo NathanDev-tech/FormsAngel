@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { LiturgicalSongSchedule, LiturgicalColor } from '../../types/liturgical.ts';
-import { getLiturgicalSongs, subscribeLiturgicalRealtime, deleteLiturgicalSong } from '../../lib/liturgicalApi.ts';
+import { LiturgicalSongSchedule, LiturgicalColor } from '../../../types/liturgical.ts';
+import { getLiturgicalSongs, subscribeLiturgicalRealtime, deleteLiturgicalSong } from '../../../lib/liturgicalApi.ts';
 import { LiturgicalSongModal } from './LiturgicalSongModal.tsx';
 import { Church, Calendar, Share2, Check, Plus, Trash2, BookOpen, Clock, Sparkles, Music } from 'lucide-react';
 
@@ -33,7 +33,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Realtime clock state (Cập nhật liên tục mỗi giây)
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -62,7 +61,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
     return () => unsub();
   }, []);
 
-  // Tính toán thời gian thực tế
   const dayName = DAY_NAMES[currentTime.getDay()];
   const isTodaySunday = currentTime.getDay() === 0;
   const todayDayStr = String(currentTime.getDate()).padStart(2, '0');
@@ -71,7 +69,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
   const todayFormatted = `${todayDayStr}/${todayMonthStr}/${todayYearStr}`;
   const timeFormatted = currentTime.toLocaleTimeString('vi-VN');
 
-  // Tìm bài hát cho Hôm Nay & bài hát cho Chúa Nhật sắp tới
   const todaySong = songs.find(s => s.event_date === todayFormatted) ||
     songs.find(s => isTodaySunday ? (s.type === 'sunday' || s.type === 'solemnity') : s.type === 'weekday') ||
     songs[0];
@@ -79,28 +76,21 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
   const sundaySong = songs.find(s => s.type === 'sunday' || s.type === 'solemnity') ||
     songs.find(s => s.id !== todaySong?.id);
 
-  // Sao chép danh sách bài hát 1-click cho nhóm Zalo/FB Ca Đoàn
   const handleCopyZalo = (song: LiturgicalSongSchedule) => {
-    let formattedText = `🎵 LỊCH HÁT CA ĐOÀN THIÊN THẦN — GIÁO XỨ BẮC HÒA 🎵\n`;
+    let formattedText = `🎵 BỘ LỄ HÁT CA ĐOÀN THIÊN THẦN🎵\n`;
     formattedText += `📌 ${song.title} (${song.event_date || 'Phụng vụ'})\n`;
     formattedText += `---------------------------------\n`;
 
     if (song.type === 'weekday') {
-      // 3 mục cho Lễ Ngày Tuần
       formattedText += `1. Nhập Lễ: ${song.nhap_le || '—'}\n`;
       formattedText += `2. Dâng Lễ: ${song.dang_le || '—'}\n`;
       formattedText += `3. Hiệp Lễ: ${song.hiep_le || '—'}\n`;
     } else {
-      // 5 mục cho Lễ Chúa Nhật & Lễ Trọng
       formattedText += `1. Nhập Lễ: ${song.nhap_le || '—'}\n`;
       formattedText += `2. Đáp Ca / Alleluia: ${song.dap_ca_alleluia || '—'}\n`;
       formattedText += `3. Dâng Lễ: ${song.dang_le || '—'}\n`;
       formattedText += `4. Hiệp Lễ: ${song.hiep_le || '—'}\n`;
       formattedText += `5. Kết Lễ: ${song.ket_le || '—'}\n`;
-    }
-
-    if (song.note) {
-      formattedText += `---------------------------------\n📝 Ghi chú: ${song.note}\n`;
     }
 
     try {
@@ -128,7 +118,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
     }
   };
 
-  // Render thẻ hiển thị bài hát (3 mục hoặc 5 mục)
   const renderSongCard = (song: LiturgicalSongSchedule, isTodayCard: boolean = false) => {
     const isWeekday = song.type === 'weekday';
 
@@ -140,13 +129,12 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
           : 'bg-slate-50/70 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800'
           }`}
       >
-        {/* Header Thẻ Bài Hát */}
         <div className="flex items-start justify-between gap-2 flex-wrap">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               {isTodayCard ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-sky-600 text-white shadow-xs">
-                  <Sparkles className="w-3 h-3" />
+                  <Music className="w-3 h-3" />
                   <span>HÔM NAY ({dayName.toUpperCase()})</span>
                 </span>
               ) : (
@@ -199,10 +187,7 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
           </div>
         </div>
 
-        {/* Danh Sách Bài Hát Tương Ứng (3 Mục cho Weekday, 5 Mục cho Sunday) */}
         <div className="space-y-2 text-xs">
-
-          {/* 1. Ca Nhập Lễ */}
           <div className="p-3 rounded-2xl bg-sky-50 dark:bg-slate-800/60 border border-sky-100 dark:border-slate-800 space-y-0.5">
             <span className="font-bold text-sky-800 dark:text-sky-300 block uppercase text-[10px] tracking-wider flex items-center gap-1">
               <Music className="w-3 h-3" /> 1. Ca Nhập Lễ
@@ -212,7 +197,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
             </p>
           </div>
 
-          {/* 2. Đáp Ca / Alleluia (Dành cho Lễ Chúa Nhật / Lễ Trọng - 5 mục) */}
           {!isWeekday && (
             <div className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900/40 space-y-0.5">
               <span className="font-bold text-amber-800 dark:text-amber-300 block uppercase text-[10px] tracking-wider flex items-center gap-1">
@@ -224,7 +208,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
             </div>
           )}
 
-          {/* 3. Ca Dâng Lễ */}
           <div className="p-3 rounded-2xl bg-purple-50 dark:bg-slate-800/60 border border-purple-100 dark:border-slate-800 space-y-0.5">
             <span className="font-bold text-purple-800 dark:text-purple-300 block uppercase text-[10px] tracking-wider flex items-center gap-1">
               <Music className="w-3 h-3" /> {isWeekday ? '2. Ca Dâng Lễ' : '3. Ca Dâng Lễ (Tiến Lễ)'}
@@ -234,7 +217,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
             </p>
           </div>
 
-          {/* 4. Ca Hiệp Lễ */}
           <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-slate-800/60 border border-emerald-100 dark:border-slate-800 space-y-0.5">
             <span className="font-bold text-emerald-800 dark:text-emerald-300 block uppercase text-[10px] tracking-wider flex items-center gap-1">
               <Music className="w-3 h-3" /> {isWeekday ? '3. Ca Hiệp Lễ' : '4. Ca Hiệp Lễ (Rước Lễ)'}
@@ -244,7 +226,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
             </p>
           </div>
 
-          {/* 5. Ca Kết Lễ (Dành cho Lễ Chúa Nhật / Lễ Trọng - 5 mục) */}
           {!isWeekday && (
             <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-slate-800/60 border border-indigo-100 dark:border-slate-800 space-y-0.5">
               <span className="font-bold text-indigo-800 dark:text-indigo-300 block uppercase text-[10px] tracking-wider flex items-center gap-1">
@@ -255,10 +236,8 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
               </p>
             </div>
           )}
-
         </div>
 
-        {/* Ghi chú ca đoàn */}
         {song.note && (
           <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-xs text-slate-600 dark:text-slate-300 space-y-1">
             <span className="font-bold text-slate-700 dark:text-slate-200 block">📝 Ghi chú ca đoàn:</span>
@@ -271,8 +250,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-3xl border border-sky-100 dark:border-slate-800 p-5 shadow-xs space-y-4">
-
-      {/* Realtime Clock Banner Header */}
       <div className="bg-gradient-to-r from-sky-600 via-indigo-600 to-sky-700 text-white rounded-2xl p-4 shadow-sm space-y-2">
         <div className="flex items-center justify-between text-xs font-bold gap-2">
           <div className="flex items-center gap-1.5">
@@ -312,7 +289,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
         </div>
       </div>
 
-      {/* Automatic Content Area */}
       {loading ? (
         <div className="py-8 text-center text-xs text-slate-400 flex flex-col items-center justify-center space-y-2">
           <div className="w-6 h-6 border-2 border-sky-400/20 border-t-sky-500 rounded-full animate-spin" />
@@ -324,11 +300,8 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
         </div>
       ) : (
         <div className="space-y-4">
-
-          {/* Thẻ 1: Thánh Lễ Hôm Nay (Tự động tải 3 mục cho Tuần, 5 mục cho Chúa Nhật) */}
           {todaySong && renderSongCard(todaySong, true)}
 
-          {/* Thẻ 2: Thánh Lễ Chúa Nhật Sắp Tới (Tự động tải sẵn nếu hôm nay là Ngày Tuần) */}
           {!isTodaySunday && sundaySong && sundaySong.id !== todaySong?.id && (
             <div className="space-y-2 pt-2">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 px-1">
@@ -338,11 +311,9 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
               {renderSongCard(sundaySong, false)}
             </div>
           )}
-
         </div>
       )}
 
-      {/* Modal Soạn Bài Hát Phụng Vụ (Cho Ban Trị Sự / Admin) */}
       {isModalOpen && (
         <LiturgicalSongModal
           isOpen={isModalOpen}
@@ -350,8 +321,6 @@ export const LiturgicalSongsWidget: React.FC<LiturgicalSongsWidgetProps> = ({ is
           onSaved={fetchSongs}
         />
       )}
-
     </div>
   );
 };
-

@@ -5,6 +5,7 @@ import { getAdminForms, deleteForm, toggleFormStatus } from '../../lib/formsApi.
 import { CopyFormLinkButton } from './CopyFormLinkButton.tsx';
 import { FormBuilderModal } from './FormBuilderModal.tsx';
 import { FormResponseListModal } from './FormResponseListModal.tsx';
+import { ConfirmDialogModal } from './ConfirmDialogModal.tsx';
 import { formatDateVi } from '../../utils/csvExport.ts';
 
 export const FormsDashboard: React.FC = () => {
@@ -16,6 +17,10 @@ export const FormsDashboard: React.FC = () => {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
 
   const [responseViewForm, setResponseViewForm] = useState<FormWithFields | null>(null);
+
+  // Delete modal state
+  const [deletingForm, setDeletingForm] = useState<FormWithFields | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadForms = async () => {
     setLoading(true);
@@ -41,10 +46,17 @@ export const FormsDashboard: React.FC = () => {
   };
 
   // Xoá Form
-  const handleDeleteForm = async (formId: string, title: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xoá biểu mẫu "${title}"?\n\nTất cả câu hỏi và lượt phản hồi liên quan sẽ bị xoá vĩnh viễn.`)) {
-      await deleteForm(formId);
-      setForms(prev => prev.filter(f => f.id !== formId));
+  const handleConfirmDeleteForm = async () => {
+    if (!deletingForm) return;
+    setIsDeleting(true);
+    try {
+      await deleteForm(deletingForm.id);
+      setForms(prev => prev.filter(f => f.id !== deletingForm.id));
+      setDeletingForm(null);
+    } catch (err) {
+      console.error('Lỗi khi xoá biểu mẫu:', err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -56,7 +68,7 @@ export const FormsDashboard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="w-full space-y-6">
       
       {/* Banner Top */}
       <div className="bg-gradient-to-r from-sky-600 via-indigo-600 to-amber-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
@@ -65,10 +77,10 @@ export const FormsDashboard: React.FC = () => {
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-amber-200 text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-4 h-4 fill-amber-300" />
-              <span>Hệ Thống Biểu Mẫu Công Khai FormsAngel</span>
+              <span>Biểu Mẫu Ca Đoàn Thiên Thần</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold font-serif tracking-tight">
-              Quản Lý Biểu Mẫu (Forms)
+              Quản Lý Biểu Mẫu & Đăng Ký
             </h1>
             <p className="text-xs sm:text-sm text-sky-100 max-w-xl">
               Tạo biểu mẫu thu thập thông tin, sao chép link công khai gửi cho ca viên và xem phản hồi thời gian thực.
@@ -123,7 +135,7 @@ export const FormsDashboard: React.FC = () => {
             Chưa có biểu mẫu nào được tạo
           </h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Bấm nút "TẠO BIỂU MẪU MỚI" ở trên để bắt đầu khởi tạo form lấy thông tin.
+            Bấm nút "TẠO BIỂU MẪU MỚI" ở trên để bắt đầu khởi tạo biểu mẫu lấy thông tin.
           </p>
           <button
             type="button"
@@ -166,7 +178,7 @@ export const FormsDashboard: React.FC = () => {
                     ) : (
                       <>
                         <XCircle className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Đã đóng nhận form</span>
+                        <span>Đã đóng nhận biểu mẫu</span>
                       </>
                     )}
                   </button>
@@ -206,7 +218,7 @@ export const FormsDashboard: React.FC = () => {
                     type="button"
                     onClick={() => handleOpenPreview(form.slug)}
                     className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                    title="Mở đường dẫn Public Form"
+                    title="Mở liên kết biểu mẫu công khai"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                     <span>Xem Link</span>
@@ -237,7 +249,7 @@ export const FormsDashboard: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => handleDeleteForm(form.id, form.title)}
+                    onClick={() => setDeletingForm(form)}
                     className="flex items-center justify-center gap-1 py-1.5 rounded-lg text-xs font-semibold bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/80 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -264,6 +276,18 @@ export const FormsDashboard: React.FC = () => {
         form={responseViewForm}
         isOpen={!!responseViewForm}
         onClose={() => setResponseViewForm(null)}
+      />
+
+      {/* Custom Delete Confirmation Modal */}
+      <ConfirmDialogModal
+        isOpen={!!deletingForm}
+        title="Xác Nhận Xóa Biểu Mẫu"
+        message={`Bạn có chắc chắn muốn xóa biểu mẫu "${deletingForm?.title || ''}"? Tất cả câu hỏi và lượt phản hồi liên quan sẽ bị xóa vĩnh viễn.`}
+        confirmLabel="Đồng Ý Xóa"
+        cancelLabel="Hủy Bỏ"
+        onConfirm={handleConfirmDeleteForm}
+        onClose={() => setDeletingForm(null)}
+        isDeleting={isDeleting}
       />
 
     </div>

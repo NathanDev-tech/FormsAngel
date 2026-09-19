@@ -8,7 +8,7 @@ import {
   Trash2,
   Phone,
   Users,
-  Sparkles,
+  Music,
   Plus,
   Upload,
 } from 'lucide-react';
@@ -137,7 +137,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+    <div className="w-full space-y-6">
 
       {/* Top Banner: Header & Actions Bar */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-sky-100 dark:border-slate-800 shadow-sm">
@@ -146,7 +146,7 @@ export const MembersTable: React.FC<MembersTableProps> = ({
           {/* Header & Total Count */}
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <Music className="w-3.5 h-3.5 text-amber-500" />
               <span>Giáo Hạt Phú Thịnh · Giáo Xứ Bắc Hòa — Ca Đoàn Thiên Thần</span>
             </div>
             <div className="flex flex-wrap items-baseline gap-3">
