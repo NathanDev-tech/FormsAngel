@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Sparkles, 
   Users, 
@@ -189,8 +190,8 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* RIGHT ACTIONS: PORTAL LINK & DARK MODE */}
           <div className="flex items-center gap-2 shrink-0">
-            <a
-              href="/portal"
+            <Link
+              to="/portal"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 shadow-sm transition-all hover:scale-105 active:scale-95 whitespace-nowrap min-h-[34px]"
@@ -198,7 +199,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Globe className="w-3.5 h-3.5 text-slate-950 animate-pulse" />
               <span>Cổng Thông Tin ↗</span>
-            </a>
+            </Link>
 
             <button
               type="button"
@@ -315,15 +316,15 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
-              <a
-                href="/portal"
+              <Link
+                to="/portal"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-amber-500 text-slate-950 text-sm font-bold shadow-md"
               >
                 <Globe className="w-4 h-4" />
                 <span>Mở Cổng Thông Tin Ca Đoàn ↗</span>
-              </a>
+              </Link>
             </div>
 
           </div>

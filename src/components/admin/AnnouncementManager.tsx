@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Plus, Search, Edit2, Trash2, Pin, AlertTriangle, Eye } from 'lucide-react';
+import { Bell, Plus, Search, Edit2, Trash2, Pin, AlertTriangle } from 'lucide-react';
 import { Announcement } from '../../types/announcements.ts';
 import { getAnnouncements, deleteAnnouncement } from '../../lib/announcementsApi.ts';
 import { AnnouncementEditor } from './AnnouncementEditor.tsx';
 import { ConfirmDialogModal } from './ConfirmDialogModal.tsx';
-import { Link } from 'react-router-dom';
 
 export const AnnouncementManager: React.FC = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -174,18 +173,9 @@ export const AnnouncementManager: React.FC = () => {
                       {new Date(item.published_at).toLocaleDateString('vi-VN')}
                     </td>
                     <td className="px-6 py-4 text-right whitespace-nowrap space-x-2">
-                      <Link
-                        to={`/thong-bao/${item.slug}`}
-                        target="_blank"
-                        className="p-2 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-white"
-                        title="Xem trang public"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Link>
-
                       <button
                         onClick={() => handleEdit(item)}
-                        className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-amber-400"
+                        className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-amber-400 transition-colors"
                         title="Chỉnh sửa"
                       >
                         <Edit2 className="w-4 h-4" />
